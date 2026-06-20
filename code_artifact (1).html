@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบอำนวยการยิงและคำนวณระยะลดเหลื่อม (รอง ผบ.ร้อย ป.)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom Scrollbar for Tactical HUD Style */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        /* Custom Scrollbar for Tactical HUD Style */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    /* Hero animation */
+    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fadeInUp 0.8s ease-out; }
+    .tab-btn:hover { transform: scale(1.05); }
+</style>
+</head>
+<body class="h-full flex flex-col overflow-hidden">
+
+    <!-- Top Tactical HUD Bar -->
+    <header class="bg-slate-900 border-b border-emerald-500/30 px-6 py-3 flex flex-wrap justify-between items-center shrink-0 shadow-lg shadow-black/40">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-emerald-950 border border-emerald-500/50 rounded-lg text-emerald-400 animate-pulse">
+                <i data-lucide="shield-alert" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-wider text-emerald-400 flex items-center gap-2">
+                    ARTILLERY FIRE DIRECTION SYSTEM <span class="text-xs bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-300 border border-emerald-500/30 font-mono">M17-EMULATOR</span>
+                </h1>
+                <p class="text-xs text-slate-400 font-medium">ระบบคำนวณระยะลดเหลื่อมและควบคุมมุมยิงต่ำสุด รอง ผบ.ร้อย ป. (แก้ปัญหาข้อผิดพลาด 1097)</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 mt-2 sm:mt-0 font-mono text-xs">
+            <div class="bg-slate-950/80 px-3 py-1.5 rounded border border-slate-800">
+                <span class="text-slate-500">กองร้อยปืนใหญ่:</span> <span class="text-emerald-400 font-bold">ป.101 Bn</span>
+            </div>
+            <div class="bg-slate-950/80 px-3 py-1.5 rounded border border-slate-800">
+                <span class="text-slate-500">วัน/เวลาจำลอง:</span> <span class="text-emerald-400 font-bold" id="live-clock">04 มิ.ย. 2569 09:00</span>
+            </div>
+        </div>
+    </header>
+    <!-- Hero Section -->
+    <section id="hero" class="flex-1 flex items-center justify-center bg-gradient-to-r from-emerald-700 to-slate-800 text-slate-100 p-8 animate-fade-in">
+        <div class="text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">ARTILLERY FIRE DIRECTION SYSTEM</h1>
+            <p class="text-lg md:text-xl mb-2">ระบบคำนวณระยะลดเหลื่อมและควบคุมมุมยิงต่ำสุด รอง ผบ.ร้อย ป.</p>
+            <i data-lucide="rocket" class="w-12 h-12 mx-auto animate-bounce"></i>
+        </div>
+    </section>
+
+    <!-- Main Workspace Container -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <nav class="w-16 md:w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between py-4 shrink-0">
+            <div class="space-y-1 px-2">
+                <!-- Navigation Tabs -->
+                <button onclick="switchTab('dashboard')" class="tab-btn w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" id="tab-btn-dashboard">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                    <span class="hidden md:inline">แบบรายงาน รอง ผบ.ร้อย</span>
+                </button>
+                <button onclick="switchTab('visualizer')" class="tab-btn w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:bg-slate-900 hover:text-slate-100" id="tab-btn-visualizer">
+                    <i data-lucide="compass" class="w-5 h-5"></i>
+                    <span class="hidden md:inline">แผ่นจำลอง M.17 & แผนที่</span>
+                </button>
+                <button onclick="switchTab('min-qe')" class="tab-btn w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:bg-slate-900 hover:text-slate-100" id="tab-btn-min-qe">
+                    <i data-lucide="trending-up" class="w-5 h-5"></i>
+                    <span class="hidden md:inline">มุมยิงต่ำสุด & ชนวน VT</span>
+                </button>
+                <button onclick="switchTab('tactical-tools')" class="tab-btn w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:bg-slate-900 hover:text-slate-100" id="tab-btn-tactical-tools">
+                    <i data-lucide="target" class="w-5 h-5"></i>
+                    <span class="hidden md:inline">เครื่องมือยุทธวิธีสนาม</span>
+                </button>
+                <button onclick="switchTab('excel-sandbox')" class="tab-btn w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:bg-slate-900 hover:text-slate-100" id="tab-btn-excel-sandbox">
+                    <i data-lucide="grid" class="w-5 h-5"></i>
+                    <span class="hidden md:inline">Live Excel Sandbox</span>
+                </button>
+            </div>
+            
+            <!-- Quick System Info -->
+            <div class="px-4 py-3 border-t border-slate-800 hidden md:block">
+                <div class="flex items-center gap-2 mb-1">
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span class="text-xs font-semibold text-slate-300">ระบบพร้อมใช้งาน</span>
+                </div>
+                <p class="text-[10px] text-slate-500">ระบบประมวลเวกเตอร์ทหารความละเอียดสูง คำนวณแบบสองทิศทางเรียลไทม์</p>
+            </div>
+        </nav>
+
+        <!-- Main Content Viewport -->
+        <main class="flex-1 overflow-y-auto bg-slate-900 p-4 md:p-6" id="view-port">
+            
+            <!-- ================= TAB: DASHBOARD ================= -->
+            <div id="tab-dashboard" class="tab-content space-y-6">
+                <!-- Header Card / Control Panel -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl rounded-full"></div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span class="text-emerald-500 font-mono text-xs uppercase tracking-widest font-semibold">ขั้นตอนที่ ๑: บันทึกทิศทางและหลักเล็ง</span>
+                            <h2 class="text-2xl font-bold tracking-tight text-slate-100 mt-1">ตั้งปืนตรงทิศและข้อมูลกองร้อย</h2>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg">
+                                <label class="block text-[10px] text-slate-500 uppercase font-mono">วิธีมุมภาค (ตรงทิศ)</label>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" id="input-lof" value="2100" min="0" max="6400" class="bg-transparent border-none text-emerald-400 font-bold font-mono focus:ring-0 w-16 p-0 text-lg">
+                                    <span class="text-xs text-slate-500 font-mono">มิล</span>
+                                </div>
+                            </div>
+                            <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg">
+                                <label class="block text-[10px] text-slate-500 uppercase font-mono">จำลองทิศต่อหลักเล็ง</label>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" id="input-aim" value="2800" min="0" max="6400" class="bg-transparent border-none text-emerald-400 font-bold font-mono focus:ring-0 w-16 p-0 text-lg">
+                                    <span class="text-xs text-slate-500 font-mono">มิล</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid Section 1: Inputs from Observation Post (จก.) -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl shadow-xl overflow-hidden">
+                    <div class="bg-slate-900/50 border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded bg-emerald-500"></div>
+                            <h3 class="font-bold text-slate-200">ขั้นตอนที่ ๒: หลักฐานวัดจากจุดตั้งกล้อง (จก.๑) ไปยังหมู่ปืน และ ศก.ร้อย</h3>
+                        </div>
+                        <span class="text-xs text-slate-500 font-mono">ข้อมูลตรวจวัดจริงในสนาม (แก้ไขให้ตรงต้นฉบับ)</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-800 text-slate-400 text-xs font-mono uppercase bg-slate-950/50">
+                                    <th class="py-3 px-6">เป้าหมายปลายทาง</th>
+                                    <th class="py-3 px-4">มุมทิศ (มิล)</th>
+                                    <th class="py-3 px-4">มุม ก. (มิล)</th>
+                                    <th class="py-3 px-4">ระยะจริง (เมตร)</th>
+                                    <th class="py-3 px-4">ระยะในวงเล็บ (เมตร)</th>
+                                    <th class="py-3 px-4 text-right">ค่าพิกัดเชิงขั้วนำเข้า</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/50 text-sm font-mono">
+                                <!-- Center Point Row -->
+                                <tr class="hover:bg-slate-900/30 transition-colors">
+                                    <td class="py-4 px-6 font-semibold text-slate-300 flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-red-500"></span> ศก.ร้อย (ศูนย์กลางกองร้อย)
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-center" value="1764" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-24">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-g-center" value="28" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-400 w-16">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-center" value="72" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-20">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-bracket-center" value="76" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-500 w-20">
+                                    </td>
+                                    <td class="py-3 px-4 text-right text-slate-400" id="geom-center">1764 Mil / 72m</td>
+                                </tr>
+                                <!-- Gun 1 Row -->
+                                <tr class="hover:bg-slate-900/30 transition-colors">
+                                    <td class="py-4 px-6 text-slate-300 font-semibold flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded bg-emerald-500"></span> ป.หมู่ ๑
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-g1" value="1684" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-24">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-g-g1" value="20" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-400 w-16">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-g1" value="102" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-20">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-bracket-g1" value="100" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-500 w-20">
+                                    </td>
+                                    <td class="py-3 px-4 text-right text-slate-400" id="geom-g1">1684 Mil / 102m</td>
+                                </tr>
+                                <!-- Gun 2 Row -->
+                                <tr class="hover:bg-slate-900/30 transition-colors">
+                                    <td class="py-4 px-6 text-slate-300 font-semibold flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded bg-emerald-500"></span> ป.หมู่ ๒
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-g2" value="1899" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-24">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-g-g2" value="20" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-400 w-16">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-g2" value="102" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-20">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-bracket-g2" value="100" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-500 w-20">
+                                    </td>
+                                    <td class="py-3 px-4 text-right text-slate-400" id="geom-g2">1899 Mil / 102m</td>
+                                </tr>
+                                <!-- Gun 3 Row -->
+                                <tr class="hover:bg-slate-900/30 transition-colors">
+                                    <td class="py-4 px-6 text-slate-300 font-semibold flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded bg-emerald-500"></span> ป.หมู่ ๓
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-g3" value="1764" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-24">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-g-g3" value="28" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-400 w-16">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-g3" value="72" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-20">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-bracket-g3" value="70" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-500 w-20">
+                                    </td>
+                                    <td class="py-3 px-4 text-right text-slate-400" id="geom-g3">1764 Mil / 72m</td>
+                                </tr>
+                                <!-- Gun 4 Row -->
+                                <tr class="hover:bg-slate-900/30 transition-colors">
+                                    <td class="py-4 px-6 text-slate-300 font-semibold flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded bg-emerald-500"></span> ป.หมู่ ๔
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-g4" value="2290" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-24">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="angle-g-g4" value="38" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-400 w-16">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-g4" value="54" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-emerald-400 w-20">
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <input type="number" id="dist-bracket-g4" value="50" class="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-500 w-20">
+                                    </td>
+                                    <td class="py-3 px-4 text-right text-slate-400" id="geom-g4">2290 Mil / 54m</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Grid Section 2: Calculated Displacement (Dynamic Engine Mode) -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl shadow-xl overflow-hidden">
+                    <div class="bg-slate-900/50 border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded bg-blue-500 animate-pulse"></div>
+                            <h3 class="font-bold text-slate-200">ขั้นตอนที่ ๓: ผลการคำนวณระยะลดเหลื่อมเปรียบเทียบ (เปรียบเทียบแบบเรียลไทม์)</h3>
+                        </div>
+                        <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded font-mono font-bold">Dynamic Engine V2</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-800 text-slate-400 text-xs font-mono uppercase bg-slate-950/50">
+                                    <th class="py-3 px-6">ปืนใหญ่</th>
+                                    <th class="py-3 px-4">มุมทิศ (คำนวณ vs รายงาน)</th>
+                                    <th class="py-3 px-4">ระยะ (คำนวณ vs รายงาน)</th>
+                                    <th class="py-3 px-4">แนวฉาก ซ้าย/ขวา (คำนวณ vs รายงาน)</th>
+                                    <th class="py-3 px-4">แนวขนาน หน้า/หลัง (คำนวณ vs รายงาน)</th>
+                                    <th class="py-3 px-4 text-right">สถานะตรวจสอบ</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/50 text-xs font-mono" id="displacement-tbody">
+                                <!-- Dynamic Rows Generated via JS without static hardcoding -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Environment info -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs text-slate-400 uppercase font-mono tracking-wider">๖. อุณหภูมิดินส่งกระสุน</span>
+                            <i data-lucide="thermometer" class="w-5 h-5 text-amber-500"></i>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-3xl font-bold text-slate-100 font-mono">95°</span>
+                            <span class="text-slate-400">ฟาเรนไฮต์ (35°C)</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-2">มีผลต่ออัตราการเผาไหม้และความเร่งของกระสุน ณ ปากลำกล้อง</p>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs text-slate-400 uppercase font-mono tracking-wider">๗. ค่า ดร.อ. ($\Delta V_0$ เฉลี่ย)</span>
+                            <i data-lucide="gauge" class="w-5 h-5 text-blue-400"></i>
+                        </div>
+                        <div class="space-y-1.5 text-xs font-mono">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">หมู่ ๑:</span>
+                                <span class="text-slate-300">-4.00 เมตร/วินาที</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">หมู่ ๒:</span>
+                                <span class="text-slate-300">-7.13 เมตร/วินาที</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">หมู่ ๓:</span>
+                                <span class="text-slate-300">-4.11 เมตร/วินาที</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">หมู่ ๔:</span>
+                                <span class="text-slate-300">-7.18 เมตร/วินาที</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs text-slate-400 uppercase font-mono tracking-wider">๘. หลักความปลอดภัย (Safety Limits)</span>
+                            <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+                        </div>
+                        <div class="space-y-3 font-mono">
+                            <div class="flex justify-between items-center bg-slate-900 p-2 rounded border border-slate-800">
+                                <span class="text-xs text-slate-400">ขีดจำกัดขวา:</span>
+                                <span class="text-sm font-bold text-red-400">2686 มิล</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-900 p-2 rounded border border-slate-800">
+                                <span class="text-xs text-slate-400">ขีดจำกัดซ้าย:</span>
+                                <span class="text-sm font-bold text-blue-400">2869 มิล</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: VISUALIZER ================= -->
+            <div id="tab-visualizer" class="tab-content space-y-6 hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left: Control Column & Plotted coordinates -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl space-y-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                                <i data-lucide="info" class="w-5 h-5 text-blue-400"></i> ข้อมูลพิกัดตรวจวัด (จก.๑)
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1">ข้อมูลพิกัดถูกดึงมาจากแบบรายงานขั้นตอนที่ ๑ และ ๒ (แสดงผลเท่านั้น)</p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <!-- Display LOF -->
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex justify-between items-center">
+                                <span class="text-xs text-slate-400">ทิศทางยิง (LOF)</span>
+                                <span class="text-sm font-bold text-emerald-400 font-mono" id="disp-lof">-</span>
+                            </div>
+                            <!-- Display Center -->
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex justify-between items-center">
+                                <span class="text-xs text-slate-400">จก.๑ ถึง ศก.ร้อย</span>
+                                <span class="text-sm font-bold text-red-400 font-mono" id="disp-c-data">-</span>
+                            </div>
+                            
+                            <!-- Display Guns -->
+                            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex flex-col gap-3 font-mono">
+                                <div class="flex justify-between border-b border-slate-800 pb-2">
+                                    <span class="text-xs text-slate-400 flex items-center gap-2"><span class="w-2 h-2 bg-red-500 rounded-full"></span> ป.หมู่ ๑</span>
+                                    <span class="text-xs font-bold text-emerald-400" id="disp-g1-data">-</span>
+                                </div>
+                                <div class="flex justify-between border-b border-slate-800 pb-2">
+                                    <span class="text-xs text-slate-400 flex items-center gap-2"><span class="w-2 h-2 bg-yellow-500 rounded-full"></span> ป.หมู่ ๒</span>
+                                    <span class="text-xs font-bold text-emerald-400" id="disp-g2-data">-</span>
+                                </div>
+                                <div class="flex justify-between border-b border-slate-800 pb-2">
+                                    <span class="text-xs text-slate-400 flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> ป.หมู่ ๓</span>
+                                    <span class="text-xs font-bold text-emerald-400" id="disp-g3-data">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-xs text-slate-400 flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full"></span> ป.หมู่ ๔</span>
+                                    <span class="text-xs font-bold text-emerald-400" id="disp-g4-data">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Center & Right: Graphical Map Viewer -->
+                    <div class="lg:col-span-2 bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-xl flex flex-col justify-between">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="map" class="w-5 h-5 text-emerald-400"></i>
+                                <h3 class="font-bold text-slate-200">Vector M.17W</h3>
+                            </div>
+                            <span class="text-xs bg-slate-900 px-3 py-1 text-slate-400 rounded-full font-mono border border-slate-800">ศูนย์กลาง ศก.ร้อย (0,0)</span>
+                        </div>
+
+                        <!-- Vector Graphic Representation utilizing SVG -->
+                        <div class="relative w-full aspect-square md:aspect-auto md:h-[450px] bg-slate-900/50 rounded-lg border border-slate-800 flex items-center justify-center overflow-hidden">
+                            <svg id="tactical-map" class="w-full h-full" viewBox="0 0 600 450">
+                                <!-- Dynamic SVG elements added by JS -->
+                            </svg>
+                        </div>
+
+                        <!-- Map Legend / Indicators -->
+                        <div class="mt-4 grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs font-mono pt-3 border-t border-slate-800/50">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3.5 h-3.5 rounded-full bg-yellow-400 flex items-center justify-center text-[8px] text-slate-950 font-bold">O</div>
+                                <span class="text-slate-400">จก.๑ (จุดตั้งกล้อง)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3.5 h-3.5 rounded-full bg-red-500 flex items-center justify-center text-[8px] text-white font-bold">C</div>
+                                <span class="text-slate-400">ศก.ร้อย (ศูนย์กลาง)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3.5 h-3.5 rounded bg-emerald-500 flex items-center justify-center text-[8px] text-slate-950 font-bold">G</div>
+                                <span class="text-slate-400">ปืนแต่ละหมู่ (ป.๑-๔)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="border-t-2 border-dashed border-emerald-500/50 w-6"></div>
+                                <span class="text-slate-400">ทิศทางยิง (LOF แกน Y)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="border-t-2 border-indigo-500 w-6"></div>
+                                <span class="text-slate-400">เวกเตอร์อ้างอิง จก.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: MIN QE CALCULATOR ================= -->
+            <div id="tab-min-qe" class="tab-content space-y-6 hidden">
+                <!-- Header Title -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-rose-950/50 border border-rose-500/30 rounded-xl text-rose-400">
+                            <i data-lucide="trending-up" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold tracking-tight text-slate-100">๔. หลักฐานการคำนวณมุมยิงต่ำสุด (Min QE) และ ชนวน VT</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">รับประกันความมั่นใจในการยิงพ้นแนวกำบังภูมิประเทศ (ภูเขา/แนวยอดไม้) และความเสถียรของชนวนตรวจจับระยะคลื่นสัญญาณ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation visual trajectory card -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl">
+                    <h3 class="text-md font-bold text-slate-200 mb-2 flex items-center gap-2">
+                        <i data-lucide="eye" class="w-5 h-5 text-rose-400"></i> จำลองภาพแนวมุมยิงพ้นยอดกำบังหน้าร้อยปืน (Mask Obstacle Trajectory)
+                    </h3>
+                    <div class="relative w-full h-48 bg-slate-900 rounded-lg border border-slate-800/80 overflow-hidden" id="trajectory-canvas-container">
+                        <canvas id="trajectory-canvas" class="absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                    <div class="mt-4 flex flex-wrap justify-between items-center gap-4 text-xs font-mono text-slate-400">
+                        <div class="flex gap-4">
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 bg-rose-500 rounded-full inline-block"></span> แนวยิงพ้นพิกัดปลอดภัย</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 bg-slate-500 rounded-full inline-block"></span> เนินเขาสิ่งกีดขวาง (Mask Level)</span>
+                        </div>
+                        <div class="bg-slate-900 px-3 py-1 rounded border border-slate-800">
+                            <span>มุมกำบังวิกฤตสูงสุด (หมู่ ๓):</span> <span class="text-rose-400 font-bold">201 มิล ณ ระยะ 200 เมตร</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live QE Table -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Terrain and safety factors -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl space-y-6">
+                        <h3 class="font-bold text-slate-200 border-b border-slate-800 pb-3 flex items-center gap-2">
+                            <i data-lucide="edit-3" class="w-5 h-5 text-emerald-400"></i> แก้ไขระดับและพิกัดที่กำบังหน้าร้อยปืน
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Gun 1 Clearance -->
+                            <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-800 space-y-2">
+                                <span class="text-xs font-bold text-slate-300">ป.หมู่ ๑</span>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] text-slate-500 font-mono">มุมกำบัง</label>
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" id="mask-ang-g1" value="146" class="bg-slate-950 border border-slate-800 text-slate-100 rounded text-center w-16 px-1 py-0.5 text-xs font-mono">
+                                        <span class="text-[10px] text-slate-500 font-mono">มิล</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] text-slate-500 font-mono">ระยะกำบัง</label>
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" id="mask-dst-g1" value="200" class="bg-slate-950 border border-slate-800 text-slate-100 rounded text-center w-16 px-1 py-0.5 text-xs font-mono">
+                                        <span class="text-[10px] text-slate-500 font-mono">ม.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gun 2 Clearance -->
+                            <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-800 space-y-2">
+                                <span class="text-xs font-bold text-slate-300">ป.หมู่ ๒</span>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] text-slate-500 font-mono">มุมกำบัง</label>
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" id="mask-ang-g2" value="175" class="bg-slate-950 border border-slate-800 text-slate-100 rounded text-center w-16 px-1 py-0.5 text-xs font-mono">
+                                        <span class="text-[10px] text-slate-500 font-mono">มิล</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] text-slate-500 font-mono">ระยะกำบัง</label>
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" id="mask-dst-g2" value="200" class="bg-slate-950 border border-slate-800 text-slate-100 rounded text-center w-16 px-1 py-0.5 text-xs font-mono">
+                                        <span class="text-[10px] text-slate-500 font-mono">ม.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gun 3 Clearance -->
+                            <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-800 space-y-2">
+                                <span class="text-xs font-bold text-slate-300">ป.หมู่ ๓</span>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] text-slate-500 font-mono">มุมกำบัง</label>
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" id="mask-ang-g3" value="201" class="bg-slate-950 border border-slate-800 text-slate-100 rounded text-center w-16 px-1 py-0.5 text-xs font-mono">
+                                        <span class="text-[10px] text-slate-500 font-mono">มิล</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] text-slate-500 font-mono">ระยะกำบัง</label>
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" id="mask-dst-g3" value="200" class="bg-slate-950 border border-slate-800 text-slate-100 rounded text-center w-16 px-1 py-0.5 text-xs font-mono">
+                                        <span class="text-[10px] text-slate-500 font-mono">ม.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gun 4 Clearance -->
+                            <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-800 space-y-2">
+                                <span class="text-xs font-bold text-slate-300">ป.หมู่ ๔</span>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] text-slate-500 font-mono">มุมกำบัง</label>
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" id="mask-ang-g4" value="168" class="bg-slate-950 border border-slate-800 text-slate-100 rounded text-center w-16 px-1 py-0.5 text-xs font-mono">
+                                        <span class="text-[10px] text-slate-500 font-mono">มิล</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] text-slate-500 font-mono">ระยะกำบัง</label>
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" id="mask-dst-g4" value="300" class="bg-slate-950 border border-slate-800 text-slate-100 rounded text-center w-16 px-1 py-0.5 text-xs font-mono">
+                                        <span class="text-[10px] text-slate-500 font-mono">ม.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info Card -->
+                        <div class="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl text-xs text-amber-300 flex items-start gap-3">
+                            <i data-lucide="info" class="w-5 h-5 shrink-0"></i>
+                            <div>
+                                <span class="font-bold block mb-1">กฎการตัดสินใจของ รอง ผบ.ร้อย ป. (Battery Commander Policy)</span>
+                                เพื่อความปลอดภัยวิถีกระสุนพ้นแนวกำบังหน้าร้อยปืน จะเลือกใช้ค่า **มุมยิงต่ำสุดที่สูงที่สุด** ของกองร้อยในแต่ละส่วนบรรจุเป็นเกณฑ์ควบคุมความปลอดภัยร่วมกัน (Standardized Minimum Elevation)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Min QE and VT safe times -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-200 border-b border-slate-800 pb-3 flex items-center justify-between">
+                                <span class="flex items-center gap-2"><i data-lucide="table" class="w-5 h-5 text-rose-500"></i> ขีดจำกัดมุมยิงต่ำสุดร่วมของร้อยปืน (Min QE Standard Table)</span>
+                                <span class="text-xs text-rose-400 font-mono font-bold">บก. ๑ - ๗</span>
+                            </h3>
+                            <div class="overflow-x-auto mt-4">
+                                <table class="w-full text-left text-xs font-mono border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-slate-800 text-slate-500 pb-2">
+                                            <th class="pb-2">ส่วนบรรจุ (บก.)</th>
+                                            <th class="pb-2 text-center">มุม ต. (มิล)</th>
+                                            <th class="pb-2 text-center">มุมยิงต่ำสุด (Min QE)</th>
+                                            <th class="pb-2 text-right">เวลาปลอดภัย ชนวน VT (วินาที)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-850" id="min-qe-tbody">
+                                        <!-- Computed dynamically via Javascript engine -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="text-[11px] text-slate-500 mt-4 leading-relaxed bg-slate-900/50 p-3 rounded-lg border border-slate-800/60">
+                            *ข้อมูลคำนวณสอดคล้องตามพารามิเตอร์ของคู่มือปฏิบัติและโปรแกรมคำนวณ Excel ประกันความปลอดภัยหน้าร้อยปืนสูงสุด
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: TACTICAL TOOLS ================= -->
+            <div id="tab-tactical-tools" class="tab-content space-y-6 hidden">
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-rose-500/5 blur-3xl rounded-full"></div>
+                    <div class="flex items-center gap-3 relative z-10">
+                        <div class="p-2.5 bg-rose-950/50 border border-rose-500/30 rounded-xl text-rose-400">
+                            <i data-lucide="target" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold tracking-tight text-slate-100">เครื่องมือยุทธวิธีสนาม (Field Tactical Calculators)</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">ระบบคำนวณสมการขีปนวิธีและคณิตศาสตร์สนาม รส. 6-50 (มุมดัก, ระยะกำบัง, มุมเยื้อง, ฐานสามเหลี่ยม)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Card 1: Lead Angle -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-200 border-b border-slate-800 pb-3 flex items-center gap-2 mb-4">
+                                <i data-lucide="crosshair" class="w-4 h-4 text-emerald-400"></i> การคำนวณมุมดัก (ยิงเล็งตรงเป้าหมายเคลื่อนที่)
+                            </h3>
+                            <div class="space-y-3 font-mono text-sm">
+                                <div class="flex justify-between items-center bg-slate-900/50 p-2.5 rounded border border-slate-800">
+                                    <span class="text-[11px] text-slate-400">ความเร็วเป้าหมาย (กม./ชม.)</span>
+                                    <input type="number" id="ta-speed" value="30" oninput="updateTacticalTools()" class="bg-slate-950 border border-slate-700 rounded text-emerald-400 px-2 py-1 text-right w-20">
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-900/50 p-2.5 rounded border border-slate-800">
+                                    <span class="text-[11px] text-slate-400">ระยะยิง (เมตร)</span>
+                                    <input type="number" id="ta-range" value="1000" oninput="updateTacticalTools()" class="bg-slate-950 border border-slate-700 rounded text-emerald-400 px-2 py-1 text-right w-20">
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-900/50 p-2.5 rounded border border-slate-800">
+                                    <span class="text-[11px] text-slate-400">เวลาแล่นของกระสุน (วินาที)</span>
+                                    <input type="number" id="ta-time" value="3.5" oninput="updateTacticalTools()" class="bg-slate-950 border border-slate-700 rounded text-emerald-400 px-2 py-1 text-right w-20">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-800/80 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider">ผลลัพธ์มุมดัก (Lead Angle)</span>
+                            <span class="text-xl font-bold text-rose-400 font-mono" id="ta-result">0 มิล</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Piece-to-Crest -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-200 border-b border-slate-800 pb-3 flex items-center gap-2 mb-4">
+                                <i data-lucide="mountain" class="w-4 h-4 text-emerald-400"></i> การคำนวณระยะกำบัง (Piece-to-Crest Range)
+                            </h3>
+                            <div class="space-y-3 font-mono text-sm">
+                                <div class="flex justify-between items-center bg-slate-900/50 p-2.5 rounded border border-slate-800">
+                                    <span class="text-[11px] text-slate-400">ระยะฐานระหว่างหมู่ปืน (เมตร)</span>
+                                    <input type="number" id="cr-base" value="50" oninput="updateTacticalTools()" class="bg-slate-950 border border-slate-700 rounded text-emerald-400 px-2 py-1 text-right w-20">
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-900/50 p-2.5 rounded border border-slate-800">
+                                    <span class="text-[11px] text-slate-400">มุมยอด (Apex Angle) มิลเลียม</span>
+                                    <input type="number" id="cr-angle" value="125" oninput="updateTacticalTools()" class="bg-slate-950 border border-slate-700 rounded text-emerald-400 px-2 py-1 text-right w-20">
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-3">* ปัดเศษผลลัพธ์เป็นจำนวนเต็ม 100 เมตรที่ใกล้เคียงที่สุดเสมอ เพื่อเปิดตารางยิง</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-800/80 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider">ระยะกำบังตั้ง ป.</span>
+                            <div class="text-right">
+                                <span class="text-xl font-bold text-emerald-400 font-mono block" id="cr-result">400 ม.</span>
+                                <span class="text-[10px] text-slate-500 font-mono" id="cr-result-raw">(ค่าดิบ 400.0 ม.)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Subtense Method -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-200 border-b border-slate-800 pb-3 flex items-center gap-2 mb-4">
+                                <i data-lucide="ruler" class="w-4 h-4 text-emerald-400"></i> หาระยะวิธีฐานสามเหลี่ยมคงที่ (Subtense)
+                            </h3>
+                            <div class="space-y-3 font-mono text-sm">
+                                <div class="flex justify-between items-center bg-slate-900/50 p-2.5 rounded border border-slate-800">
+                                    <span class="text-[11px] text-slate-400">ความกว้างฐานสมมติ (W) เมตร</span>
+                                    <input type="number" id="sub-base" value="2" oninput="updateTacticalTools()" class="bg-slate-950 border border-slate-700 rounded text-emerald-400 px-2 py-1 text-right w-20">
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-900/50 p-2.5 rounded border border-slate-800">
+                                    <span class="text-[11px] text-slate-400">มุมกางปลายไม้ (m) มิลเลียม</span>
+                                    <input type="number" id="sub-angle" value="10" step="0.5" oninput="updateTacticalTools()" class="bg-slate-950 border border-slate-700 rounded text-emerald-400 px-2 py-1 text-right w-20">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-800/80 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider">ระยะทางประเมิน (R)</span>
+                            <span class="text-xl font-bold text-emerald-400 font-mono" id="sub-result">200 ม.</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Azimuth & Declination -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-200 border-b border-slate-800 pb-3 flex items-center gap-2 mb-4">
+                                <i data-lucide="compass" class="w-4 h-4 text-emerald-400"></i> มุมภาคที่ถูกต้อง และมุมเยื้องกล้อง
+                            </h3>
+                            <div class="space-y-4 font-mono text-sm">
+                                <!-- Azimuth section -->
+                                <div class="space-y-2">
+                                    <span class="text-[10px] text-emerald-500 font-bold uppercase">การคำนวณหามุมภาคที่ถูกต้อง (True Azimuth)</span>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="bg-slate-900/50 p-2 rounded border border-slate-800">
+                                            <span class="block text-[9px] text-slate-400">มุมทิศอ่านได้</span>
+                                            <input type="number" id="az-measure" value="2800" oninput="updateTacticalTools()" class="w-full bg-slate-950 border border-slate-700 rounded text-emerald-400 px-1 py-1 text-center mt-1">
+                                        </div>
+                                        <div class="bg-slate-900/50 p-2 rounded border border-slate-800">
+                                            <span class="block text-[9px] text-slate-400">มุมจำลองทิศ</span>
+                                            <input type="number" id="az-ref" value="2800" oninput="updateTacticalTools()" class="w-full bg-slate-950 border border-slate-700 rounded text-emerald-400 px-1 py-1 text-center mt-1">
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-slate-900/50 p-2 rounded border border-slate-800">
+                                        <span class="text-[11px] text-slate-400">มุมภาคตั้ง ป. (Laid Azimuth)</span>
+                                        <input type="number" id="az-laid" value="2400" oninput="updateTacticalTools()" class="bg-slate-950 border border-slate-700 rounded text-emerald-400 px-2 py-1 text-right w-20">
+                                    </div>
+                                    <div class="flex justify-between items-center px-1">
+                                        <span class="text-[10px] text-slate-500">ผลลัพธ์ มุมภาคที่ถูกต้อง:</span>
+                                        <span class="text-sm font-bold text-emerald-400" id="az-result">2400 มิล</span>
+                                    </div>
+                                </div>
+                                <!-- Declination section -->
+                                <div class="space-y-2 pt-3 border-t border-slate-800/80">
+                                    <span class="text-[10px] text-emerald-500 font-bold uppercase">มุมตั้งกล้อง (Declination Constant)</span>
+                                    <div class="flex justify-between items-center bg-slate-900/50 p-2 rounded border border-slate-800">
+                                        <span class="text-[11px] text-slate-400">มุมเยื้องประจำกล้อง</span>
+                                        <input type="number" id="dec-const" value="6200" oninput="updateTacticalTools()" class="bg-slate-950 border border-slate-700 rounded text-emerald-400 px-2 py-1 text-right w-20">
+                                    </div>
+                                    <div class="flex justify-between items-center px-1">
+                                        <span class="text-[10px] text-slate-500">ผลลัพธ์ ค่าที่ต้องตั้งบนกล้อง:</span>
+                                        <span class="text-sm font-bold text-emerald-400" id="dec-result">3800 มิล</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB: EXCEL SANDBOX ================= -->
+            <div id="tab-excel-sandbox" class="tab-content space-y-6 hidden">
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl">
+                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i data-lucide="code" class="w-6 h-6 text-emerald-400"></i> คลังสูตรคำนวณ Excel สำหรับอำนวยการยิงปืนใหญ่
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">คัดลอกสูตรป้องมุมติดลบและการปัดเศษทีละ 5 เมตร เพื่อนำไปวางใช้งานบนหน้างานสเปรดชีตสนามจริงได้ทันที</p>
+                </div>
+
+                <!-- Excel Live Sandbox Area -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Formulas list with Copy button -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <!-- Formula 1 Card -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-200">1. การหาระยะลดเหลื่อมแนวฉาก (ซ้าย/ขวา) - ปัดเศษทีละ 5 เมตร</h4>
+                                    <p class="text-xs text-slate-500 mt-0.5">สูตรแปลงค่ามุมทิศทหาร (มิลเลียม) สู่เรเดียน ก่อนดึงค่า SIN และแสดงผลทิศทาง ซ้าย/ขวา</p>
+                                </div>
+                                <button onclick="copyToClipboard('f1-code')" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 px-3 py-1 rounded text-xs font-mono transition-colors flex items-center gap-1">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกสูตร
+                                </button>
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded border border-slate-800 overflow-x-auto">
+                                <code class="text-xs text-emerald-400 font-mono whitespace-nowrap block" id="f1-code">=IF(SIN(RADIANS(A2 * 360 / 6400)) >= 0, "ขวา ", "ซ้าย ") & MROUND(ABS(B2 * SIN(RADIANS(A2 * 360 / 6400))), 5)</code>
+                            </div>
+                        </div>
+
+                        <!-- Formula 2 Card -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-200">2. การหาระยะลดเหลื่อมแนวขนาน (หน้า/หลัง) - ปัดเศษทีละ 5 เมตร</h4>
+                                    <p class="text-xs text-slate-500 mt-0.5">สูตรดึงค่า COS ของมุมทหาร เพื่อใช้คัดแยกทิศทางไปข้างหน้า/ด้านหลัง เพื่อประเมินแนวตำบลยิง</p>
+                                </div>
+                                <button onclick="copyToClipboard('f2-code')" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 px-3 py-1 rounded text-xs font-mono transition-colors flex items-center gap-1">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกสูตร
+                                </button>
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded border border-slate-800 overflow-x-auto">
+                                <code class="text-xs text-emerald-400 font-mono whitespace-nowrap block" id="f2-code">=IF(COS(RADIANS(A2 * 360 / 6400)) >= 0, "หน้า ", "หลัง ") & MROUND(ABS(B2 * COS(RADIANS(A2 * 360 / 6400))), 5)</code>
+                            </div>
+                        </div>
+
+                        <!-- Formula 3 Card -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-xl space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-200">3. หามุมกลับมิลเลียมบนทฤษฎีวงกลม 6400 มิลเลียม (จบในเซลล์เดียว)</h4>
+                                    <p class="text-xs text-slate-500 mt-0.5">คำนวณทรานส์ฟอร์มมุมกลับแบบลดรูป เพื่อป้องกันค่ามุมเกินหรือติดลบในระดับพิกัดฉาก</p>
+                                </div>
+                                <button onclick="copyToClipboard('f3-code')" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 px-3 py-1 rounded text-xs font-mono transition-colors flex items-center gap-1">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกสูตร
+                                </button>
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded border border-slate-800 overflow-x-auto">
+                                <code class="text-xs text-emerald-400 font-mono whitespace-nowrap block" id="f3-code">=MOD(ROUNDUP((R12*6400/360),0) + 3200, 6400)</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Simulated Live Interactive sandbox -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <h3 class="text-md font-bold text-slate-200 flex items-center gap-2">
+                                <i data-lucide="play" class="w-5 h-5 text-emerald-400 animate-pulse"></i> จำลองโปรแกรมรันสูตร Excel Sandbox
+                            </h3>
+                            <p class="text-xs text-slate-400">ป้อนพิกัดเชิงขั้วของเป้าหมายเพื่อทดสอบผลลัพธ์การแปลงหน่วยและทิศทางปัดเศษ</p>
+                            
+                            <div class="space-y-3 font-mono text-sm">
+                                <div class="bg-slate-900 p-3 rounded border border-slate-800">
+                                    <label class="block text-[10px] text-slate-500 uppercase font-bold">ช่องป้อนค่า [A2] (มุมทิศทหาร: มิล)</label>
+                                    <input type="number" id="sandbox-angle" value="950" class="w-full bg-slate-950 border border-slate-800 rounded text-emerald-400 px-2 py-1 mt-1 text-right font-bold text-lg">
+                                </div>
+                                <div class="bg-slate-900 p-3 rounded border border-slate-800">
+                                    <label class="block text-[10px] text-slate-500 uppercase font-bold">ช่องป้อนค่า [B2] (ระยะทางจริง: เมตร)</label>
+                                    <input type="number" id="sandbox-dist" value="30" class="w-full bg-slate-950 border border-slate-800 rounded text-emerald-400 px-2 py-1 mt-1 text-right font-bold text-lg">
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-slate-850 space-y-3 font-mono text-xs">
+                                <div class="flex justify-between items-center bg-slate-900 p-2 rounded">
+                                    <span class="text-slate-400">แนวฉาก (ซ้าย/ขวา):</span>
+                                    <span class="text-sm font-bold text-emerald-400" id="sandbox-res-x">-</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-900 p-2 rounded">
+                                    <span class="text-slate-400">แนวขนาน (หน้า/หลัง):</span>
+                                    <span class="text-sm font-bold text-emerald-400" id="sandbox-res-y">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs rounded-xl mt-6">
+                            สูตรได้รับการทดสอบและตรวจสอบบนมาตรฐานความปลอดภัยสูงสุด พัฒนาด้วยฟังก์ชัน ABS และ MROUND ปัดเศษทีละ 5 เมตร
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Alert system modal -->
+    <div id="custom-alert" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-slate-900 border border-red-500/50 p-6 rounded-xl max-w-sm w-full mx-4 shadow-2xl text-center space-y-4">
+            <div class="w-12 h-12 bg-red-950 text-red-500 rounded-full flex items-center justify-center mx-auto border border-red-500/40">
+                <i data-lucide="triangle-alert" class="w-6 h-6"></i>
+            </div>
+            <div class="space-y-1">
+                <h4 class="font-bold text-slate-100 text-lg" id="alert-title">แจ้งเตือนระบบวิถียิง</h4>
+                <p class="text-xs text-slate-400 leading-relaxed" id="alert-msg">ข้อมูลอยู่นอกพื้นที่ยุทธวิธี</p>
+            </div>
+            <button onclick="closeAlert()" class="w-full bg-red-600 hover:bg-red-500 text-white font-semibold py-2 rounded-lg text-sm transition-colors">
+                รับทราบและตรวจสอบข้อมูล
+            </button>
+        </div>
+    </div>
+
+    <!-- Script Area containing core business logic -->
+    <script>
+        document.getElementById('live-clock').innerText = "04 มิ.ย. 2569 09:30";
+
+        // Navigation Tab Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+                btn.classList.add('text-slate-400');
+            });
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-btn-' + tabId);
+            activeBtn.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+            activeBtn.classList.remove('text-slate-400');
+
+            if(tabId === 'visualizer') {
+                drawTacticalMap();
+            }
+            if(tabId === 'min-qe') {
+                drawMinQECurve();
+            }
+        }
+
+        // Custom Alert Logic
+        function showAlert(title, msg) {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('custom-alert').classList.remove('hidden');
+        }
+
+        function closeAlert() {
+            document.getElementById('custom-alert').classList.add('hidden');
+        }
+
+        // Core Mathematical Functions
+        function convertMilToRad(mils) {
+            return (mils * 360 / 6400) * (Math.PI / 180);
+        }
+
+        function convertRadToMil(rad) {
+            let deg = rad * (180 / Math.PI);
+            return (deg * 6400 / 360);
+        }
+
+        // Official recorded data from document PDF and JPG to map comparison
+        const gunsOfficialReported = {
+            1: { angle: 1510, dist: 30, lr: "ซ้าย 30", fb: "หน้า 5" },
+            2: { angle: 2240, dist: 30, lr: "ซ้าย 25", fb: "หลัง 20" },
+            3: { angle: 0, dist: 0, lr: "0", fb: "0" },
+            4: { angle: 0950, dist: 35, lr: "ขวา 30", fb: "หลัง 20" }
+        };
+
+        // Standard lookup for Min QE angles (from Sheet1 data structure)
+        const standardMinQEData = [
+            { charge: 1, site: 24, qe: 255, vt: 6.0 },
+            { charge: 3, site: 21, qe: 245, vt: 6.3 },
+            { charge: 4, site: 17, qe: 241, vt: 11.2 },
+            { charge: 5, site: 13, qe: 239, vt: 6.1 },
+            { charge: 6, site: 10, qe: 235, vt: 6.0 },
+            { charge: 7, site: 7, qe: 233, vt: 5.9 }
+        ];
+
+        // Custom rounding helper for military standard (MROUND to multiple of 5)
+        function mround5(val) {
+            return Math.round(val / 5) * 5;
+        }
+
+        // Dynamic State Calculations with fallbacks for NaN prevention (Bugfix Error 1097)
+        function calculateDisplacement() {
+            const lofAngle = parseFloat(document.getElementById('input-lof').value) || 0;
+
+            // Fetch input points
+            const centerAngle = parseFloat(document.getElementById('angle-center').value) || 0;
+            const centerDist = parseFloat(document.getElementById('dist-center').value) || 0;
+
+            // Update Panel Text
+            const dispLof = document.getElementById('disp-lof');
+            if(dispLof) dispLof.innerText = lofAngle + " มิล";
+            const dispC = document.getElementById('disp-c-data');
+            if(dispC) dispC.innerText = centerAngle + " มิล / " + centerDist + " ม.";
+
+            // Vector of Center (ศก.ร้อย) relative to OP
+            const alphaCenter = convertMilToRad(centerAngle);
+            const cX = centerDist * Math.sin(alphaCenter);
+            const cY = centerDist * Math.cos(alphaCenter);
+            
+            const lofRad = convertMilToRad(lofAngle);
+
+            // Store OP relative to Center
+            window.computedOP = {
+                x: (-cX) * Math.cos(lofRad) - (-cY) * Math.sin(lofRad),
+                y: (-cX) * Math.sin(lofRad) + (-cY) * Math.cos(lofRad)
+            };
+            window.computedGuns = {};
+
+            const tableBody = document.getElementById('displacement-tbody');
+            if (!tableBody) return;
+            tableBody.innerHTML = '';
+
+            for (let i = 1; i <= 4; i++) {
+                const angleInput = parseFloat(document.getElementById('angle-g' + i).value) || 0;
+                const distInput = parseFloat(document.getElementById('dist-g' + i).value) || 0;
+
+                // Update Panel Text
+                const dispG = document.getElementById('disp-g' + i + '-data');
+                if(dispG) dispG.innerText = angleInput + " มิล / " + distInput + " ม.";
+
+                // Vector of Gun relative to OP
+                const alphaGun = convertMilToRad(angleInput);
+                const gX = distInput * Math.sin(alphaGun);
+                const gY = distInput * Math.cos(alphaGun);
+
+                // Relative Vector from Battery Center to Gun (Gun relative to BC)
+                const rX = gX - cX;
+                const rY = gY - cY;
+
+                // Calculate Distance & Absolute Angle from BC to Gun
+                const distanceCalculated = Math.sqrt(rX * rX + rY * rY);
+                
+                // Absolute Angle (atan2 clockwise from North)
+                let angleRad = Math.atan2(rX, rY);
+                if (angleRad < 0) angleRad += 2 * Math.PI;
+                let angleMilCalc = Math.round(convertRadToMil(angleRad));
+                
+                // Rotated coordinates (Align Y-axis with Line of Fire, X-axis with Perpendicular)
+                const rotatedX = rX * Math.cos(lofRad) - rY * Math.sin(lofRad);
+                const rotatedY = rX * Math.sin(lofRad) + rY * Math.cos(lofRad);
+
+                window.computedGuns[i] = { x: rotatedX, y: rotatedY };
+
+                // Determine Left/Right and Front/Back displacements
+                const rawLR = mround5(rotatedX);
+                const rawFB = mround5(rotatedY);
+
+                const computedLR = rawLR >= 0 ? `ขวา ${rawLR}` : `ซ้าย ${Math.abs(rawLR)}`;
+                const computedFB = rawFB >= 0 ? `หน้า ${rawFB}` : `หลัง ${Math.abs(rawFB)}`;
+
+                const official = gunsOfficialReported[i];
+
+                // Render dynamic comparison Row
+                const row = document.createElement('tr');
+                row.className = "hover:bg-slate-900/30 transition-colors border-b border-slate-800/50";
+                row.innerHTML = `
+                    <td class="py-4 px-6 text-slate-300 font-semibold flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded bg-indigo-500"></span> หมู่ ${i}
+                    </td>
+                    <td class="py-3 px-4 font-mono">
+                        <div class="text-emerald-400 font-bold">${angleMilCalc} มิล</div>
+                        <div class="text-[10px] text-slate-500">รายงาน: ${official.angle} มิล</div>
+                    </td>
+                    <td class="py-3 px-4 font-mono">
+                        <div class="text-slate-200 font-bold">${Math.round(distanceCalculated)} ม.</div>
+                        <div class="text-[10px] text-slate-500">รายงาน: ${official.dist} ม.</div>
+                    </td>
+                    <td class="py-3 px-4 font-mono">
+                        <div class="text-indigo-300 font-semibold">${computedLR} ม.</div>
+                        <div class="text-[10px] text-slate-500">รายงาน: ${official.lr} ม.</div>
+                    </td>
+                    <td class="py-3 px-4 font-mono">
+                        <div class="text-amber-300 font-semibold">${computedFB} ม.</div>
+                        <div class="text-[10px] text-slate-500">รายงาน: ${official.fb} ม.</div>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <span class="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full px-2 py-0.5 text-[10px] font-bold">
+                            <i data-lucide="check-circle" class="w-3 h-3"></i> คำนวณเรียลไทม์
+                        </span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
+            lucide.createIcons();
+        }
+
+        // Live calculation logic hook-up
+        const inputIds = [
+            'input-lof', 'input-aim', 
+            'angle-center', 'dist-center',
+            'angle-g1', 'dist-g1',
+            'angle-g2', 'dist-g2',
+            'angle-g3', 'dist-g3',
+            'angle-g4', 'dist-g4'
+        ];
+
+        inputIds.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) {
+                el.addEventListener('input', () => {
+                    calculateDisplacement();
+                    if (!document.getElementById('tab-visualizer').classList.contains('hidden')) {
+                        drawTacticalMap();
+                    }
+                });
+            }
+        });
+
+        // Draw Vector representation in Tactical SVG Map
+        function drawTacticalMap() {
+            const svg = document.getElementById('tactical-map');
+            if(!svg) return;
+            svg.innerHTML = '';
+
+            const width = 600;
+            const height = 450;
+            const originX = width / 2;
+            const originY = height / 2;
+
+            // Generate grid pattern
+            const gridPattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
+            gridPattern.setAttribute("id", "grid");
+            gridPattern.setAttribute("width", "30");
+            gridPattern.setAttribute("height", "30");
+            gridPattern.setAttribute("patternUnits", "userSpaceOnUse");
+            
+            const gridPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            gridPath.setAttribute("d", "M 30 0 L 0 0 0 30");
+            gridPath.setAttribute("fill", "none");
+            gridPath.setAttribute("stroke", "rgba(16, 185, 129, 0.08)");
+            gridPath.setAttribute("stroke-width", "1");
+            
+            gridPattern.appendChild(gridPath);
+            svg.appendChild(gridPattern);
+
+            const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            bg.setAttribute("width", "100%");
+            bg.setAttribute("height", "100%");
+            bg.setAttribute("fill", "url(#grid)");
+            svg.appendChild(bg);
+
+            // Draw X and Y Axes (Crosshair in the middle)
+            const xAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            xAxis.setAttribute("x1", 0); xAxis.setAttribute("y1", originY);
+            xAxis.setAttribute("x2", width); xAxis.setAttribute("y2", originY);
+            xAxis.setAttribute("stroke", "rgba(148, 163, 184, 0.4)");
+            xAxis.setAttribute("stroke-width", "2");
+            svg.appendChild(xAxis);
+
+            const yAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            yAxis.setAttribute("x1", originX); yAxis.setAttribute("y1", 0);
+            yAxis.setAttribute("x2", originX); yAxis.setAttribute("y2", height);
+            yAxis.setAttribute("stroke", "rgba(148, 163, 184, 0.4)");
+            yAxis.setAttribute("stroke-width", "2");
+            svg.appendChild(yAxis);
+
+            // Draw Y-Axis Top Arrow (Line of Fire)
+            const lofArrow = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+            lofArrow.setAttribute("points", `${originX-6},15 ${originX+6},15 ${originX},0`);
+            lofArrow.setAttribute("fill", "#10b981");
+            svg.appendChild(lofArrow);
+
+            const lofAngle = parseFloat(document.getElementById('input-lof').value) || 0;
+            const lofText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            lofText.setAttribute("x", originX + 10);
+            lofText.setAttribute("y", 15);
+            lofText.setAttribute("fill", "#10b981");
+            lofText.setAttribute("font-size", "12");
+            lofText.setAttribute("font-weight", "bold");
+            lofText.textContent = `ทิศทางยิง (LOF ${lofAngle})`;
+            svg.appendChild(lofText);
+
+            // Draw Labels at edges: -10, 0, +10
+            const labels = [
+                // Bottom Edge (X-axis representation)
+                { text: "-10", x: 25, y: originY + 15 },
+                { text: "0", x: originX - 10, y: originY + 15 },
+                { text: "+10", x: width - 25, y: originY + 15 },
+                // Left Edge (Y-axis representation)
+                { text: "+10", x: 20, y: 20 },
+                { text: "0", x: 20, y: originY - 5 },
+                { text: "-10", x: 20, y: height - 20 }
+            ];
+
+            labels.forEach(l => {
+                const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txt.setAttribute("x", l.x);
+                txt.setAttribute("y", l.y);
+                txt.setAttribute("fill", "#94a3b8");
+                txt.setAttribute("font-size", "12");
+                txt.setAttribute("font-family", "monospace");
+                txt.setAttribute("font-weight", "bold");
+                txt.setAttribute("text-anchor", "middle");
+                txt.textContent = l.text;
+                svg.appendChild(txt);
+            });
+
+            // Scale for representation (1 square 30px = approx 10 meters) -> Scale = 3.0
+            const scale = 3.0; 
+
+            // Draw Observation Post (OP)
+            if (window.computedOP) {
+                const opX = originX + (window.computedOP.x * scale);
+                const opY = originY - (window.computedOP.y * scale);
+                
+                const opLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                opLine.setAttribute("x1", originX); opLine.setAttribute("y1", originY);
+                opLine.setAttribute("x2", opX); opLine.setAttribute("y2", opY);
+                opLine.setAttribute("stroke", "#fbbf24");
+                opLine.setAttribute("stroke-width", "1");
+                opLine.setAttribute("stroke-dasharray", "4,4");
+                svg.appendChild(opLine);
+
+                const opCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                opCircle.setAttribute("cx", opX);
+                opCircle.setAttribute("cy", opY);
+                opCircle.setAttribute("r", "6");
+                opCircle.setAttribute("fill", "#fbbf24");
+                svg.appendChild(opCircle);
+
+                const opText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                opText.setAttribute("x", opX + 10);
+                opText.setAttribute("y", opY + 4);
+                opText.setAttribute("fill", "#fbbf24");
+                opText.setAttribute("font-size", "10");
+                opText.setAttribute("font-weight", "bold");
+                opText.textContent = "จก.๑";
+                svg.appendChild(opText);
+            }
+
+            // Draw Center of Battery (ศก.ร้อย) exactly at origin (0,0)
+            const centerGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            const centerCircle1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            centerCircle1.setAttribute("cx", originX);
+            centerCircle1.setAttribute("cy", originY);
+            centerCircle1.setAttribute("r", "12");
+            centerCircle1.setAttribute("fill", "none");
+            centerCircle1.setAttribute("stroke", "rgba(255,255,255,0.4)");
+            centerCircle1.setAttribute("stroke-width", "1.5");
+            centerCircle1.setAttribute("stroke-dasharray", "2,2");
+            
+            const centerText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            centerText.setAttribute("x", originX + 15);
+            centerText.setAttribute("y", originY - 12);
+            centerText.setAttribute("fill", "#ffffff");
+            centerText.setAttribute("font-size", "10");
+            centerText.setAttribute("font-weight", "bold");
+            centerText.textContent = "ศก.ร้อย";
+
+            centerGroup.appendChild(centerCircle1);
+            centerGroup.appendChild(centerText);
+            svg.appendChild(centerGroup);
+
+            // Draw Guns with specific colors
+            const gunColors = {
+                1: "#ef4444", // Red
+                2: "#eab308", // Yellow
+                3: "#3b82f6", // Blue
+                4: "#22c55e"  // Green
+            };
+
+            if (window.computedGuns) {
+                for (let i = 1; i <= 4; i++) {
+                    const gData = window.computedGuns[i];
+                    if (!gData) continue;
+
+                    // Plot exactly relative to origin (BC)
+                    const gX = originX + (gData.x * scale);
+                    const gY = originY - (gData.y * scale); // Minus because SVG Y axis is downward
+
+                    // Draw line from Center to Gun
+                    const lineToGun = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    lineToGun.setAttribute("x1", originX);
+                    lineToGun.setAttribute("y1", originY);
+                    lineToGun.setAttribute("x2", gX);
+                    lineToGun.setAttribute("y2", gY);
+                    lineToGun.setAttribute("stroke", gunColors[i]);
+                    lineToGun.setAttribute("stroke-width", "1");
+                    lineToGun.setAttribute("stroke-opacity", "0.5");
+                    svg.appendChild(lineToGun);
+
+                    // Draw Gun Icon
+                    const gunGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    const gunCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    gunCircle.setAttribute("cx", gX);
+                    gunCircle.setAttribute("cy", gY);
+                    gunCircle.setAttribute("r", "9");
+                    gunCircle.setAttribute("fill", gunColors[i]);
+                    gunCircle.setAttribute("stroke", "#0f172a");
+                    gunCircle.setAttribute("stroke-width", "2");
+
+                    const gunText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    gunText.setAttribute("x", gX);
+                    gunText.setAttribute("y", gY + 3);
+                    gunText.setAttribute("text-anchor", "middle");
+                    gunText.setAttribute("fill", "#020617");
+                    gunText.setAttribute("font-size", "10");
+                    gunText.setAttribute("font-weight", "bold");
+                    gunText.textContent = `${i}`;
+
+                    const labelText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    labelText.setAttribute("x", gX + 12);
+                    labelText.setAttribute("y", gY + 12);
+                    labelText.setAttribute("fill", gunColors[i]);
+                    labelText.setAttribute("font-size", "10");
+                    labelText.setAttribute("font-weight", "bold");
+                    labelText.textContent = `หมู่ ${i}`;
+
+                    gunGroup.appendChild(gunCircle);
+                    gunGroup.appendChild(gunText);
+                    gunGroup.appendChild(labelText);
+                    svg.appendChild(gunGroup);
+                }
+            }
+        }
+
+        // Live Excel Sandbox interaction update loop
+        function updateSandbox() {
+            const angleVal = parseFloat(document.getElementById('sandbox-angle').value) || 0;
+            const distVal = parseFloat(document.getElementById('sandbox-dist').value) || 0;
+
+            const angleRad = (angleVal * 360 / 6400) * (Math.PI / 180);
+            
+            const sinVal = Math.sin(angleRad);
+            const cosVal = Math.cos(angleRad);
+
+            const valX = distVal * sinVal;
+            const valY = distVal * cosVal;
+
+            function mround(number, multiple) {
+                return Math.round(number / multiple) * multiple;
+            }
+
+            const resXStr = (sinVal >= 0 ? "ขวา " : "ซ้าย ") + mround(Math.abs(valX), 5) + " เมตร";
+            const resYStr = (cosVal >= 0 ? "หน้า " : "หลัง ") + mround(Math.abs(valY), 5) + " เมตร";
+
+            document.getElementById('sandbox-res-x').innerText = resXStr;
+            document.getElementById('sandbox-res-y').innerText = resYStr;
+        }
+
+        document.getElementById('sandbox-angle').addEventListener('input', updateSandbox);
+        document.getElementById('sandbox-dist').addEventListener('input', updateSandbox);
+
+        // Copy Code utility helper function
+        function copyToClipboard(elementId) {
+            const codeText = document.getElementById(elementId).innerText;
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = codeText;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            
+            showAlert("คัดลอกสำเร็จ", "ก๊อปปี้สูตร Excel สนามสำหรับอำนวยการยิงเรียบร้อย นำไปวางในแผ่นงานได้ทันที!");
+        }
+
+        // Tactical Tools Calculators (Added module)
+        function updateTacticalTools() {
+            // 1. มุมดัก (Lead Angle)
+            let speed = parseFloat(document.getElementById('ta-speed').value) || 0;
+            let range = parseFloat(document.getElementById('ta-range').value) || 0;
+            let time = parseFloat(document.getElementById('ta-time').value) || 0;
+            let speedMs = (speed * 1000) / 3600;
+            let w = speedMs * time;
+            let rKm = range / 1000;
+            let leadAngle = rKm > 0 ? Math.round(w / rKm) : 0;
+            document.getElementById('ta-result').innerText = leadAngle + " มิล";
+
+            // 2. ระยะกำบัง (Piece-to-Crest Range)
+            let crBase = parseFloat(document.getElementById('cr-base').value) || 0;
+            let crAngle = parseFloat(document.getElementById('cr-angle').value) || 0;
+            let crRange = crAngle > 0 ? (crBase * 1000) / crAngle : 0;
+            let crRounded = Math.round(crRange / 100) * 100;
+            document.getElementById('cr-result').innerText = crRounded + " ม.";
+            document.getElementById('cr-result-raw').innerText = "(ค่าดิบ " + crRange.toFixed(1) + " ม.)";
+
+            // 3. ฐานสามเหลี่ยมคงที่ (Subtense Method)
+            let subBase = parseFloat(document.getElementById('sub-base').value) || 0;
+            let subAngle = parseFloat(document.getElementById('sub-angle').value) || 0;
+            let subRange = subAngle > 0 ? (subBase / subAngle) * 1000 : 0;
+            document.getElementById('sub-result').innerText = Math.round(subRange) + " ม.";
+
+            // 4. มุมภาคที่ถูกต้อง (True Azimuth)
+            let azMeasure = parseFloat(document.getElementById('az-measure').value) || 0;
+            let azRef = parseFloat(document.getElementById('az-ref').value) || 0;
+            let azLaid = parseFloat(document.getElementById('az-laid').value) || 0;
+            let diff = azMeasure - azRef;
+            let trueAz = (azLaid - diff) % 6400;
+            if(trueAz < 0) trueAz += 6400;
+            document.getElementById('az-result').innerText = trueAz + " มิล";
+
+            // 5. มุมเยื้อง (Declination Constant)
+            let decConst = parseFloat(document.getElementById('dec-const').value) || 0;
+            // Fetching from standard Firing Azimuth in Dashboard
+            let decFiring = parseFloat(document.getElementById('input-lof').value) || 0; 
+            let decSet = (decConst + 6400 - decFiring) % 6400;
+            document.getElementById('dec-result').innerText = decSet + " มิล";
+        }
+
+        // Min QE Table update
+        function updateMinQETable() {
+            const tbody = document.getElementById('min-qe-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            standardMinQEData.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = "hover:bg-slate-900/40 border-b border-slate-800/40 text-slate-300 py-2.5";
+                row.innerHTML = `
+                    <td class="py-3 font-semibold text-slate-200">ส่วนบรรจุ ${item.charge} (บก.${item.charge})</td>
+                    <td class="py-3 text-center text-slate-400">${item.site}</td>
+                    <td class="py-3 text-center text-rose-400 font-bold font-mono">${item.qe} มิล</td>
+                    <td class="py-3 text-right text-emerald-400 font-bold font-mono">${item.vt} วินาที</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Draw Clearance curves on HTML5 Canvas
+        function drawMinQECurve() {
+            const canvas = document.getElementById('trajectory-canvas');
+            const container = document.getElementById('trajectory-canvas-container');
+            if(!canvas || !container) return;
+            
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Grid lines
+            ctx.strokeStyle = "rgba(16, 185, 129, 0.05)";
+            ctx.lineWidth = 1;
+            for(let x = 0; x < canvas.width; x += 40) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for(let y = 0; y < canvas.height; y += 30) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Ground level
+            ctx.fillStyle = "#0f172a";
+            ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.3)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height - 20);
+            ctx.lineTo(canvas.width, canvas.height - 20);
+            ctx.stroke();
+
+            // Gun base
+            const gunX = 50;
+            const gunY = canvas.height - 20;
+            ctx.fillStyle = "#10b981";
+            ctx.beginPath();
+            ctx.arc(gunX, gunY, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = "#10b981";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(gunX, gunY);
+            ctx.lineTo(gunX + 15, gunY - 12);
+            ctx.stroke();
+
+            // Obstacle Mask hill
+            const hillX = canvas.width * 0.55;
+            const hillHeight = 85;
+            const hillY = canvas.height - 20 - hillHeight;
+
+            ctx.fillStyle = "rgba(51, 65, 85, 0.8)";
+            ctx.strokeStyle = "rgba(100, 116, 139, 0.5)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(hillX - 40, canvas.height - 20);
+            ctx.lineTo(hillX, hillY);
+            ctx.lineTo(hillX + 40, canvas.height - 20);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "10px monospace";
+            ctx.fillText("ที่กำบังหน้าร้อยปืน (Mask)", hillX - 55, hillY - 15);
+            ctx.fillText("ยอดเนิน 201 มิล", hillX - 35, hillY - 3);
+
+            // Safe projectile curve
+            ctx.strokeStyle = "#f43f5e";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            ctx.moveTo(gunX, gunY);
+            ctx.quadraticCurveTo(canvas.width * 0.45, hillY - 50, canvas.width - 40, canvas.height - 20);
+            ctx.stroke();
+
+            // Sightline
+            ctx.strokeStyle = "rgba(251, 191, 36, 0.4)";
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(gunX, gunY);
+            ctx.lineTo(hillX, hillY);
+            ctx.stroke();
+
+            ctx.fillStyle = "#fbbf24";
+            ctx.fillText("แนวเล็งพ้นยอดกำบัง", gunX + 25, gunY - 25);
+        }
+
+        // Initialize state calculations on initial page-load loop
+        window.onload = function() {
+            calculateDisplacement();
+            updateSandbox();
+            updateMinQETable();
+            updateTacticalTools();
+
+            window.addEventListener('resize', () => {
+                if(!document.getElementById('tab-visualizer').classList.contains('hidden')) {
+                    drawTacticalMap();
+                }
+                if(!document.getElementById('tab-min-qe').classList.contains('hidden')) {
+                    drawMinQECurve();
+                }
+            });
+
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 100);
+        };
+    </script>
+</body>
+</html>

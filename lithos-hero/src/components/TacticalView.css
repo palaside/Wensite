@@ -1,0 +1,195 @@
+/* Tactical View 3D Scene */
+.tactical-scene-wrapper {
+  perspective: 1500px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #232c38 0%, #090e17 100%);
+}
+
+.tactical-ground {
+  position: relative;
+  width: 2000px;
+  height: 2000px;
+  transform-style: preserve-3d;
+  /* Rotate the ground plane to create a 2.5D pseudo-isometric view */
+  transform: rotateX(60deg) scale(0.6);
+  transition: transform 0.5s ease-out;
+}
+
+/* Ground grid to enhance 3D effect */
+.tactical-grid {
+  position: absolute;
+  inset: -100%;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.05) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 2px, transparent 2px);
+  background-size: 100px 100px;
+  background-position: center center;
+  border-radius: 50%;
+  mask-image: radial-gradient(circle at center, black 20%, transparent 60%);
+  -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 60%);
+}
+
+/* Base Entity */
+.tactical-entity {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Keep entities upright despite the ground rotation */
+  transform-style: preserve-3d;
+}
+
+/* To keep elements standing up, we rotate them back along X-axis */
+/* However, since we translate3d in React on the main element, we need an inner wrapper if we want to rotate them up.
+   Alternatively, we can just let them lie flat (top-down view) but give them box-shadow for depth. 
+   Let's make them stand upright! */
+.tactical-entity > div {
+  transform: rotateX(-60deg);
+  transform-origin: bottom center;
+}
+
+.entity-label {
+  text-align: center;
+  color: white;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.2);
+  white-space: nowrap;
+}
+
+/* --- Command Vehicle --- */
+.command-vehicle .vehicle-body {
+  width: 60px;
+  height: 40px;
+  background: #475569;
+  border-radius: 4px;
+  position: relative;
+  box-shadow: inset 0 2px 5px rgba(255,255,255,0.2), 0 10px 20px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.command-vehicle .vehicle-cab {
+  position: absolute;
+  right: -10px;
+  width: 20px;
+  height: 30px;
+  background: #334155;
+  border-radius: 4px;
+}
+
+/* Radar Animation */
+.radar-dish {
+  position: absolute;
+  top: -15px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.2);
+  border: 2px solid #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.radar-dish::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 2px;
+  background: #10b981;
+  transform-origin: 0 50%;
+}
+
+.radar-dish.scanning::after {
+  animation: radarSpin 2s linear infinite;
+}
+
+@keyframes radarSpin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* --- Howitzers (Guns) --- */
+.gun-model {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.gun-base {
+  width: 30px;
+  height: 20px;
+  background: #3f6212; /* Olive drab */
+  border-radius: 4px;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), 0 5px 10px rgba(0,0,0,0.5);
+}
+
+.gun-barrel-wrapper {
+  position: absolute;
+  bottom: 10px; /* Attach to base */
+  height: 40px;
+  width: 6px;
+  transform-origin: bottom center;
+  /* Face 'forward' - up the screen */
+}
+
+.gun-barrel {
+  width: 100%;
+  height: 100%;
+  background: #1c1917; /* Dark metal */
+  border-radius: 3px;
+  box-shadow: inset 2px 0 2px rgba(255,255,255,0.3);
+}
+
+/* Idle Breathing Animation for all entities */
+.tactical-entity.idle .gun-model {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.02); }
+}
+
+/* Firing Animation */
+.tactical-entity.firing .gun-barrel-wrapper {
+  animation: recoil 0.5s ease-out forwards;
+}
+
+@keyframes recoil {
+  0% { transform: translateY(0); }
+  10% { transform: translateY(10px); /* Recoil back */ }
+  100% { transform: translateY(0); /* Return to battery */ }
+}
+
+/* Muzzle Flash */
+.muzzle-flash {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle at center, #fef08a 0%, #ea580c 40%, transparent 70%);
+  border-radius: 50%;
+  animation: flash 0.2s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes flash {
+  0% { opacity: 1; transform: translateX(-50%) scale(0.5); }
+  50% { opacity: 0.8; transform: translateX(-50%) scale(1.5); box-shadow: 0 0 20px 10px rgba(234, 88, 12, 0.5); }
+  100% { opacity: 0; transform: translateX(-50%) scale(2); }
+}

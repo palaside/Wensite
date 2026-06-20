@@ -1,0 +1,116 @@
+/* Deflection View Base */
+.deflection-container {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Background Image Animation */
+.def-bg-image {
+  background-size: cover;
+  background-position: center right; /* Keep focus on right side */
+  filter: brightness(0.7) contrast(1.1);
+}
+
+/* Screen Shake for the whole background image */
+.bg-fire-shake {
+  animation: bgShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+@keyframes bgShake {
+  0% { transform: translate(0, 0) scale(1); }
+  10% { transform: translate(-20px, 10px) scale(1.02); }
+  30% { transform: translate(15px, -15px) scale(1.01); }
+  50% { transform: translate(-10px, 5px) scale(1.02); }
+  70% { transform: translate(5px, -5px) scale(1.01); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* Scrollbar for left panel */
+.def-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.def-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+.def-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.3);
+  border-radius: 4px;
+}
+.def-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.5);
+}
+
+/* Smooth Transitions for Cards */
+.def-card-transition {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =========================================
+   FIRING ANIMATIONS (OVERLAYS)
+   ========================================= */
+
+.muzzle-overlay {
+  /* Positioned at top:15%, left:20% by inline classes */
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%); /* Center perfectly on the tip */
+}
+
+/* Muzzle Flash */
+.img-flash-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle at center, #ffffff 0%, #fef08a 10%, #ea580c 30%, transparent 60%);
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  animation: imgMuzzleFlash 0.15s ease-out forwards;
+}
+
+@keyframes imgMuzzleFlash {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+/* Smoke Particles */
+.img-smoke {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle at center, rgba(150,150,150,0.8) 0%, rgba(80,80,80,0.4) 40%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  filter: blur(8px);
+}
+
+.img-smoke-1 { animation: imgSmokeFire 2s ease-out 0.05s forwards; }
+.img-smoke-2 { animation: imgSmokeFire 2.5s ease-out 0.1s forwards; background: radial-gradient(circle at center, rgba(200,200,200,0.6) 0%, transparent 70%); left: 40%; top: 40%;}
+.img-smoke-3 { animation: imgSmokeFire 1.8s ease-out 0.02s forwards; left: 60%; top: 60%;}
+
+/* Smoke moves up and left due to recoil/barrel direction */
+@keyframes imgSmokeFire {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+  20% { transform: translate(-150px, -100px) scale(3); opacity: 0.8; }
+  100% { transform: translate(-300px, -300px) scale(8); opacity: 0; }
+}
+
+/* Blast Environment Lighting */
+.env-blast-light {
+  background: radial-gradient(circle at 20% 15%, rgba(234, 88, 12, 0.6) 0%, rgba(254, 240, 138, 0.2) 30%, transparent 70%);
+  opacity: 0;
+  animation: envFlashLight 0.3s ease-out forwards;
+}
+
+@keyframes envFlashLight {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  100% { opacity: 0; }
+}
