@@ -58,8 +58,8 @@
 
 .logo-sphere-container {
   position: relative;
-  width: 450px;
-  height: 450px;
+  width: 675px;
+  height: 675px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,24 +68,21 @@
 }
 
 /* Simple outer spinning lasers */
-.laser-ring-outer {
+.laser-ring {
   position: absolute;
-  inset: -20px;
   border-radius: 50%;
-  border: 2px solid transparent;
-  border-top-color: rgba(0, 230, 255, 0.8);
-  border-bottom-color: rgba(0, 230, 255, 0.8);
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-  animation: spinOuter 6s linear infinite;
 }
 
-.laser-ring-inner {
-  position: absolute;
-  inset: -10px;
-  border-radius: 50%;
-  border: 1px dashed rgba(0, 230, 255, 0.5);
-  animation: spinInner 10s linear infinite;
-}
+.laser-ring-1 { inset: -10px; animation: spinOuter 10s linear infinite; border: 1px dashed rgba(0, 230, 255, 0.5); }
+.laser-ring-2 { inset: -18px; animation: spinInner 6s linear infinite; border: 2px solid transparent; border-top-color: rgba(0, 230, 255, 0.8); border-bottom-color: rgba(0, 230, 255, 0.8); }
+.laser-ring-3 { inset: -25px; animation: spinOuter 12s linear infinite reverse; border: 1px solid rgba(0, 230, 255, 0.3); }
+.laser-ring-4 { inset: -35px; animation: spinInner 8s linear infinite reverse; border: 2px solid transparent; border-left-color: rgba(0, 230, 255, 0.6); border-right-color: rgba(0, 230, 255, 0.6); }
+.laser-ring-5 { inset: -45px; animation: spinOuter 15s linear infinite; border: 1px dotted rgba(0, 230, 255, 0.5); }
+.laser-ring-6 { inset: -52px; animation: spinInner 20s linear infinite reverse; border: 1px solid rgba(0, 230, 255, 0.2); box-shadow: 0 0 25px rgba(0, 255, 255, 0.5); }
+.laser-ring-7 { inset: -65px; animation: spinOuter 7s linear infinite; border: 3px solid transparent; border-top-color: rgba(0, 230, 255, 0.7); }
+.laser-ring-8 { inset: -75px; animation: spinInner 25s linear infinite reverse; border: 1px dashed rgba(0, 230, 255, 0.3); }
+.laser-ring-9 { inset: -85px; animation: spinOuter 9s linear infinite; border: 2px solid transparent; border-bottom-color: rgba(0, 230, 255, 0.8); box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
 
 @keyframes spinOuter {
   from { transform: rotate(0deg); }
