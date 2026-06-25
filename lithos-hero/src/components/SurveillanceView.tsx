@@ -7,9 +7,10 @@ type SurveillanceMethod = 'grid' | 'polar' | 'shift' | null;
 interface SurveillanceViewProps {
   method: SurveillanceMethod;
   onClose: () => void;
+  onOpenMap?: (grid: string) => void;
 }
 
-export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onClose }) => {
+export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onClose, onOpenMap }) => {
   // Common states
   const [targetGrid, setTargetGrid] = useState<Point | null>(null);
 
@@ -176,7 +177,7 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
               
               <div className="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-inner flex flex-col items-center justify-center min-h-[300px]">
                 {targetGrid ? (
-                  <div className="text-center animate-in zoom-in duration-300">
+                  <div className="text-center animate-in zoom-in duration-300 w-full">
                     <div className="text-slate-400 text-sm mb-2">Calculated Target Grid</div>
                     <div className="text-5xl font-mono text-emerald-400 font-bold tracking-widest drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]">
                       {formatGrid8(targetGrid)}
@@ -184,10 +185,21 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
                     <div className="mt-4 text-slate-300 text-lg">
                       Altitude: <span className="text-cyan-400 font-mono font-bold">{Math.round(targetGrid.alt)} m</span>
                     </div>
-                    <div className="mt-8">
-                      <button className="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all transform hover:scale-105 active:scale-95 uppercase tracking-widest">
+                    
+                    <div className="mt-8 flex flex-col gap-3 items-center w-full max-w-xs mx-auto">
+                      <button className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all transform hover:scale-105 active:scale-95 uppercase tracking-widest">
                         Request Fire
                       </button>
+                      
+                      {onOpenMap && (
+                        <button 
+                          onClick={() => onOpenMap(formatGrid8(targetGrid))}
+                          className="w-full bg-slate-800 hover:bg-slate-700 border border-emerald-500/50 text-emerald-400 font-bold py-3 px-8 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.1)] transition-all flex items-center justify-center gap-2"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                          View in Map
+                        </button>
+                      )}
                     </div>
                   </div>
                 ) : (

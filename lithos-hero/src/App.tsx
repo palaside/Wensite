@@ -7,6 +7,7 @@ import { M17View } from './components/M17View';
 import { DeflectionView } from './components/DeflectionView';
 import { LoginView } from './components/LoginView';
 import { SurveillanceView } from './components/SurveillanceView';
+import { MapView } from './components/MapView';
 import { ReportProvider } from './context/ReportContext';
 import LogoSphere from './components/LogoSphere';
 
@@ -20,6 +21,8 @@ function App() {
   const [currentView, setCurrentView] = useState<ViewState>('hero');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [mapTargetGrid, setMapTargetGrid] = useState<string | undefined>(undefined);
   const [activeModeId, setActiveModeId] = useState('HS');
   const [surveillanceMethod, setSurveillanceMethod] = useState<'grid' | 'polar' | 'shift' | null>(null);
   
@@ -93,6 +96,17 @@ function App() {
               className="px-4 py-1.5 rounded-full text-sm font-medium text-white/80 hover:bg-white/20 hover:text-white transition-colors"
             >
               Deflection
+            </button>
+            <div className="w-px h-5 bg-white/20 mx-1"></div>
+            <button 
+              onClick={() => {
+                setMapTargetGrid(undefined);
+                setShowMap(true);
+              }}
+              className="px-4 py-1.5 rounded-full text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 transition-colors flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+              Map
             </button>
           </div>
         )}
@@ -252,9 +266,19 @@ function App() {
         <SurveillanceView 
           method={surveillanceMethod}
           onClose={() => setSurveillanceMethod(null)}
+          onOpenMap={(grid) => {
+            setMapTargetGrid(grid);
+            setShowMap(true);
+          }}
         />
 
-        <LoginView 
+        <MapView 
+          isVisible={showMap}
+          onClose={() => setShowMap(false)}
+          targetGrid={mapTargetGrid}
+        />
+
+        <LoginView  
           isVisible={showLogin} 
           onClose={() => setShowLogin(false)} 
           onLogin={() => setIsAuthenticated(true)} 
