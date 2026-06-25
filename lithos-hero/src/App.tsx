@@ -146,16 +146,16 @@ function App() {
             <div className="flex flex-col justify-center gap-12 w-1/3 hero-anim hero-fade h-full pl-12">
               <h1 className="text-white font-bold leading-[1.0] tracking-tight drop-shadow-2xl">
                 {activeModeId === 'HS' && (
-                  <><div className="text-7xl mb-2">Howitzer</div><div className="text-6xl text-gray-300">Section</div></>
+                  <><div className="text-9xl mb-4">Howitzer</div><div className="text-8xl text-gray-300">Section</div></>
                 )}
                 {activeModeId === 'FO' && (
-                  <><div className="text-7xl mb-2">Forward</div><div className="text-6xl text-gray-300">Observer</div></>
+                  <><div className="text-9xl mb-4">Forward</div><div className="text-8xl text-gray-300">Observer</div></>
                 )}
                 {activeModeId === 'FD' && (
-                  <><div className="text-7xl mb-2">Fire</div><div className="text-6xl text-gray-300">Direction</div></>
+                  <><div className="text-9xl mb-4">Fire</div><div className="text-8xl text-gray-300">Direction</div></>
                 )}
                 {activeModeId === 'FL' && (
-                  <><div className="text-7xl mb-2">Surveillance</div></>
+                  <><div className="text-9xl mb-4">Surveillance</div></>
                 )}
               </h1>
               
@@ -180,7 +180,7 @@ function App() {
             </div>
 
             {/* Center Panel: Logo Sphere */}
-            <div className="w-1/3 flex justify-center items-center translate-x-40">
+            <div className="w-1/3 flex justify-center items-center translate-x-[24rem]">
               <LogoSphere activeLogo={`/${activeModeId}.png`} />
             </div>
 
