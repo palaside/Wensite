@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { RevealLayer } from './components/RevealLayer';
 import { ReportView } from './components/ReportView';
 import { M17View } from './components/M17View';
@@ -199,10 +200,12 @@ function App() {
                         setRightSlots(newSlots);
                       }}
                     >
-                      <img 
+                      <motion.img 
+                        layoutId={`/${mode}.png`}
                         src={`/${mode}.png`} 
                         alt={mode} 
                         className="w-[22rem] h-[22rem] object-contain drop-shadow-2xl opacity-80 hover:opacity-100"
+                        transition={{ type: "spring", stiffness: 150, damping: 20 }}
                       />
                     </div>
                   </React.Fragment>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 type LogoSphereProps = {
   activeLogo: string; 
@@ -23,11 +24,12 @@ const LogoSphere: React.FC<LogoSphereProps> = ({ activeLogo }) => {
       <div className="laser-ring laser-ring-9"></div>
 
       {/* Main Logo Image */}
-      <img
-        key={activeLogo} // changing key forces re-mount/animation if needed
+      <motion.img
+        layoutId={activeLogo}
         src={activeLogo}
         alt="Active Mode Logo"
-        className="h-full w-full object-contain drop-shadow-2xl hero-zoom p-6"
+        className="h-full w-full object-contain drop-shadow-2xl hero-zoom p-10 absolute inset-0 m-auto"
+        transition={{ type: "spring", stiffness: 150, damping: 20 }}
       />
     </div>
   );
