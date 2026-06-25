@@ -136,7 +136,7 @@ function App() {
         {/* Logo Sphere - Show only after login */}
         {isAuthenticated && (
           <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-            <LogoSphere logos={['/logo1.png', '/logo2.png', '/logo3.png']} />
+            <LogoSphere logos={['/FO.png', '/FD.png', '/FL.png']} />
           </div>
         )}
 
