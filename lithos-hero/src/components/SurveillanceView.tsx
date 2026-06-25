@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { parseGrid, formatGrid8, calculatePolar, calculateShift, Point } from '../utils/artilleryMath';
+import { parseGrid, formatGrid8, calculatePolar, calculateShift } from '../utils/artilleryMath';
+import type { Point } from '../utils/artilleryMath';
 
 type SurveillanceMethod = 'grid' | 'polar' | 'shift' | null;
 
