@@ -143,19 +143,19 @@ function App() {
           <div className="absolute inset-0 z-20 flex items-center justify-between px-16 pt-24 pb-8">
             
             {/* Left Panel: Mode Title and Actions */}
-            <div className="flex flex-col justify-center gap-8 w-1/3 hero-anim hero-fade h-full pl-[4vw]">
+            <div className="flex flex-col justify-center gap-12 w-1/3 hero-anim hero-fade h-full pl-12">
               <h1 className="text-white font-bold leading-[1.0] tracking-tight drop-shadow-2xl">
                 {activeModeId === 'HS' && (
-                  <><div className="text-[6vw]">Howitzer</div><div className="text-[5vw] text-gray-300">Section</div></>
+                  <><div className="text-7xl mb-2">Howitzer</div><div className="text-6xl text-gray-300">Section</div></>
                 )}
                 {activeModeId === 'FO' && (
-                  <><div className="text-[6vw]">Forward</div><div className="text-[5vw] text-gray-300">Observer</div></>
+                  <><div className="text-7xl mb-2">Forward</div><div className="text-6xl text-gray-300">Observer</div></>
                 )}
                 {activeModeId === 'FD' && (
-                  <><div className="text-[6vw]">Fire</div><div className="text-[5vw] text-gray-300">Direction</div></>
+                  <><div className="text-7xl mb-2">Fire</div><div className="text-6xl text-gray-300">Direction</div></>
                 )}
                 {activeModeId === 'FL' && (
-                  <><div className="text-[6vw]">Surveillance</div></>
+                  <><div className="text-7xl mb-2">Surveillance</div></>
                 )}
               </h1>
               
@@ -185,7 +185,7 @@ function App() {
             </div>
 
             {/* Right Panel: Inactive Modes Selection */}
-            <div className="flex flex-col gap-[3vw] w-1/3 items-end justify-center pr-[4vw]">
+            <div className="flex flex-col gap-12 w-1/3 items-end justify-center pr-16">
               {rightSlots.map((mode, index) => (
                   <div 
                     key={index} 
@@ -200,7 +200,7 @@ function App() {
                     <img 
                       src={`/${mode}.png`} 
                       alt={mode} 
-                      className="w-[12vw] h-[12vw] object-contain drop-shadow-2xl opacity-80 hover:opacity-100"
+                      className="w-48 h-48 object-contain drop-shadow-2xl opacity-80 hover:opacity-100"
                     />
                   </div>
                 ))
