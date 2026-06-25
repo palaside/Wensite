@@ -25,6 +25,7 @@ const LogoSphere: React.FC<LogoSphereProps> = ({ activeLogo }) => {
 
       {/* Main Logo Image */}
       <motion.img
+        key={activeLogo}
         layoutId={activeLogo}
         src={activeLogo}
         alt="Active Mode Logo"
