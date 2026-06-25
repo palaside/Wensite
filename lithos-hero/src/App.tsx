@@ -200,7 +200,7 @@ function App() {
                     <img 
                       src={`/${mode}.png`} 
                       alt={mode} 
-                      className="w-48 h-48 object-contain drop-shadow-2xl opacity-80 hover:opacity-100"
+                      className="w-[22rem] h-[22rem] object-contain drop-shadow-2xl opacity-80 hover:opacity-100"
                     />
                   </div>
                 ))
