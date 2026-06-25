@@ -180,7 +180,7 @@ function App() {
             </div>
 
             {/* Center Panel: Logo Sphere */}
-            <div className="w-1/3 flex justify-center items-center">
+            <div className="w-1/3 flex justify-center items-center translate-x-20">
               <LogoSphere activeLogo={`/${activeModeId}.png`} />
             </div>
 
