@@ -185,24 +185,27 @@ function App() {
             </div>
 
             {/* Right Panel: Inactive Modes Selection */}
-            <div className="flex flex-col gap-12 w-1/3 items-end justify-center pr-16">
+            <div className="flex flex-col gap-12 w-1/3 items-end justify-start pt-16 pr-16">
               {rightSlots.map((mode, index) => (
-                  <div 
-                    key={index} 
-                    className="mode-logo-inactive cursor-pointer relative"
-                    onClick={() => {
-                      const newSlots = [...rightSlots];
-                      newSlots[index] = activeModeId;
-                      setActiveModeId(mode);
-                      setRightSlots(newSlots);
-                    }}
-                  >
-                    <img 
-                      src={`/${mode}.png`} 
-                      alt={mode} 
-                      className="w-[22rem] h-[22rem] object-contain drop-shadow-2xl opacity-80 hover:opacity-100"
-                    />
-                  </div>
+                  <React.Fragment key={index}>
+                    {/* Leave position 3 empty (insert gap before the 3rd item) */}
+                    {index === 2 && <div className="h-[22rem] w-[22rem]" />}
+                    <div 
+                      className="mode-logo-inactive cursor-pointer relative"
+                      onClick={() => {
+                        const newSlots = [...rightSlots];
+                        newSlots[index] = activeModeId;
+                        setActiveModeId(mode);
+                        setRightSlots(newSlots);
+                      }}
+                    >
+                      <img 
+                        src={`/${mode}.png`} 
+                        alt={mode} 
+                        className="w-[22rem] h-[22rem] object-contain drop-shadow-2xl opacity-80 hover:opacity-100"
+                      />
+                    </div>
+                  </React.Fragment>
                 ))
               }
             </div>
