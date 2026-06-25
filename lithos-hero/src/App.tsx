@@ -6,6 +6,7 @@ import { M17View } from './components/M17View';
 import { DeflectionView } from './components/DeflectionView';
 import { LoginView } from './components/LoginView';
 import { ReportProvider } from './context/ReportContext';
+import LogoSphere from './components/LogoSphere';
 
 const BG_IMAGE_1 = '/BG.png';
 const BG_IMAGE_2 = '/bg-reveal.png';
@@ -102,22 +103,42 @@ function App() {
         
         {/* Base Image Container */}
         <div className="absolute inset-0 z-10 bg-black">
-          
-          {/* Main Background Image */}
-          <div 
-            className="absolute inset-0 bg-center bg-cover bg-no-repeat"
-            style={{ backgroundImage: `url('${BG_IMAGE_1}')` }}
-          ></div>
-
-          {/* Lightning Overlay */}
-          <div className="absolute inset-0 bg-white mix-blend-overlay opacity-0 animate-[lightning_10s_infinite] pointer-events-none"></div>
-
+          {/* Conditional Background: Image before login, Video after login */}
+          {!isAuthenticated ? (
+            <>
+              {/* Main Background Image */}
+              <div 
+                className="absolute inset-0 bg-center bg-cover bg-no-repeat"
+                style={{ backgroundImage: `url('${BG_IMAGE_1}')` }}
+              ></div>
+              {/* Lightning Overlay */}
+              <div className="absolute inset-0 bg-white mix-blend-overlay opacity-0 animate-[lightning_10s_infinite] pointer-events-none"></div>
+            </>
+          ) : (
+            <>
+              {/* Video Background */}
+              <video className="absolute inset-0 z-10 object-cover w-full h-full" autoPlay loop muted playsInline>
+                <source src="/มกราคม_Test 654.mp4" type="video/mp4" />
+                {/* Fallback for unsupported browsers */}
+                Your browser does not support the video tag.
+              </video>
+            </>
+          )}
         </div>
 
-        {/* Reveal Layer (Flashlight) - Disable when report is open to reduce visual noise */}
-        <div className={`transition-opacity duration-700 ${currentView !== 'hero' ? 'opacity-0' : 'opacity-100'}`}>
-          <RevealLayer image={BG_IMAGE_2} cursorX={cursorPos.x} cursorY={cursorPos.y} />
-        </div>
+        {/* Reveal Layer (Flashlight) - Show only before login */}
+        {!isAuthenticated && (
+          <div className={`transition-opacity duration-700 ${currentView !== 'hero' ? 'opacity-0' : 'opacity-100'}`}>
+            <RevealLayer image={BG_IMAGE_2} cursorX={cursorPos.x} cursorY={cursorPos.y} />
+          </div>
+        )}
+
+        {/* Logo Sphere - Show only after login */}
+        {isAuthenticated && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+            <LogoSphere logos={['/ป..png', '/ผ.png', '/ศ.png']} />
+          </div>
+        )}
 
         {/* Heading (Removed to prevent duplication with embedded image text) */}
 
