@@ -18,6 +18,7 @@ function App() {
   const [currentView, setCurrentView] = useState<ViewState>('hero');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [activeModeId, setActiveModeId] = useState('HS');
   const mouse = useRef({ x: -999, y: -999 });
   const smooth = useRef({ x: -999, y: -999 });
   const rafRef = useRef<number | null>(null);
@@ -67,7 +68,7 @@ function App() {
           <span className="text-white text-2xl font-playfair italic">M17</span>
         </div>
 
-        {isAuthenticated && (
+        {isAuthenticated ? null : (
           <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full px-2 py-2 items-center gap-1">
             <button 
               onClick={() => setCurrentView('report')}
@@ -117,11 +118,13 @@ function App() {
           ) : (
             <>
               {/* Video Background */}
-              <video className="absolute inset-0 z-10 object-cover w-full h-full" autoPlay loop muted playsInline>
+              <video className="absolute inset-0 z-0 object-cover w-full h-full opacity-60" autoPlay loop muted playsInline>
                 <source src="/hero-video.mp4" type="video/mp4" />
                 {/* Fallback for unsupported browsers */}
                 Your browser does not support the video tag.
               </video>
+              {/* Dark Gradient Overlay for better contrast */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black z-10 pointer-events-none"></div>
             </>
           )}
         </div>
@@ -133,10 +136,74 @@ function App() {
           </div>
         )}
 
-        {/* Logo Sphere - Show only after login */}
-        {isAuthenticated && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-            <LogoSphere logos={['/FO.png', '/FD.png', '/FL.png']} />
+        {/* Authenticated Dashboard Layout */}
+        {isAuthenticated && currentView === 'hero' && (
+          <div className="absolute inset-0 z-20 flex items-center justify-between px-16 pt-24 pb-8">
+            
+            {/* Left Panel: Mode Title and Actions */}
+            <div className="flex flex-col gap-10 w-1/3 hero-anim hero-fade">
+              <h1 className="text-white text-7xl font-semibold leading-tight tracking-tight drop-shadow-md">
+                {activeModeId === 'HS' && (
+                  <>Howitzer<br/>Section</>
+                )}
+                {activeModeId === 'FO' && (
+                  <>Forward<br/>Observer</>
+                )}
+                {activeModeId === 'FD' && (
+                  <>Fire<br/>Direction</>
+                )}
+                {activeModeId === 'FL' && (
+                  <>Surveillance</>
+                )}
+              </h1>
+              
+              <div className="flex flex-col gap-6">
+                {activeModeId === 'HS' && (
+                  <>
+                    <button onClick={() => setCurrentView('report')} className="glass-card-btn text-left">
+                      Report
+                    </button>
+                    <button onClick={() => setCurrentView('m17')} className="glass-card-btn text-left">
+                      M.17
+                    </button>
+                    <button onClick={() => setCurrentView('deflection')} className="glass-card-btn text-left">
+                      Deflection
+                    </button>
+                  </>
+                )}
+                {activeModeId !== 'HS' && (
+                  <div className="text-white/60 italic text-xl mt-4">
+                    Options for this mode will appear here.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Center Panel: Logo Sphere */}
+            <div className="w-1/3 flex justify-center items-center">
+              <LogoSphere activeLogo={`/${activeModeId}.png`} />
+            </div>
+
+            {/* Right Panel: Inactive Modes Selection */}
+            <div className="flex flex-col gap-12 w-1/3 items-end justify-center pr-8">
+              {['FO', 'FD', 'FL', 'HS']
+                .filter(mode => mode !== activeModeId)
+                .map(mode => (
+                  <div 
+                    key={mode} 
+                    className="mode-logo-inactive cursor-pointer"
+                    onClick={() => setActiveModeId(mode)}
+                  >
+                    <img 
+                      src={`/${mode}.png`} 
+                      alt={mode} 
+                      className="h-32 w-32 object-contain drop-shadow-lg opacity-70"
+                    />
+                  </div>
+                ))
+              }
+            </div>
+
           </div>
         )}
 

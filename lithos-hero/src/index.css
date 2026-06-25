@@ -41,15 +41,71 @@
   position: absolute;
   inset: 0;
   margin: auto;
-  width: 200px;
-  height: 200px;
+  width: 320px;
+  height: 320px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
   z-index: 20;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.laser-ring {
+  position: absolute;
+  inset: -15px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(0, 255, 255, 0.1);
+  animation: spin 15s linear infinite;
+}
+
+.laser-ring-2 {
+  position: absolute;
+  inset: -35px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 255, 255, 0.4);
+  animation: spin-reverse 20s linear infinite;
+}
+
+.laser-ring-3 {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(0, 255, 255, 0.6);
+  border-bottom-color: rgba(0, 255, 255, 0.6);
+  animation: spin 8s linear infinite;
+}
+
+.glass-card-btn {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-btn:hover {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mode-logo-inactive {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mode-logo-inactive:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
 }
