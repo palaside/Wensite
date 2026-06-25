@@ -118,7 +118,7 @@ function App() {
             <>
               {/* Video Background */}
               <video className="absolute inset-0 z-10 object-cover w-full h-full" autoPlay loop muted playsInline>
-                <source src="/มกราคม_Test 654.mp4" type="video/mp4" />
+                <source src="/hero-video.mp4" type="video/mp4" />
                 {/* Fallback for unsupported browsers */}
                 Your browser does not support the video tag.
               </video>
@@ -136,7 +136,7 @@ function App() {
         {/* Logo Sphere - Show only after login */}
         {isAuthenticated && (
           <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-            <LogoSphere logos={['/ป..png', '/ผ.png', '/ศ.png']} />
+            <LogoSphere logos={['/logo1.png', '/logo2.png', '/logo3.png']} />
           </div>
         )}
 
