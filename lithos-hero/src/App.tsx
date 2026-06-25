@@ -143,19 +143,19 @@ function App() {
           <div className="absolute inset-0 z-20 flex items-center justify-between px-16 pt-24 pb-8">
             
             {/* Left Panel: Mode Title and Actions */}
-            <div className="flex flex-col justify-center gap-12 w-1/3 hero-anim hero-fade h-full pl-12">
-              <h1 className="text-white font-bold leading-[1.0] tracking-tight drop-shadow-2xl">
+            <div className="flex flex-col justify-center gap-16 w-1/3 hero-anim hero-fade h-full pl-12 z-30">
+              <h1 className="text-white font-bold leading-[0.9] tracking-tight drop-shadow-2xl">
                 {activeModeId === 'HS' && (
-                  <><div className="text-9xl mb-4">Howitzer</div><div className="text-8xl text-gray-300">Section</div></>
+                  <><div className="text-[12rem] mb-6">Howitzer</div><div className="text-[10rem] text-gray-300">Section</div></>
                 )}
                 {activeModeId === 'FO' && (
-                  <><div className="text-9xl mb-4">Forward</div><div className="text-8xl text-gray-300">Observer</div></>
+                  <><div className="text-[12rem] mb-6">Forward</div><div className="text-[10rem] text-gray-300">Observer</div></>
                 )}
                 {activeModeId === 'FD' && (
-                  <><div className="text-9xl mb-4">Fire</div><div className="text-8xl text-gray-300">Direction</div></>
+                  <><div className="text-[12rem] mb-6">Fire</div><div className="text-[10rem] text-gray-300">Direction</div></>
                 )}
                 {activeModeId === 'FL' && (
-                  <><div className="text-9xl mb-4">Surveillance</div></>
+                  <><div className="text-[12rem] mb-6">Surveillance</div></>
                 )}
               </h1>
               
@@ -180,7 +180,7 @@ function App() {
             </div>
 
             {/* Center Panel: Logo Sphere */}
-            <div className="w-1/3 flex justify-center items-center translate-x-[24rem]">
+            <div className="w-1/3 flex justify-center items-center translate-x-[40rem] z-10">
               <LogoSphere activeLogo={`/${activeModeId}.png`} />
             </div>
 

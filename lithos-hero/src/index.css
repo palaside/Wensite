@@ -58,8 +58,8 @@
 
 .logo-sphere-container {
   position: relative;
-  width: 850px;
-  height: 850px;
+  width: 1700px;
+  height: 1700px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,15 +98,15 @@
   background: rgba(20, 20, 25, 0.8);
   backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 16px 32px;
-  font-size: 1.5rem;
+  border-radius: 20px;
+  padding: 32px 64px;
+  font-size: 3rem;
   color: white;
-  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: left;
   font-weight: 500;
-  width: 250px;
+  width: 500px;
 }
 
 .glass-card-btn:hover {
