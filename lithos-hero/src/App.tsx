@@ -20,7 +20,9 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [activeModeId, setActiveModeId] = useState('HS');
-  const [rightSlots, setRightSlots] = useState(['FO', 'FD', 'FL']);
+  
+  // Fixed positions for the right panel: FO (Top), FL/SL, HS, FD
+  const ALL_MODES = ['FO', 'FL', 'HS', 'FD'];
   const mouse = useRef({ x: -999, y: -999 });
   const smooth = useRef({ x: -999, y: -999 });
   const rafRef = useRef<number | null>(null);
@@ -186,19 +188,18 @@ function App() {
             </div>
 
             {/* Right Panel: Inactive Modes Selection */}
-            <div className="flex flex-col gap-12 w-1/3 items-end justify-start pt-16 pr-16">
-              {rightSlots.map((mode, index) => (
-                  <React.Fragment key={index}>
-                    {/* Leave position 3 empty (insert gap before the 3rd item) */}
-                    {index === 2 && <div className="h-[22rem] w-[22rem]" />}
+            <div className="flex flex-col gap-12 w-1/3 items-end justify-start pt-16 pr-16 z-30">
+              {ALL_MODES.map((mode) => {
+                  if (mode === activeModeId) {
+                    // Render an empty gap placeholder for the active mode to reserve its fixed position
+                    return <div key={`empty-${mode}`} className="h-[22rem] w-[22rem]" />;
+                  }
+
+                  return (
                     <div 
+                      key={mode}
                       className="mode-logo-inactive cursor-pointer relative"
-                      onClick={() => {
-                        const newSlots = [...rightSlots];
-                        newSlots[index] = activeModeId;
-                        setActiveModeId(mode);
-                        setRightSlots(newSlots);
-                      }}
+                      onClick={() => setActiveModeId(mode)}
                     >
                       <motion.img 
                         layoutId={`/${mode}.png`}
@@ -208,17 +209,12 @@ function App() {
                         transition={{ type: "spring", stiffness: 150, damping: 20 }}
                       />
                     </div>
-                  </React.Fragment>
-                ))
-              }
+                  );
+              })}
             </div>
 
           </div>
         )}
-
-        {/* Heading (Removed to prevent duplication with embedded image text) */}
-
-
 
         {/* The Report View Layer */}
         <ReportView 
