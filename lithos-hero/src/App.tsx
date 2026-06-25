@@ -6,6 +6,7 @@ import { M17View } from './components/M17View';
 
 import { DeflectionView } from './components/DeflectionView';
 import { LoginView } from './components/LoginView';
+import { SurveillanceView } from './components/SurveillanceView';
 import { ReportProvider } from './context/ReportContext';
 import LogoSphere from './components/LogoSphere';
 
@@ -20,6 +21,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [activeModeId, setActiveModeId] = useState('HS');
+  const [surveillanceMethod, setSurveillanceMethod] = useState<'grid' | 'polar' | 'shift' | null>(null);
   
   // Fixed positions for the right panel: FO (Top), FL/SL, HS, FD
   const ALL_MODES = ['FO', 'FL', 'HS', 'FD'];
@@ -174,7 +176,20 @@ function App() {
                     {/* Hiding Deflection to match mockup closely which only has Report and M.17 */}
                   </>
                 )}
-                {activeModeId !== 'HS' && (
+                {activeModeId === 'FL' && (
+                  <>
+                    <button onClick={() => setSurveillanceMethod('grid')} className="glass-card-btn">
+                      Grid Method
+                    </button>
+                    <button onClick={() => setSurveillanceMethod('polar')} className="glass-card-btn">
+                      Polar Plot Method
+                    </button>
+                    <button onClick={() => setSurveillanceMethod('shift')} className="glass-card-btn">
+                      Shift from Known Point
+                    </button>
+                  </>
+                )}
+                {activeModeId !== 'HS' && activeModeId !== 'FL' && (
                   <div className="text-white/60 italic text-2xl mt-4">
                     ...
                   </div>
@@ -232,6 +247,11 @@ function App() {
         <DeflectionView 
           isVisible={currentView === 'deflection'} 
           onClose={() => setCurrentView('hero')} 
+        />
+
+        <SurveillanceView 
+          method={surveillanceMethod}
+          onClose={() => setSurveillanceMethod(null)}
         />
 
         <LoginView 
