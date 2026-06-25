@@ -19,6 +19,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [activeModeId, setActiveModeId] = useState('HS');
+  const [rightSlots, setRightSlots] = useState(['FO', 'FD', 'FL']);
   const mouse = useRef({ x: -999, y: -999 });
   const smooth = useRef({ x: -999, y: -999 });
   const rafRef = useRef<number | null>(null);
@@ -118,13 +119,14 @@ function App() {
           ) : (
             <>
               {/* Video Background */}
-              <video className="absolute inset-0 z-0 object-cover w-full h-full opacity-60" autoPlay loop muted playsInline>
+              <video className="absolute inset-0 z-0 object-cover w-full h-full opacity-30" autoPlay loop muted playsInline>
                 <source src="/hero-video.mp4" type="video/mp4" />
                 {/* Fallback for unsupported browsers */}
                 Your browser does not support the video tag.
               </video>
-              {/* Dark Gradient Overlay for better contrast */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black z-10 pointer-events-none"></div>
+              {/* Dark Gradient Overlay for completely black theme with subtle glow */}
+              <div className="absolute inset-0 bg-black/80 z-10 pointer-events-none"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black z-10 pointer-events-none"></div>
             </>
           )}
         </div>
@@ -141,39 +143,37 @@ function App() {
           <div className="absolute inset-0 z-20 flex items-center justify-between px-16 pt-24 pb-8">
             
             {/* Left Panel: Mode Title and Actions */}
-            <div className="flex flex-col gap-10 w-1/3 hero-anim hero-fade">
-              <h1 className="text-white text-7xl font-semibold leading-tight tracking-tight drop-shadow-md">
+            <div className="flex flex-col justify-center gap-8 w-1/3 hero-anim hero-fade h-full pl-[4vw]">
+              <h1 className="text-white font-bold leading-[1.0] tracking-tight drop-shadow-2xl">
                 {activeModeId === 'HS' && (
-                  <>Howitzer<br/>Section</>
+                  <><div className="text-[6vw]">Howitzer</div><div className="text-[5vw] text-gray-300">Section</div></>
                 )}
                 {activeModeId === 'FO' && (
-                  <>Forward<br/>Observer</>
+                  <><div className="text-[6vw]">Forward</div><div className="text-[5vw] text-gray-300">Observer</div></>
                 )}
                 {activeModeId === 'FD' && (
-                  <>Fire<br/>Direction</>
+                  <><div className="text-[6vw]">Fire</div><div className="text-[5vw] text-gray-300">Direction</div></>
                 )}
                 {activeModeId === 'FL' && (
-                  <>Surveillance</>
+                  <><div className="text-[6vw]">Surveillance</div></>
                 )}
               </h1>
               
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6 mt-4">
                 {activeModeId === 'HS' && (
                   <>
-                    <button onClick={() => setCurrentView('report')} className="glass-card-btn text-left">
+                    <button onClick={() => setCurrentView('report')} className="glass-card-btn">
                       Report
                     </button>
-                    <button onClick={() => setCurrentView('m17')} className="glass-card-btn text-left">
+                    <button onClick={() => setCurrentView('m17')} className="glass-card-btn">
                       M.17
                     </button>
-                    <button onClick={() => setCurrentView('deflection')} className="glass-card-btn text-left">
-                      Deflection
-                    </button>
+                    {/* Hiding Deflection to match mockup closely which only has Report and M.17 */}
                   </>
                 )}
                 {activeModeId !== 'HS' && (
-                  <div className="text-white/60 italic text-xl mt-4">
-                    Options for this mode will appear here.
+                  <div className="text-white/60 italic text-2xl mt-4">
+                    ...
                   </div>
                 )}
               </div>
@@ -185,19 +185,22 @@ function App() {
             </div>
 
             {/* Right Panel: Inactive Modes Selection */}
-            <div className="flex flex-col gap-12 w-1/3 items-end justify-center pr-8">
-              {['FO', 'FD', 'FL', 'HS']
-                .filter(mode => mode !== activeModeId)
-                .map(mode => (
+            <div className="flex flex-col gap-[3vw] w-1/3 items-end justify-center pr-[4vw]">
+              {rightSlots.map((mode, index) => (
                   <div 
-                    key={mode} 
-                    className="mode-logo-inactive cursor-pointer"
-                    onClick={() => setActiveModeId(mode)}
+                    key={index} 
+                    className="mode-logo-inactive cursor-pointer relative"
+                    onClick={() => {
+                      const newSlots = [...rightSlots];
+                      newSlots[index] = activeModeId;
+                      setActiveModeId(mode);
+                      setRightSlots(newSlots);
+                    }}
                   >
                     <img 
                       src={`/${mode}.png`} 
                       alt={mode} 
-                      className="h-32 w-32 object-contain drop-shadow-lg opacity-70"
+                      className="w-[12vw] h-[12vw] object-contain drop-shadow-2xl opacity-80 hover:opacity-100"
                     />
                   </div>
                 ))

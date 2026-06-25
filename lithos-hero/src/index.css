@@ -41,9 +41,13 @@
   position: absolute;
   inset: 0;
   margin: auto;
-  width: 320px;
-  height: 320px;
+  width: 35vw;
+  height: 35vw;
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,61 +55,65 @@
   z-index: 20;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes spin-reverse {
-  from { transform: rotate(360deg); }
-  to { transform: rotate(0deg); }
-}
-
-.laser-ring {
+/* 3D Laser Orbits */
+.laser-ring-container {
   position: absolute;
-  inset: -15px;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(0, 255, 255, 0.1);
-  animation: spin 15s linear infinite;
+  inset: -4vw;
+  transform-style: preserve-3d;
+  perspective: 2000px;
 }
 
-.laser-ring-2 {
-  position: absolute;
-  inset: -35px;
-  border-radius: 50%;
-  border: 1px dashed rgba(0, 255, 255, 0.4);
-  animation: spin-reverse 20s linear infinite;
+@keyframes spinOrbit1 {
+  0% { transform: rotateX(65deg) rotateY(35deg) rotateZ(0deg); }
+  100% { transform: rotateX(65deg) rotateY(35deg) rotateZ(360deg); }
+}
+@keyframes spinOrbit2 {
+  0% { transform: rotateX(65deg) rotateY(-35deg) rotateZ(0deg); }
+  100% { transform: rotateX(65deg) rotateY(-35deg) rotateZ(360deg); }
+}
+@keyframes spinOrbit3 {
+  0% { transform: rotateX(80deg) rotateY(0deg) rotateZ(0deg); }
+  100% { transform: rotateX(80deg) rotateY(0deg) rotateZ(360deg); }
 }
 
-.laser-ring-3 {
+.laser-orbit {
   position: absolute;
-  inset: -5px;
+  inset: 0;
   border-radius: 50%;
-  border: 2px solid transparent;
-  border-top-color: rgba(0, 255, 255, 0.6);
-  border-bottom-color: rgba(0, 255, 255, 0.6);
-  animation: spin 8s linear infinite;
+  border: 0.2vw solid rgba(0, 230, 255, 0.6);
+  box-shadow: 0 0 1.5vw rgba(0, 255, 255, 0.4), inset 0 0 1.5vw rgba(0, 255, 255, 0.4);
 }
+
+.orbit-1 { animation: spinOrbit1 12s linear infinite; }
+.orbit-2 { animation: spinOrbit2 15s linear infinite; }
+.orbit-3 { animation: spinOrbit3 10s linear infinite; border: 0.2vw dashed rgba(0, 230, 255, 0.4); }
 
 .glass-card-btn {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  background: rgba(20, 20, 25, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1vw;
+  padding: 1.5vw 4vw;
+  font-size: 2.5vw;
+  color: white;
+  box-shadow: 0 0.5vw 2vw 0 rgba(0, 0, 0, 0.6);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: center;
+  font-weight: 500;
+  width: fit-content;
 }
 
 .glass-card-btn:hover {
   transform: scale(0.95);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(30, 30, 35, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0.8vw 2.5vw 0 rgba(0, 0, 0, 0.8);
 }
 
 .mode-logo-inactive {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .mode-logo-inactive:hover {
-  transform: scale(1.1);
-  filter: brightness(1.2);
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 1.5vw rgba(255,255,255,0.3));
 }
