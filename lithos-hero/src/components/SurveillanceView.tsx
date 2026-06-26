@@ -8,9 +8,10 @@ interface SurveillanceViewProps {
   method: SurveillanceMethod;
   onClose: () => void;
   onOpenMap?: (grid: string) => void;
+  onRequestFire?: (distance?: number) => void;
 }
 
-export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onClose, onOpenMap }) => {
+export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onClose, onOpenMap, onRequestFire }) => {
   // Common states
   const [targetGrid, setTargetGrid] = useState<Point | null>(null);
 
@@ -187,7 +188,14 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
                     </div>
                     
                     <div className="mt-8 flex flex-col gap-3 items-center w-full max-w-xs mx-auto">
-                      <button className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all transform hover:scale-105 active:scale-95 uppercase tracking-widest">
+                      <button 
+                        onClick={() => {
+                          if (onRequestFire) {
+                            onRequestFire(method === 'polar' ? parseFloat(distance) : undefined);
+                          }
+                        }}
+                        className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all transform hover:scale-105 active:scale-95 uppercase tracking-widest"
+                      >
                         Request Fire
                       </button>
                       

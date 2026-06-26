@@ -8,6 +8,7 @@ import { DeflectionView } from './components/DeflectionView';
 import { LoginView } from './components/LoginView';
 import { SurveillanceView } from './components/SurveillanceView';
 import { MapView } from './components/MapView';
+import { AdjustmentView } from './components/AdjustmentView';
 import { ReportProvider } from './context/ReportContext';
 import LogoSphere from './components/LogoSphere';
 
@@ -22,6 +23,8 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [showAdjustment, setShowAdjustment] = useState(false);
+  const [adjustmentOtFactor, setAdjustmentOtFactor] = useState(0);
   const [mapTargetGrid, setMapTargetGrid] = useState<string | undefined>(undefined);
   const [activeModeId, setActiveModeId] = useState('HS');
   const [surveillanceMethod, setSurveillanceMethod] = useState<'grid' | 'polar' | 'shift' | null>(null);
@@ -270,6 +273,19 @@ function App() {
             setMapTargetGrid(grid);
             setShowMap(true);
           }}
+          onRequestFire={(distance) => {
+            // Calculate OT factor from distance if provided
+            if (distance) {
+              setAdjustmentOtFactor(Math.round(distance / 1000));
+            }
+            setShowAdjustment(true);
+          }}
+        />
+
+        <AdjustmentView
+          isVisible={showAdjustment}
+          onClose={() => setShowAdjustment(false)}
+          initialOtFactor={adjustmentOtFactor}
         />
 
         <MapView 
