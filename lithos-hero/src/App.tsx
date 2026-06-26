@@ -15,11 +15,12 @@ import { ReportProvider } from './context/ReportContext';
 import LogoSphere from './components/LogoSphere';
 import { FOCalculatorView } from './components/FOCalculatorView';
 import type { FOCalcType } from './components/FOCalculatorView';
+import { CraterAnalysisView } from './components/CraterAnalysisView';
 
 const BG_IMAGE_1 = '/BG.png';
 const BG_IMAGE_2 = '/bg-reveal.png';
 
-type ViewState = 'hero' | 'report' | 'm17' | 'deflection' | FOCalcType;
+type ViewState = 'hero' | 'report' | 'm17' | 'deflection' | 'crater' | FOCalcType;
 
 function App() {
   const [cursorPos, setCursorPos] = useState({ x: -999, y: -999 });
@@ -186,6 +187,9 @@ function App() {
                     </button>
                     <button onClick={() => setCurrentView('deflection')} className="glass-card-btn">
                       Deflection
+                    </button>
+                    <button onClick={() => setCurrentView('crater')} className="glass-card-btn border-orange-500/50 hover:bg-orange-900/30">
+                      Crater Analysis
                     </button>
                   </>
                 )}
@@ -360,6 +364,11 @@ function App() {
           isVisible={showLogin} 
           onClose={() => setShowLogin(false)} 
           onLogin={() => setIsAuthenticated(true)} 
+        />
+
+        <CraterAnalysisView 
+          isVisible={currentView === 'crater'}
+          onClose={() => setCurrentView('hero')}
         />
 
         <FOCalculatorView 
