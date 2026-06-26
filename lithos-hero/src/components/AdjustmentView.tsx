@@ -23,8 +23,8 @@ export const AdjustmentView: React.FC<AdjustmentViewProps> = ({ isVisible, onClo
   // Command Actions
   const [isFfeHolding, setIsFfeHolding] = useState(false);
   const [ffeProgress, setFfeProgress] = useState(0);
-  const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const progressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Initialize OT Factor when prop changes
   useEffect(() => {
