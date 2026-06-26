@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { parseGrid, formatGrid8, calculatePolar, calculateShift } from '../utils/artilleryMath';
 import type { Point } from '../utils/artilleryMath';
+import { TargetData } from '../utils/csvParser';
 
-type SurveillanceMethod = 'grid' | 'polar' | 'shift' | null;
+export type SurveillanceMethod = 'grid' | 'polar' | 'shift' | null;
 
 interface SurveillanceViewProps {
   method: SurveillanceMethod;
   onClose: () => void;
   onOpenMap?: (grid: string) => void;
   onRequestFire?: (distance?: number) => void;
+  initialKnownTarget?: TargetData;
+  onRequestTargetList?: () => void;
 }
 
-export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onClose, onOpenMap, onRequestFire }) => {
+export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onClose, onOpenMap, onRequestFire, initialKnownTarget, onRequestTargetList }) => {
   // Common states
   const [targetGrid, setTargetGrid] = useState<Point | null>(null);
 
@@ -35,6 +38,13 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
   const [inputAlt, setInputAlt] = useState('');
 
   // Auto-calculate logic
+  useEffect(() => {
+    if (initialKnownTarget && method === 'shift') {
+      setKnownGrid(initialKnownTarget.grid);
+      setKnownAlt(initialKnownTarget.altitude.toString());
+    }
+  }, [initialKnownTarget, method]);
+
   useEffect(() => {
     if (method === 'polar') {
       const obs = parseGrid(obsGrid, parseFloat(obsAlt) || 0);
@@ -128,8 +138,18 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
 
               {method === 'shift' && (
                 <>
-                  <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Known Point Grid</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-slate-300 text-sm">Known Point Grid</label>
+                    {onRequestTargetList && (
+                      <button 
+                        onClick={onRequestTargetList}
+                        className="text-xs bg-emerald-900/50 hover:bg-emerald-800 text-emerald-400 px-2 py-1 rounded border border-emerald-700/50 transition-colors"
+                      >
+                        [ เลือกจากบัญชีเป้าหมาย ]
+                      </button>
+                    )}
+                  </div>
+                  <div className="form-group mb-4">
                     <input type="text" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="e.g. 12345678" value={knownGrid} onChange={e => setKnownGrid(e.target.value)} />
                   </div>
                   <div className="form-group">

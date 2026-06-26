@@ -9,6 +9,8 @@ import { LoginView } from './components/LoginView';
 import { SurveillanceView } from './components/SurveillanceView';
 import { MapView } from './components/MapView';
 import { AdjustmentView } from './components/AdjustmentView';
+import { TargetListView } from './components/TargetListView';
+import { TargetData } from './utils/csvParser';
 import { ReportProvider } from './context/ReportContext';
 import LogoSphere from './components/LogoSphere';
 
@@ -23,11 +25,13 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [showTargetList, setShowTargetList] = useState(false);
   const [showAdjustment, setShowAdjustment] = useState(false);
   const [adjustmentOtFactor, setAdjustmentOtFactor] = useState(0);
   const [mapTargetGrid, setMapTargetGrid] = useState<string | undefined>(undefined);
   const [activeModeId, setActiveModeId] = useState('HS');
   const [surveillanceMethod, setSurveillanceMethod] = useState<'grid' | 'polar' | 'shift' | null>(null);
+  const [selectedKnownTarget, setSelectedKnownTarget] = useState<TargetData | undefined>(undefined);
   
   // Fixed positions for the right panel: FO (Top), FL/SL, HS, FD
   const ALL_MODES = ['FO', 'FL', 'HS', 'FD'];
@@ -100,17 +104,26 @@ function App() {
             >
               Deflection
             </button>
-            <div className="w-px h-5 bg-white/20 mx-1"></div>
-            <button 
-              onClick={() => {
-                setMapTargetGrid(undefined);
-                setShowMap(true);
-              }}
-              className="px-4 py-1.5 rounded-full text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 transition-colors flex items-center gap-2"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-              Map
-            </button>
+            {/* Map & Target List Navigation */}
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setShowTargetList(true)}
+                  className="bg-emerald-900/50 hover:bg-emerald-800/80 border border-emerald-700/50 text-emerald-400 font-bold py-2 px-6 rounded-lg uppercase tracking-widest transition-all shadow-lg flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                  Target List
+                </button>
+                <button 
+                  onClick={() => {
+                    setMapTargetGrid(undefined);
+                    setShowMap(true);
+                  }}
+                  className="bg-cyan-900/50 hover:bg-cyan-800/80 border border-cyan-700/50 text-cyan-400 font-bold py-2 px-6 rounded-lg uppercase tracking-widest transition-all shadow-lg flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                  Map
+                </button>
+              </div>
           </div>
         )}
 
@@ -279,6 +292,17 @@ function App() {
               setAdjustmentOtFactor(Math.round(distance / 1000));
             }
             setShowAdjustment(true);
+          }}
+          initialKnownTarget={selectedKnownTarget}
+          onRequestTargetList={() => setShowTargetList(true)}
+        />
+
+        <TargetListView 
+          isVisible={showTargetList} 
+          onClose={() => setShowTargetList(false)} 
+          onSelectTarget={(target) => {
+            setSelectedKnownTarget(target);
+            setSurveillanceMethod('shift'); // Switch to shift method when target is selected
           }}
         />
 

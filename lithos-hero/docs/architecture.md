@@ -64,3 +64,7 @@
 - **Offline-First & Data Integrity:** ระบบต้องคำนวณผลได้โดยไม่ต้องพึ่งพาสัญญาณเครือข่ายตลอดเวลา และใช้ระบบ Burst Transmission ในการส่งคำขอยิงเพื่อลดโอกาสที่ศัตรูจะตรวจจับสัญญาณวิทยุได้
 - **Operational Speed:** UI ต้องลดขั้นตอนการพิมพ์ (Minimum Keystrokes) เพื่อรองรับการยิงอย่างจู่โจม (Surprise) และเพิ่มอำนาจการทำลาย
 - **Light & Camouflage:** การออกแบบหน้าจอต้องมีโหมดความสว่างต่ำ (Low-Light Mode) เพื่อป้องกันการสะท้อนของแสงที่อาจเปิดเผยที่ตั้งตรวจการณ์
+
+ # # #   E x t e r n a l   I n t e g r a t i o n s 
+ -   * * T a c t i c a l   M a p   A p p S c r i p t : * *   [ P r o j e c t   L i n k ] ( h t t p s : / / s c r i p t . g o o g l e . c o m / u / 0 / h o m e / p r o j e c t s / 1 F r B t I B p F C q K n Y K 6 f I P f I b D j Q 8 9 X Y D g T z A K 0 V i t 0 i 0 e b R M _ c 5 C v S Q H b W F / e d i t )   -   T h e   G o o g l e   A p p s   S c r i p t   b a c k e n d   h a n d l i n g   t h e   M a p   V i e w   a n d   D a t a b a s e   l o g i c .  
+ 
