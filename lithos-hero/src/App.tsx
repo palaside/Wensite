@@ -13,11 +13,13 @@ import { TargetListView } from './components/TargetListView';
 import type { TargetData } from './utils/targetDatabase';
 import { ReportProvider } from './context/ReportContext';
 import LogoSphere from './components/LogoSphere';
+import { FOCalculatorView } from './components/FOCalculatorView';
+import type { FOCalcType } from './components/FOCalculatorView';
 
 const BG_IMAGE_1 = '/BG.png';
 const BG_IMAGE_2 = '/bg-reveal.png';
 
-type ViewState = 'hero' | 'report' | 'm17' | 'deflection';
+type ViewState = 'hero' | 'report' | 'm17' | 'deflection' | FOCalcType;
 
 function App() {
   const [cursorPos, setCursorPos] = useState({ x: -999, y: -999 });
@@ -200,7 +202,62 @@ function App() {
                     </button>
                   </>
                 )}
-                {activeModeId !== 'HS' && activeModeId !== 'FL' && (
+                {activeModeId === 'FO' && (
+                  <div className="grid grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-4 custom-scrollbar pb-10">
+                    {/* กล่องที่ 1: การหาพิกัดและระยะ */}
+                    <div className="col-span-2 text-emerald-400 font-bold text-xs tracking-widest uppercase mt-2 mb-1 border-b border-emerald-900/50 pb-1">1. Target Acquisition (หาพิกัดและระยะ)</div>
+                    <button onClick={() => setCurrentView('flash_to_bang')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">1. Flash-to-Bang</span>
+                      แสง-เสียง
+                    </button>
+                    <button onClick={() => setCurrentView('mil_formula')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">2. Mil Formula</span>
+                      สูตรมิล
+                    </button>
+                    <button onClick={() => setCurrentView('sine_rule')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">3. Sine Rule</span>
+                      กฎของไซน์
+                    </button>
+
+                    {/* กล่องที่ 2: ระบบการย้ายจุด */}
+                    <div className="col-span-2 text-emerald-400 font-bold text-xs tracking-widest uppercase mt-4 mb-1 border-b border-emerald-900/50 pb-1">2. Shift Method (การย้ายจุด)</div>
+                    <button onClick={() => setSurveillanceMethod('shift')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">4. Shift from Known Point</span>
+                      ย้ายจุดอ้างอิง
+                    </button>
+                    <button onClick={() => setCurrentView('ot_factor')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">5. OT Factor</span>
+                      แฟคเตอร์ ตม.
+                    </button>
+                    <button onClick={() => setCurrentView('lateral_shift')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">6. Lateral Shift</span>
+                      แก้ทางข้าง
+                    </button>
+
+                    {/* กล่องที่ 3: การปรับการยิง */}
+                    <div className="col-span-2 text-emerald-400 font-bold text-xs tracking-widest uppercase mt-4 mb-1 border-b border-emerald-900/50 pb-1">3. Adjustment (ปรับการยิง)</div>
+                    <button onClick={() => setCurrentView('range_bracketing')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">7. Range Bracketing</span>
+                      แก้ทางระยะ
+                    </button>
+                    <button onClick={() => setCurrentView('height_of_burst')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">8. Height of Burst</span>
+                      แก้สูงแตก
+                    </button>
+
+                    {/* กล่องที่ 4: ภารกิจพิเศษ */}
+                    <div className="col-span-2 text-emerald-400 font-bold text-xs tracking-widest uppercase mt-4 mb-1 border-b border-emerald-900/50 pb-1">4. Special Missions (ภารกิจพิเศษ)</div>
+                    <button onClick={() => setCurrentView('moving_target')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">9. Moving Target Lead</span>
+                      เป้าหมายเคลื่อนที่
+                    </button>
+                    <button onClick={() => setCurrentView('smoke_screen')} className="glass-card-btn !py-2 !text-base">
+                      <span className="block text-[10px] text-emerald-500 mb-0.5 tracking-wider uppercase">10. Smoke Screen</span>
+                      ฉากควัน
+                    </button>
+                  </div>
+                )}
+                {activeModeId !== 'HS' && activeModeId !== 'FL' && activeModeId !== 'FO' && (
                   <div className="text-white/60 italic text-2xl mt-4">
                     ...
                   </div>
@@ -303,6 +360,11 @@ function App() {
           isVisible={showLogin} 
           onClose={() => setShowLogin(false)} 
           onLogin={() => setIsAuthenticated(true)} 
+        />
+
+        <FOCalculatorView 
+          type={['flash_to_bang', 'mil_formula', 'sine_rule', 'ot_factor', 'lateral_shift', 'range_bracketing', 'height_of_burst', 'moving_target', 'smoke_screen'].includes(currentView as string) ? (currentView as FOCalcType) : null}
+          onClose={() => setCurrentView('hero')}
         />
 
       </section>
