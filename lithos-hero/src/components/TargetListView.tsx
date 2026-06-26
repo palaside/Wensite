@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TargetData, getTargets, addTarget, clearAllTargets, removeTarget } from '../utils/targetDatabase';
+import { getTargets, addTarget, clearAllTargets, removeTarget } from '../utils/targetDatabase';
+import type { TargetData } from '../utils/targetDatabase';
 import { formatGrid8, parseGrid } from '../utils/artilleryMath';
 
 interface TargetListViewProps {
