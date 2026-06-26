@@ -9,7 +9,9 @@ interface CraterAnalysisViewProps {
 type EvidenceType = 'artillery' | 'mortar' | 'rocket' | null;
 
 export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewProps) {
-  const [plumbAngle, setPlumbAngle] = useState<string>('');
+  const [angle1, setAngle1] = useState<string>('');
+  const [angle2, setAngle2] = useState<string>('');
+  const [angle3, setAngle3] = useState<string>('');
   const [evidenceType, setEvidenceType] = useState<EvidenceType>(null);
   
   // Artillery state
@@ -46,6 +48,20 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
     if (rocketHoles === '122') { weaponName = 'จรวด 122 มม.'; weaponNationality = 'โซเวียต'; }
   }
 
+  // Angle Analysis Logic
+  let angleStatus = null;
+  let isValidAngle = false;
+  if (angle1 && angle2 && angle3) {
+    if (angle3 === '90' && angle1 === angle2) {
+      isValidAngle = true;
+      angleStatus = { type: 'success', text: `ถูกต้อง! ตามหลักเรขาคณิต มุมลูกดิ่ง (1) = มุมกระสุนตก (2) ระบบยืนยันมุมกระสุนตก = ${angle2} องศา` };
+    } else if (angle3 !== '90') {
+      angleStatus = { type: 'error', text: 'คำเตือน: มุมที่ 3 ต้องเป็นมุมฉาก (90 องศา) เสมอ' };
+    } else if (angle1 !== angle2) {
+      angleStatus = { type: 'error', text: 'คำเตือน: มุมที่ 1 ต้องมีค่าเท่ากับมุมที่ 2 (มุมแย้ง/มุมสมนัย)' };
+    }
+  }
+
   const handleSendReport = () => {
     setIsSending(true);
     setTimeout(() => {
@@ -55,7 +71,9 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
         setIsSent(false);
         onClose();
         // Reset states
-        setPlumbAngle('');
+        setAngle1('');
+        setAngle2('');
+        setAngle3('');
         setEvidenceType(null);
         setArtilleryNat(null);
         setArtilleryCal(null);
@@ -65,7 +83,7 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
     }, 1500);
   };
 
-  const isFormComplete = plumbAngle !== '' && isWeaponIdentified;
+  const isFormComplete = isValidAngle && isWeaponIdentified;
 
   return (
     <AnimatePresence>
@@ -82,10 +100,10 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-4xl max-h-[90vh] bg-[#0a110f] border border-orange-500/30 rounded-xl shadow-2xl shadow-orange-900/20 flex flex-col overflow-hidden"
+            className="relative w-full max-w-5xl max-h-[90vh] bg-[#0a110f] border border-orange-500/30 rounded-xl shadow-2xl shadow-orange-900/20 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-orange-500/30 bg-gradient-to-r from-orange-900/40 to-transparent">
+            <div className="flex justify-between items-center p-6 border-b border-orange-500/30 bg-gradient-to-r from-orange-900/40 to-transparent shrink-0">
               <div>
                 <h2 className="text-orange-400 font-bold text-2xl tracking-wider flex items-center gap-3">
                   <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,32 +126,63 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
             {/* Content Body - Scrollable */}
             <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
               
-              {/* Part 1: Angle of Fall */}
+              {/* Part 1: Angle of Fall with Image Overlay */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2 border-b border-white/10 pb-2">
                   <span className="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
-                  คำนวณมุมกระสุนตก (Angle of Fall)
+                  วิเคราะห์มุมกระสุนตกจากหลุมระเบิด
                 </h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                  <div className="bg-orange-950/20 p-4 rounded-lg border border-orange-500/20 text-sm text-gray-300">
-                    <p className="mb-2 text-orange-400 font-semibold">ทฤษฎีทางยุทธวิธี:</p>
-                    <p>สอดไม้เสียบเข้าไปในรูหัวชนวนเพื่อหาแกนทิศทาง ทาบแผ่นวัดมุมให้ฉากกับไม้ และปล่อยเชือกลูกดิ่ง</p>
-                    <p className="mt-2 text-white bg-orange-900/40 p-2 rounded inline-block">มุมที่เชือกพาดผ่านแผ่นวัดมุม = มุมกระสุนตก</p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                  {/* Image with overlays */}
+                  <div className="relative rounded-lg overflow-hidden border border-orange-500/30 group">
+                    <img src="/Bomb Analysis.png" alt="Crater Analysis" className="w-full h-auto" />
+                    
+                    {/* Overlays for angles */}
+                    <div className="absolute top-[25%] right-[24%] bg-black/70 px-2 py-1 rounded text-orange-400 font-bold font-mono text-sm border border-orange-500/50 backdrop-blur-sm">
+                      {angle1 ? `${angle1}°` : 'มุม 1'}
+                    </div>
+                    <div className="absolute bottom-[35%] left-[55%] bg-black/70 px-2 py-1 rounded text-emerald-400 font-bold font-mono text-sm border border-emerald-500/50 backdrop-blur-sm">
+                      {angle2 ? `${angle2}°` : 'มุม 2'}
+                    </div>
+                    <div className="absolute bottom-[37%] right-[32%] bg-black/70 px-2 py-1 rounded text-blue-400 font-bold font-mono text-sm border border-blue-500/50 backdrop-blur-sm">
+                      {angle3 ? `${angle3}°` : 'มุม 3'}
+                    </div>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm text-gray-400 uppercase tracking-wider mb-2">ค่ามุมจากเชือกลูกดิ่ง (องศา)</label>
-                    <div className="flex gap-4 items-center">
-                      <input 
-                        type="number" 
-                        value={plumbAngle}
-                        onChange={e => setPlumbAngle(e.target.value)}
-                        className="flex-1 bg-black/60 border border-orange-500/50 rounded-lg p-4 text-2xl text-orange-400 focus:outline-none focus:border-orange-400 font-mono"
-                        placeholder="0-90"
-                      />
-                      <div className="text-xl text-gray-500">องศา</div>
+                  {/* Inputs and Analysis */}
+                  <div className="space-y-4">
+                    <div className="bg-orange-950/20 p-4 rounded-lg border border-orange-500/20 text-sm text-gray-300">
+                      <p className="mb-2 text-orange-400 font-semibold">ป้อนค่ามุมที่วัดได้:</p>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs text-orange-400/80 mb-1">มุม 1 (ลูกดิ่ง)</label>
+                          <input type="number" value={angle1} onChange={e => setAngle1(e.target.value)} className="w-full bg-black/60 border border-orange-500/50 rounded p-2 text-center text-orange-400 focus:outline-none focus:border-orange-400 font-mono" placeholder="องศา" />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-emerald-400/80 mb-1">มุม 2 (มุมตก)</label>
+                          <input type="number" value={angle2} onChange={e => setAngle2(e.target.value)} className="w-full bg-black/60 border border-emerald-500/50 rounded p-2 text-center text-emerald-400 focus:outline-none focus:border-emerald-400 font-mono" placeholder="องศา" />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-blue-400/80 mb-1">มุม 3 (มุมฉาก)</label>
+                          <input type="number" value={angle3} onChange={e => setAngle3(e.target.value)} className="w-full bg-black/60 border border-blue-500/50 rounded p-2 text-center text-blue-400 focus:outline-none focus:border-blue-400 font-mono" placeholder="องศา" />
+                        </div>
+                      </div>
                     </div>
+
+                    {/* Auto Analysis Result */}
+                    <AnimatePresence>
+                      {angleStatus && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className={`p-4 rounded-lg border ${angleStatus.type === 'success' ? 'bg-emerald-900/30 border-emerald-500/50 text-emerald-400' : 'bg-red-900/30 border-red-500/50 text-red-400'}`}
+                        >
+                          <div className="font-semibold">{angleStatus.type === 'success' ? '✅ วิเคราะห์สำเร็จ' : '⚠️ ข้อผิดพลาดทางเรขาคณิต'}</div>
+                          <div className="text-sm mt-1">{angleStatus.text}</div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
@@ -236,8 +285,8 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
                 <div className="flex-1">
                   <div className="text-xs text-orange-500/70 uppercase tracking-widest mb-1">สรุปแบบรายงาน (Crater Analysis Report)</div>
                   <div className="flex items-center gap-4">
-                    <div className={`text-lg font-mono ${plumbAngle ? 'text-white' : 'text-gray-600'}`}>
-                      มุมตก: <span className="font-bold text-orange-400">{plumbAngle || '?'}°</span>
+                    <div className={`text-lg font-mono ${angle2 ? 'text-white' : 'text-gray-600'}`}>
+                      มุมตก: <span className="font-bold text-orange-400">{angle2 || '?'}°</span>
                     </div>
                     <div className="h-6 w-px bg-white/20"></div>
                     <div className={`text-lg ${isWeaponIdentified ? 'text-white' : 'text-gray-600'}`}>
