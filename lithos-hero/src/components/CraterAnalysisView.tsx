@@ -12,6 +12,8 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
   const [angle1, setAngle1] = useState<string>('');
   const [angle2, setAngle2] = useState<string>('');
   const [angle3, setAngle3] = useState<string>('');
+  const [azimuth, setAzimuth] = useState<string>('');
+  const [azimuthUnit, setAzimuthUnit] = useState<'mils' | 'degrees'>('mils');
   const [evidenceType, setEvidenceType] = useState<EvidenceType>(null);
   
   // Artillery state
@@ -54,7 +56,11 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
   if (angle1 && angle2 && angle3) {
     if (angle3 === '90' && angle1 === angle2) {
       isValidAngle = true;
-      angleStatus = { type: 'success', text: `ถูกต้อง! ตามหลักเรขาคณิต มุมลูกดิ่ง (1) = มุมกระสุนตก (2) ระบบยืนยันมุมกระสุนตก = ${angle2} องศา` };
+      let text = `ถูกต้อง! ตามหลักเรขาคณิต มุมลูกดิ่ง (1) = มุมกระสุนตก (2) ระบบยืนยันมุมกระสุนตก = ${angle2} องศา`;
+      if (azimuth) {
+        text = `วิเคราะห์เวกเตอร์อาวุธข้าศึก: ข้าศึกทำการยิงมาจากมุมภาคทิศทาง ${azimuth} ${azimuthUnit === 'mils' ? 'มิลเลียม' : 'องศา'} ด้วยมุมกระสุนตก ${angle2} องศา`;
+      }
+      angleStatus = { type: 'success', text };
     } else if (angle3 !== '90') {
       angleStatus = { type: 'error', text: 'คำเตือน: มุมที่ 3 ต้องเป็นมุมฉาก (90 องศา) เสมอ' };
     } else if (angle1 !== angle2) {
@@ -154,7 +160,7 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
                   <div className="space-y-4">
                     <div className="bg-orange-950/20 p-4 rounded-lg border border-orange-500/20 text-sm text-gray-300">
                       <p className="mb-2 text-orange-400 font-semibold">ป้อนค่ามุมที่วัดได้:</p>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-3 gap-3 mb-4">
                         <div>
                           <label className="block text-xs text-orange-400/80 mb-1">มุม 1 (ลูกดิ่ง)</label>
                           <input type="number" value={angle1} onChange={e => setAngle1(e.target.value)} className="w-full bg-black/60 border border-orange-500/50 rounded p-2 text-center text-orange-400 focus:outline-none focus:border-orange-400 font-mono" placeholder="องศา" />
@@ -166,6 +172,31 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
                         <div>
                           <label className="block text-xs text-blue-400/80 mb-1">มุม 3 (มุมฉาก)</label>
                           <input type="number" value={angle3} onChange={e => setAngle3(e.target.value)} className="w-full bg-black/60 border border-blue-500/50 rounded p-2 text-center text-blue-400 focus:outline-none focus:border-blue-400 font-mono" placeholder="องศา" />
+                        </div>
+                      </div>
+                      
+                      <div className="pt-3 border-t border-orange-500/20 flex items-center justify-between gap-4">
+                        <div className="flex-1">
+                          <label className="block text-xs text-orange-400/80 mb-1">มิติระนาบทิศทาง (Azimuth)</label>
+                          <div className="flex gap-2">
+                            <input type="number" value={azimuth} onChange={e => setAzimuth(e.target.value)} className="w-full bg-black/60 border border-orange-500/50 rounded p-2 text-center text-orange-400 focus:outline-none focus:border-orange-400 font-mono" placeholder="ระบุทิศทาง" />
+                            <select value={azimuthUnit} onChange={e => setAzimuthUnit(e.target.value as 'mils' | 'degrees')} className="bg-black/60 border border-orange-500/50 rounded p-2 text-orange-400 focus:outline-none">
+                              <option value="mils">mils</option>
+                              <option value="degrees">deg</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div className="w-14 h-14 rounded-full border-2 border-orange-500/50 relative flex items-center justify-center bg-black/50 overflow-hidden shrink-0 shadow-inner shadow-orange-900/50 mt-4">
+                          <div className="absolute top-1 text-[8px] text-orange-500 font-bold z-10">N</div>
+                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(249,115,22,0.1)_0%,transparent_70%)]"></div>
+                          {/* Compass needle */}
+                          <motion.div 
+                            className="absolute w-[2px] h-10 bg-gradient-to-b from-orange-400 to-transparent origin-center rounded-full shadow-[0_0_8px_rgba(249,115,22,0.8)]"
+                            animate={{ rotate: azimuth ? (azimuthUnit === 'mils' ? (Number(azimuth) / 6400) * 360 : Number(azimuth)) : 0 }}
+                            transition={{ type: "spring", stiffness: 60, damping: 10 }}
+                          >
+                             <div className="absolute -top-1 -left-[3px] w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[8px] border-b-orange-400"></div>
+                          </motion.div>
                         </div>
                       </div>
                     </div>
@@ -284,11 +315,15 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
                 {/* Result Summary */}
                 <div className="flex-1">
                   <div className="text-xs text-orange-500/70 uppercase tracking-widest mb-1">สรุปแบบรายงาน (Crater Analysis Report)</div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 flex-wrap mt-2">
+                    <div className={`text-lg font-mono ${azimuth ? 'text-white' : 'text-gray-600'}`}>
+                      ทิศทาง: <span className="font-bold text-orange-400">{azimuth || '?'} <span className="text-sm text-orange-400/50">{azimuthUnit === 'mils' ? 'mils' : 'deg'}</span></span>
+                    </div>
+                    <div className="h-6 w-px bg-white/20 hidden md:block"></div>
                     <div className={`text-lg font-mono ${angle2 ? 'text-white' : 'text-gray-600'}`}>
                       มุมตก: <span className="font-bold text-orange-400">{angle2 || '?'}°</span>
                     </div>
-                    <div className="h-6 w-px bg-white/20"></div>
+                    <div className="h-6 w-px bg-white/20 hidden md:block"></div>
                     <div className={`text-lg ${isWeaponIdentified ? 'text-white' : 'text-gray-600'}`}>
                       อาวุธ: <span className="font-bold text-orange-400">{weaponName}</span> 
                       {isWeaponIdentified && <span className="text-sm text-gray-400 ml-2">({weaponNationality})</span>}
