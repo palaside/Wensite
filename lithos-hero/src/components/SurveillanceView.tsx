@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { parseGrid, formatGrid8, calculatePolar, calculateShift } from '../utils/artilleryMath';
 import type { Point } from '../utils/artilleryMath';
-import { TargetData } from '../utils/csvParser';
+import type { TargetData } from '../utils/csvParser';
 
 export type SurveillanceMethod = 'grid' | 'polar' | 'shift' | null;
 

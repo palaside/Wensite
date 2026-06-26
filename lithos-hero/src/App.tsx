@@ -10,7 +10,7 @@ import { SurveillanceView } from './components/SurveillanceView';
 import { MapView } from './components/MapView';
 import { AdjustmentView } from './components/AdjustmentView';
 import { TargetListView } from './components/TargetListView';
-import { TargetData } from './utils/csvParser';
+import type { TargetData } from './utils/csvParser';
 import { ReportProvider } from './context/ReportContext';
 import LogoSphere from './components/LogoSphere';
 

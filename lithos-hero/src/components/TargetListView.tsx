@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import targetCsvRaw from '../data/Target.csv?raw';
-import { TargetData, parseTargetCsv } from '../utils/csvParser';
+import { parseTargetCsv } from '../utils/csvParser';
+import type { TargetData } from '../utils/csvParser';
 import { formatGrid8, parseGrid } from '../utils/artilleryMath';
 
 interface TargetListViewProps {
