@@ -1,0 +1,105 @@
+.m17-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #111827;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  user-select: none;
+}
+
+.m17-board {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  background: #f0f0f0;
+  border-radius: 300px 20px 20px 300px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3), inset 0 2px 10px rgba(255,255,255,0.8);
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.m17-grid-layer {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid #333;
+  overflow: hidden;
+}
+
+.m17-grid-pattern {
+  stroke: #ff4444;
+  stroke-width: 0.5;
+}
+
+.m17-grid-pattern-major {
+  stroke: #cc0000;
+  stroke-width: 1.5;
+}
+
+.m17-rotating-disc {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(0,0,0,0.5);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.2);
+  cursor: grab;
+  transform-origin: center center;
+  backdrop-filter: blur(1px);
+}
+
+.m17-rotating-disc:active {
+  cursor: grabbing;
+}
+
+.m17-pivot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  margin-left: -8px;
+  background: radial-gradient(circle, #ddd 0%, #888 70%, #444 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.8);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.m17-text-outer {
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  font-weight: bold;
+  fill: #111;
+}
+
+.m17-text-middle {
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  font-weight: bold;
+  fill: #cc0000;
+}
+
+.m17-text-inner {
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  font-weight: bold;
+  fill: #111;
+}
+
+.m17-ruler-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  fill: #333;
+}

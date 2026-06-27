@@ -17,11 +17,12 @@ import { FOCalculatorView } from './components/FOCalculatorView';
 import type { FOCalcType } from './components/FOCalculatorView';
 import { CraterAnalysisView } from './components/CraterAnalysisView';
 import { DigitalM2Compass } from './components/DigitalM2Compass';
+import { M17PlottingBoard } from './components/M17PlottingBoard';
 
 const BG_IMAGE_1 = '/BG.png';
 const BG_IMAGE_2 = '/bg-reveal.png';
 
-type ViewState = 'hero' | 'report' | 'm17' | 'deflection' | 'crater' | FOCalcType;
+type ViewState = 'hero' | 'report' | 'm17' | 'm17_interactive' | 'deflection' | 'crater' | FOCalcType;
 
 function App() {
   const [cursorPos, setCursorPos] = useState({ x: -999, y: -999 });
@@ -184,7 +185,10 @@ function App() {
                       Report
                     </button>
                     <button onClick={() => setCurrentView('m17')} className="glass-card-btn">
-                      M.17
+                      M.17 (Plotting)
+                    </button>
+                    <button onClick={() => setCurrentView('m17_interactive')} className="glass-card-btn border-blue-500/50 hover:bg-blue-900/30">
+                      M.17 (Interactive Diagram)
                     </button>
                     <button onClick={() => setCurrentView('deflection')} className="glass-card-btn">
                       Deflection
@@ -377,6 +381,10 @@ function App() {
           type={['flash_to_bang', 'mil_formula', 'sine_rule', 'ot_factor', 'lateral_shift', 'range_bracketing', 'height_of_burst', 'moving_target', 'smoke_screen'].includes(currentView as string) ? (currentView as FOCalcType) : null}
           onClose={() => setCurrentView('hero')}
         />
+
+        {currentView === 'm17_interactive' && (
+          <M17PlottingBoard onClose={() => setCurrentView('hero')} />
+        )}
 
         {/* Global Compass HUD visible when authenticated and not on hero screen */}
         <DigitalM2Compass 
