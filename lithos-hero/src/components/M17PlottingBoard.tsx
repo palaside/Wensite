@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+import { useReportContext } from '../context/ReportContext';
 import './M17PlottingBoard.css';
 
 interface M17PlottingBoardProps {
@@ -8,7 +9,7 @@ interface M17PlottingBoardProps {
 export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
   const [rotation, setRotation] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const discRef = useRef<HTMLDivElement>(null);
+  const { allGuns, section3Data, mainGun, centerAzimuth, centerDistance, azimuth: lofAzimuth } = useReportContext();
 
   // Generate Ticks and Numbers
   const generateTicks = () => {
@@ -128,6 +129,59 @@ export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
     e.currentTarget.releasePointerCapture(e.pointerId);
   };
 
+  // Generate plotted points
+  const generatePlottedPoints = () => {
+    const points = [];
+    
+    // Plot Guns (Red dots)
+    allGuns.forEach(gun => {
+      const d = section3Data[gun];
+      if (!d) return;
+      
+      const rawX = d.lrText === 'ซ้าย' ? -parseInt(d.lrDist) : parseInt(d.lrDist);
+      const rawY = d.frText === 'หลัง' ? -parseInt(d.frDist) : parseInt(d.frDist);
+      
+      const svgX = 250 + rawX;
+      const svgY = 250 - rawY; // SVG Y is inverted (up is smaller)
+      
+      let color = '#ef4444'; // Red
+      if (gun === mainGun) color = '#ef4444'; // Keep it red for guns
+      
+      points.push(
+        <g key={`plot-gun-${gun}`}>
+          <circle cx={svgX} cy={svgY} r="4" fill={color} stroke="black" strokeWidth="1" />
+          <text x={svgX + 6} y={svgY + 4} fontSize="10" fill="black" fontWeight="bold">ป.{gun}</text>
+        </g>
+      );
+    });
+
+    // Plot Aiming Circle (จก.1) (Green dot)
+    const cAz = parseInt(centerAzimuth) || 0;
+    const cDist = parseInt(centerDistance) || 0;
+    const lofAz = parseInt(lofAzimuth) || 0;
+    
+    // Azimuth from Center to OP is back azimuth of OP to Center
+    const backAz = (cAz + 3200) % 6400;
+    const relativeAz = backAz - lofAz;
+    const relativeAzRads = relativeAz * (Math.PI / 3200);
+    
+    // Calculate offsets based on Line of Fire (UP is forward)
+    const frDistRaw = cDist * Math.cos(relativeAzRads);
+    const lrDistRaw = cDist * Math.sin(relativeAzRads);
+    
+    const svgX = 250 + lrDistRaw;
+    const svgY = 250 - frDistRaw;
+    
+    points.push(
+      <g key={`plot-op1`}>
+        <circle cx={svgX} cy={svgY} r="4" fill="#10b981" stroke="black" strokeWidth="1" />
+        <text x={svgX + 6} y={svgY + 4} fontSize="10" fill="#10b981" fontWeight="bold">จก.1</text>
+      </g>
+    );
+
+    return points;
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
       
@@ -146,7 +200,7 @@ export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
         <div className="m17-board">
           
           {/* Base SVG for outlines and rulers */}
-          <svg width="800" height="600" className="absolute top-0 left-0 pointer-events-none">
+          <svg width="1000" height="600" className="absolute top-0 left-0 pointer-events-none">
             {generateRulers()}
           </svg>
 
@@ -158,9 +212,8 @@ export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
               <line x1="250" y1="250" x2="250" y2="0" stroke="#cc0000" strokeWidth="4" />
               <polygon points="245,15 255,15 250,0" fill="#cc0000" />
               
-              {/* O.P. Line */}
-              <line x1="0" y1="250" x2="500" y2="250" stroke="#cc0000" strokeWidth="2" />
-              <text x="350" y="240" className="text-red-600 font-bold text-sm" style={{fontFamily: 'Inter'}}>O.P. MARKER</text>
+              {/* Plot points on the base grid layer */}
+              {generatePlottedPoints()}
             </svg>
           </div>
 
@@ -176,17 +229,40 @@ export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
             <svg width="500" height="500">
               {/* Index Line */}
               <line x1="250" y1="0" x2="250" y2="500" stroke="#111" strokeWidth="1.5" />
-              
-              {/* + and - indicators for Inner Scale near center */}
-              <text x="235" y="235" className="text-red-600 font-bold text-sm" style={{fontFamily: 'Inter'}}>-</text>
-              <text x="260" y="235" className="text-red-600 font-bold text-sm" style={{fontFamily: 'Inter'}}>+</text>
 
               {generateTicks()}
             </svg>
           </div>
+          
+          {/* Summary Panel on the right */}
+          <div className="absolute right-0 top-0 w-[450px] h-[600px] p-6 pr-12 pt-16 flex flex-col gap-6 font-sans">
+            {allGuns.map(gun => {
+              const d = section3Data[gun];
+              if (!d) return null;
+              
+              // Only show details if distance > 0
+              if (parseInt(d.distance) === 0) {
+                return (
+                  <div key={`summary-${gun}`} className="flex flex-col items-center gap-1 text-[#333]">
+                    <div className="text-2xl font-bold tracking-widest">ป.หมู่ {gun}</div>
+                    <div className="text-lg tracking-wider">- ศูนย์กลางร้อย -</div>
+                  </div>
+                );
+              }
 
-          {/* Pivot Pin */}
-          <div className="m17-pivot" />
+              return (
+                <div key={`summary-${gun}`} className="flex flex-col items-center gap-1 text-[#333]">
+                  <div className="text-2xl font-bold tracking-widest">ป.หมู่ {gun}</div>
+                  <div className="text-lg tracking-wider flex items-center justify-center gap-4">
+                    <span>มุมทิศ <strong className="text-black">{d.azimuth}</strong></span>
+                    <span>ระยะ <strong className="text-black">{d.distance}</strong></span>
+                    <span>{d.frText} <strong className="text-black">{d.frDist}</strong></span>
+                    <span>{d.lrText} <strong className="text-black">{d.lrDist}</strong></span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           
         </div>
 

@@ -83,9 +83,9 @@ export const ReportProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (isOverlapCenter && gun === mainGun) {
         data[gun] = {
           azimuth: centerAzimuth.padStart(4, '0'),
-          distance: '0',
-          lrText: 'ขวา',
-          frText: 'หน้า',
+          distance: centerDistance,
+          lrText: '-',
+          frText: '-',
           lrDist: '0',
           frDist: '0'
         };
