@@ -356,8 +356,9 @@ function App() {
         />
 
         <MapView 
-          isVisible={showMap}
-          onClose={() => setShowMap(false)}
+          isVisible={isAuthenticated && currentView !== 'hero'}
+          forceExpanded={showMap}
+          onCloseExpanded={() => setShowMap(false)}
           targetGrid={mapTargetGrid}
         />
 
