@@ -16,6 +16,7 @@ import LogoSphere from './components/LogoSphere';
 import { FOCalculatorView } from './components/FOCalculatorView';
 import type { FOCalcType } from './components/FOCalculatorView';
 import { CraterAnalysisView } from './components/CraterAnalysisView';
+import { DigitalM2Compass } from './components/DigitalM2Compass';
 
 const BG_IMAGE_1 = '/BG.png';
 const BG_IMAGE_2 = '/bg-reveal.png';
@@ -376,6 +377,10 @@ function App() {
           onClose={() => setCurrentView('hero')}
         />
 
+        {/* Global Compass HUD visible when authenticated and not on hero screen */}
+        <DigitalM2Compass 
+          isVisible={isAuthenticated && currentView !== 'hero'} 
+        />
       </section>
 
     </div>
