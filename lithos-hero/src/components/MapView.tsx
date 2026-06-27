@@ -10,21 +10,39 @@ interface MapViewProps {
 
 export const MapView: React.FC<MapViewProps> = ({ isVisible, onClose, targetGrid, forceExpanded, onCloseExpanded }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   
   // Sync prop to local state
   useEffect(() => {
     if (forceExpanded) setIsExpanded(true);
   }, [forceExpanded]);
+
   const [mapUrl, setMapUrl] = useState('https://script.google.com/macros/s/AKfycbyhhanjlUm2jy3Encz5OSVd9Sh7iYqxAfUurfIy1lE4Wdt9XwlrCljM8_jlI6kxB6OH/exec');
 
+  // Fetch location once on mount
   useEffect(() => {
-    // If a target grid is provided, append it to the map URL so the map might focus on it
-    if (targetGrid) {
-      setMapUrl(`https://script.google.com/macros/s/AKfycbyhhanjlUm2jy3Encz5OSVd9Sh7iYqxAfUurfIy1lE4Wdt9XwlrCljM8_jlI6kxB6OH/exec?grid=${targetGrid}`);
-    } else {
-      setMapUrl('https://script.google.com/macros/s/AKfycbyhhanjlUm2jy3Encz5OSVd9Sh7iYqxAfUurfIy1lE4Wdt9XwlrCljM8_jlI6kxB6OH/exec');
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        (err) => console.warn('Geolocation error:', err),
+        { enableHighAccuracy: true }
+      );
     }
-  }, [targetGrid, isVisible]);
+  }, []);
+
+  useEffect(() => {
+    const baseUrl = 'https://script.google.com/macros/s/AKfycbyhhanjlUm2jy3Encz5OSVd9Sh7iYqxAfUurfIy1lE4Wdt9XwlrCljM8_jlI6kxB6OH/exec';
+    const params = new URLSearchParams();
+    
+    if (targetGrid) params.append('grid', targetGrid);
+    if (userLocation) {
+      params.append('lat', userLocation.lat.toString());
+      params.append('lng', userLocation.lng.toString());
+    }
+    
+    const queryString = params.toString();
+    setMapUrl(queryString ? `${baseUrl}?${queryString}` : baseUrl);
+  }, [targetGrid, isVisible, userLocation]);
 
   if (!isVisible && !isExpanded) return null; // Only hide if neither visible nor expanded (expanded overrides visibility for modal)
 
