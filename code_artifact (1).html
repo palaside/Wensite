@@ -40,12 +40,30 @@
     @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
     .animate-fade-in { animation: fadeInUp 0.8s ease-out; }
     .tab-btn:hover { transform: scale(1.05); }
+.sidebar {
+  width: 4rem;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+.sidebar.open {
+  width: 16rem;
+}
+.sidebar .hidden {
+  display: none;
+}
+.sidebar.open .hidden {
+  display: inline;
+}
+.tab-btn:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
 </style>
 </head>
 <body class="h-full flex flex-col overflow-hidden">
 
     <!-- Top Tactical HUD Bar -->
-    <header class="bg-slate-900 border-b border-emerald-500/30 px-6 py-3 flex flex-wrap justify-between items-center shrink-0 shadow-lg shadow-black/40">
+    <header class="bg-slate-900 border-b border-emerald-500/30 px-6 py-3 flex flex-wrap justify-between items-center shrink-0 shadow-lg shadow-black/40"><button id="nav-toggle" class="md:hidden p-2 rounded bg-emerald-900 text-emerald-400"><i data-lucide="menu"></i></button>
         <div class="flex items-center gap-3">
             <div class="p-2 bg-emerald-950 border border-emerald-500/50 rounded-lg text-emerald-400 animate-pulse">
                 <i data-lucide="shield-alert" class="w-6 h-6"></i>
@@ -79,7 +97,7 @@
     <div class="flex flex-1 overflow-hidden">
         
         <!-- Sidebar Navigation -->
-        <nav class="w-16 md:w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between py-4 shrink-0">
+        <nav id="sidebar" class="sidebar w-16 md:w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between py-4 shrink-0">
             <div class="space-y-1 px-2">
                 <!-- Navigation Tabs -->
                 <button onclick="switchTab('dashboard')" class="tab-btn w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" id="tab-btn-dashboard">
@@ -866,6 +884,15 @@
     <!-- Script Area containing core business logic -->
     <script>
         document.getElementById('live-clock').innerText = "04 มิ.ย. 2569 09:30";
+
+// Mobile sidebar toggle
+const navToggle = document.getElementById('nav-toggle');
+if (navToggle) {
+  navToggle.addEventListener('click', () => {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.classList.toggle('open');
+  });
+}
 
         // Navigation Tab Logic
         function switchTab(tabId) {
