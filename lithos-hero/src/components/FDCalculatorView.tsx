@@ -740,7 +740,7 @@ export function FDCalculatorView({ type, onClose }: FDCalculatorViewProps) {
           </div>
 
           {/* Content */}
-          <div className="p-6 max-h-[80vh] overflow-y-auto">
+          <div className="p-3 sm:p-6 flex-1 overflow-hidden min-h-0 h-full flex flex-col justify-center">
             {renderContent()}
           </div>
         </motion.div>

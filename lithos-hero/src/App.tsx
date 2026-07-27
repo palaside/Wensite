@@ -100,7 +100,7 @@ function App() {
         </div>
 
         {isAuthenticated && (
-          <div className="flex flex-col md:flex-row absolute right-4 top-4 md:static md:left-1/2 md:top-auto md:-translate-x-1/2 items-end md:items-center gap-2 mt-4 md:mt-0 z-[130]">
+          <div className="flex flex-row absolute right-4 top-4 md:static md:left-1/2 md:top-auto md:-translate-x-1/2 items-center gap-2 mt-0 md:mt-0 z-[130]">
             <button 
               onClick={() => setShowTargetList(true)}
               className="bg-emerald-900/50 hover:bg-emerald-800/80 border border-emerald-700/50 text-emerald-400 font-bold py-1.5 px-3 md:py-2 md:px-6 rounded-lg uppercase tracking-widest transition-all shadow-lg flex items-center gap-2 text-xs md:text-base"
@@ -219,26 +219,26 @@ function App() {
           <div className="absolute inset-0 z-20 flex flex-col lg:flex-row items-start lg:items-center justify-start lg:justify-between px-6 sm:px-8 md:px-16 pt-24 md:pt-24 pb-8 overflow-hidden">
 
             {/* Left Panel: Mode Title and Actions */}
-            <div className="flex flex-col justify-start lg:justify-center gap-4 lg:gap-8 w-full lg:w-[60%] hero-anim hero-fade h-full pl-0 md:pl-12 z-30 pb-4 lg:pb-0 pt-2 lg:pt-0">
-              <div className="text-white font-bold tracking-tight drop-shadow-2xl mt-0 flex flex-row items-center gap-4">
-                <img src={`/${activeModeId}.png`} alt={activeModeId} className="w-16 h-16 sm:w-20 sm:h-20 lg:hidden object-contain drop-shadow-lg shrink-0" onError={(e) => { e.currentTarget.style.display='none'; }} />
+            <div className="flex flex-col justify-start lg:justify-center gap-2 lg:gap-8 w-full lg:w-[60%] hero-anim hero-fade h-full pl-0 md:pl-12 z-30 pb-2 lg:pb-0 pt-4 lg:pt-0">
+              <div className="text-white font-bold tracking-tight drop-shadow-2xl mt-0 flex flex-row items-center justify-between lg:justify-start gap-4 w-full sm:w-auto pr-4 sm:pr-0">
                 <div className="flex flex-col">
                   {activeModeId === 'HS' && (
-                    <><div className="text-4xl sm:text-5xl lg:text-7xl xl:text-8xl mb-0 lg:mb-2 leading-[0.9]">Howitzer</div><div className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl text-gray-300 leading-[0.9]">Section</div></>
+                    <><div className="text-3xl sm:text-5xl lg:text-7xl xl:text-8xl mb-0 lg:mb-2 leading-[0.9]">Howitzer</div><div className="text-2xl sm:text-4xl lg:text-6xl xl:text-7xl text-gray-300 leading-[0.9]">Section</div></>
                   )}
                   {activeModeId === 'FO' && (
-                    <><div className="text-4xl sm:text-5xl lg:text-7xl xl:text-8xl mb-0 lg:mb-2 leading-[0.9]">Forward</div><div className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl text-gray-300 leading-[0.9]">Observer</div></>
+                    <><div className="text-3xl sm:text-5xl lg:text-7xl xl:text-8xl mb-0 lg:mb-2 leading-[0.9]">Forward</div><div className="text-2xl sm:text-4xl lg:text-6xl xl:text-7xl text-gray-300 leading-[0.9]">Observer</div></>
                   )}
                   {activeModeId === 'FD' && (
-                    <><div className="text-4xl sm:text-5xl lg:text-7xl xl:text-8xl mb-0 lg:mb-2 leading-[0.9]">Fire</div><div className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl text-gray-300 leading-[0.9]">Direction</div></>
+                    <><div className="text-3xl sm:text-5xl lg:text-7xl xl:text-8xl mb-0 lg:mb-2 leading-[0.9]">Fire</div><div className="text-2xl sm:text-4xl lg:text-6xl xl:text-7xl text-gray-300 leading-[0.9]">Direction</div></>
                   )}
                   {activeModeId === 'FL' && (
-                    <><div className="text-4xl sm:text-5xl lg:text-7xl xl:text-8xl mb-0 lg:mb-2 tracking-tight leading-[0.9]">Surveillance</div></>
+                    <><div className="text-3xl sm:text-5xl lg:text-7xl xl:text-8xl mb-0 lg:mb-2 tracking-tight leading-[0.9]">Surveillance</div></>
                   )}
                   {activeModeId === 'WA' && (
-                    <><div className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl mb-0 lg:mb-2 tracking-tight leading-[0.85]">Weapons &</div><div className="text-2xl sm:text-3xl lg:text-5xl xl:text-6xl text-gray-300 leading-[0.9]">Ammunition</div></>
+                    <><div className="text-2xl sm:text-4xl lg:text-6xl xl:text-7xl mb-0 lg:mb-2 tracking-tight leading-[0.85]">Weapons &</div><div className="text-xl sm:text-3xl lg:text-5xl xl:text-6xl text-gray-300 leading-[0.9]">Ammunition</div></>
                   )}
                 </div>
+                <img src={`/${activeModeId}.png`} alt={activeModeId} className="w-14 h-14 sm:w-20 sm:h-20 lg:hidden object-contain drop-shadow-lg shrink-0 ml-auto" onError={(e) => { e.currentTarget.style.display='none'; }} />
               </div>
               
               <div className="flex flex-col gap-2 mt-1 w-full max-w-[500px] flex-1 overflow-hidden">
@@ -326,10 +326,10 @@ function App() {
                   </div>
                 )}
                 {activeModeId === 'FD' && (
-                  <div className="grid grid-cols-2 gap-1.5 overflow-hidden">
+                  <div className="grid grid-cols-2 gap-x-1 sm:gap-x-1.5 gap-y-0.5 sm:gap-y-1.5 overflow-hidden">
                     
                     {/* Category 1: UI & Core */}
-                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0 mb-0 border-b border-emerald-900/50 pb-0.5">1. UI & Core</div>
+                    <div className="col-span-2 text-emerald-400 font-bold text-[8.5px] sm:text-[10px] tracking-widest uppercase mt-0.5 sm:mt-0 mb-0 border-b border-emerald-900/50 pb-0.5">1. UI & Core</div>
                     <button onClick={() => openWindow('window_manager', 'Desktop Window Manager')} className="glass-card-btn !py-1 !text-sm">
                       <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">Window Manager</span>
                       จัดการหน้าต่าง
@@ -340,7 +340,7 @@ function App() {
                     </button>
 
                     {/* Category 2: Target Intelligence */}
-                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">2. Target Intelligence</div>
+                    <div className="col-span-2 text-emerald-400 font-bold text-[8.5px] sm:text-[10px] tracking-widest uppercase mt-1 sm:mt-2 mb-0 border-b border-emerald-900/50 pb-0.5">2. Target Intelligence</div>
                     <button onClick={() => openWindow('fo_processing', 'FO Processing')} className="glass-card-btn !py-1 !text-sm">
                       <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">FO Processing</span>
                       รับคำขอยิง
@@ -351,7 +351,7 @@ function App() {
                     </button>
 
                     {/* Category 3: MET & Firing Tables */}
-                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">3. MET & Firing Tables</div>
+                    <div className="col-span-2 text-emerald-400 font-bold text-[8.5px] sm:text-[10px] tracking-widest uppercase mt-1 sm:mt-2 mb-0 border-b border-emerald-900/50 pb-0.5">3. Met & Firing Tables</div>
                     <button onClick={() => openWindow('firing_table_integration', 'Real Firing Table Integration')} className="glass-card-btn !py-1 !text-sm">
                       <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">Firing Table</span>
                       คัมภีร์ตารางยิง
@@ -362,7 +362,7 @@ function App() {
                     </button>
 
                     {/* Category 4: Advanced Ballistics */}
-                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">4. Advanced Ballistics</div>
+                    <div className="col-span-2 text-emerald-400 font-bold text-[8.5px] sm:text-[10px] tracking-widest uppercase mt-1 sm:mt-2 mb-0 border-b border-emerald-900/50 pb-0.5">4. Advanced Ballistics</div>
                     <button onClick={() => openWindow('basic_geometry', 'Basic Geometry')} className="glass-card-btn !py-1 !text-sm">
                       <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">Basic Geometry</span>
                       พิกัดภูมิศาสตร์
@@ -381,14 +381,14 @@ function App() {
                     </button>
 
                     {/* Category 5: Logistics */}
-                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">5. Logistics</div>
+                    <div className="col-span-2 text-emerald-400 font-bold text-[8.5px] sm:text-[10px] tracking-widest uppercase mt-1 sm:mt-2 mb-0 border-b border-emerald-900/50 pb-0.5">5. Logistics</div>
                     <button onClick={() => openWindow('firing_log_ammo', 'Firing Log & Ammo Tracking')} className="glass-card-btn !py-1 !text-sm col-span-2">
                       <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">Firing Log & Ammo</span>
                       บันทึกการยิงและคลังแสง
                     </button>
 
                     {/* Category 6: Master-Level */}
-                    <div className="col-span-2 text-cyan-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-cyan-900/50 pb-0.5">6. Master-Level FDC</div>
+                    <div className="col-span-2 text-emerald-400 font-bold text-[8.5px] sm:text-[10px] tracking-widest uppercase mt-1 sm:mt-2 mb-0 border-b border-cyan-900/50 pb-0.5">6. Master-Level FDC</div>
                     <button onClick={() => openWindow('spatial_engagement', 'Spatial Engagement')} className="glass-card-btn !py-1 !text-sm border-cyan-500/50 hover:bg-cyan-900/30">
                       <span className="block text-[9px] text-cyan-400 tracking-wider uppercase">Spatial Engagement</span>
                       ยิงพื้นที่ใหญ่

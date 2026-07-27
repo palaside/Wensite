@@ -241,7 +241,7 @@ export function FOCalculatorView({ type, onClose }: FOCalculatorViewProps) {
             </div>
 
             {history.length > 0 && (
-              <div className="mt-4 bg-emerald-950/20 border border-emerald-900/30 rounded p-3 text-sm font-mono text-emerald-300 max-h-40 overflow-y-auto">
+              <div className="mt-4 bg-emerald-950/20 border border-emerald-900/30 rounded p-2 sm:p-3 text-xs sm:text-sm font-mono text-emerald-300 max-h-40 overflow-hidden">
                 {history.map((log, i) => (
                   <div key={i} className="mb-1 pb-1 border-b border-emerald-900/20 last:border-0 opacity-80 last:opacity-100 last:font-bold">{log}</div>
                 ))}
@@ -289,7 +289,7 @@ export function FOCalculatorView({ type, onClose }: FOCalculatorViewProps) {
             )}
 
             {history.length > 0 && (
-              <div className="mt-4 bg-emerald-950/20 border border-emerald-900/30 rounded p-3 text-sm font-mono text-emerald-300 max-h-40 overflow-y-auto">
+              <div className="mt-4 bg-emerald-950/20 border border-emerald-900/30 rounded p-2 sm:p-3 text-xs sm:text-sm font-mono text-emerald-300 max-h-40 overflow-hidden">
                 {history.map((log, i) => (
                   <div key={i} className="mb-1 pb-1 border-b border-emerald-900/20 last:border-0 opacity-80 last:opacity-100 last:font-bold">{log}</div>
                 ))}
@@ -396,7 +396,7 @@ export function FOCalculatorView({ type, onClose }: FOCalculatorViewProps) {
           </div>
 
           {/* Content */}
-          <div className="p-6 max-h-[80vh] overflow-y-auto">
+          <div className="p-3 sm:p-6 flex-1 overflow-hidden min-h-0 h-full flex flex-col justify-center">
             {renderContent()}
           </div>
         </motion.div>

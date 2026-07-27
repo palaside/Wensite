@@ -123,7 +123,7 @@ export const M17View = ({ isVisible, onClose }: M17ViewProps) => {
              
              {/* Top Right: Summary Data List */}
              <div className="w-[50%] h-full bg-[#03060a]/50 rounded-2xl border border-white/5 p-4 flex flex-col pt-12 relative overflow-hidden">
-                <div className="flex flex-col gap-3 overflow-y-auto custom-scrollbar shrink-0 max-h-[60%]">
+                <div className="flex flex-col gap-1 sm:gap-3 overflow-hidden shrink-0 max-h-full">
                   {allGuns.map((gun) => {
                     const d = section3Data[gun];
                     const isCenter = gun === mainGun;

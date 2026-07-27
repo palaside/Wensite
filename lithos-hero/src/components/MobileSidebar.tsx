@@ -57,7 +57,7 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({ activeModeId, setA
               <p className="text-xs text-emerald-400 uppercase tracking-widest mt-1">Select Active Mode</p>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-4 px-4 custom-scrollbar flex flex-col gap-3">
+            <div className="flex-1 overflow-hidden py-4 px-4 flex flex-col gap-3 justify-center">
               {MODES_DATA.map((mode) => {
                 const isActive = activeModeId === mode.id;
                 return (

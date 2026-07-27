@@ -160,7 +160,7 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
             </div>
 
             {/* Active Calculator Content */}
-            <div className="flex-1 overflow-y-auto def-scrollbar p-8">
+            <div className="flex-1 overflow-hidden p-2 sm:p-8 flex flex-col justify-center">
               
               {activeCalc === 1 && (
                 <div className="animate-[fade-in_0.5s_ease-out]">

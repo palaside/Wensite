@@ -57,7 +57,7 @@ export const WeaponsAmmunitionView: React.FC<WeaponsAmmunitionViewProps> = ({ is
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto p-6 custom-scrollbar relative">
+      <div className="flex-1 overflow-hidden p-2 sm:p-4 relative min-h-0 flex flex-col justify-center">
         <AnimatePresence mode="wait">
           {activeTab === 'fuze' && <FuzeSystemView key="fuze" />}
           {activeTab === 'ammo' && <AmmunitionSystemView key="ammo" />}

@@ -208,3 +208,27 @@
     print-color-adjust: exact !important;
   }
 }
+
+/* Height-based Responsive Utilities (No-Scroll Support) */
+@media (max-height: 800px) {
+  .glass-card-btn {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+  /* For elements inside buttons */
+  .glass-card-btn span.block {
+    font-size: 0.55rem !important;
+    margin-bottom: 0.1rem !important;
+  }
+}
+
+@media (max-height: 670px) {
+  .glass-card-btn {
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.15rem !important;
+    font-size: 0.75rem !important;
+  }
+  .glass-card-btn span.block {
+    font-size: 0.5rem !important;
+  }
+}

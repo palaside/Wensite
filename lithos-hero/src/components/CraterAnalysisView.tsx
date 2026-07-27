@@ -155,8 +155,8 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
               </button>
             </div>
 
-            {/* Content Body - Scrollable */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+            {/* Content Body */}
+            <div className="flex-1 overflow-hidden p-2 sm:p-4 space-y-4 sm:space-y-8 flex flex-col justify-center">
               
               {/* Part 1: Angle of Fall with Image Overlay */}
               <div className="space-y-4">

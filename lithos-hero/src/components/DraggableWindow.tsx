@@ -80,7 +80,7 @@ export const DraggableWindow: React.FC<DraggableWindowProps> = ({ window: win, c
       </div>
 
       {/* Content */}
-      <div className={`p-4 flex-1 overflow-auto custom-scrollbar text-emerald-50 ${isMobile ? 'h-full max-h-none pb-24' : 'max-h-[70vh]'}`}>
+      <div className={`p-4 flex-1 overflow-hidden text-emerald-50 ${isMobile ? 'h-full max-h-none pb-24' : 'max-h-[70vh]'}`}>
         {children}
       </div>
     </motion.div>

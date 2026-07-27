@@ -104,7 +104,7 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+        <div className="flex-1 overflow-hidden p-3 sm:p-6 flex flex-col gap-2 sm:gap-6 justify-center">
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             

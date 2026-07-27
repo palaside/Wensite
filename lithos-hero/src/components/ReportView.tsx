@@ -150,8 +150,8 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose, isEm
         </div>
 
         {/* Content Body */}
-        <div className="relative flex-1 overflow-y-auto px-4 py-4 sm:py-5 custom-scrollbar">
-          <div className={`space-y-4 ${isEmbedded ? 'pointer-events-none opacity-90' : ''}`}>
+        <div className="relative flex-1 overflow-hidden px-2 sm:px-4 py-2 sm:py-5 min-h-0 flex flex-col justify-center">
+          <div className={`space-y-2 sm:space-y-4 flex-1 flex flex-col min-h-0 justify-around ${isEmbedded ? 'pointer-events-none opacity-90' : ''}`}>
 
             {/* Section 1 */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
@@ -440,8 +440,8 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose, isEm
         </div>
 
         {/* Content Body */}
-        <div className="relative flex-1 overflow-y-auto px-0 py-4 sm:py-5 custom-scrollbar">
-          <div className="space-y-4">
+        <div className="relative flex-1 overflow-hidden px-0 py-2 sm:py-5 flex flex-col justify-center min-h-0">
+          <div className={`space-y-2 sm:space-y-4 flex-1 flex flex-col min-h-0 ${isEmbedded ? 'pointer-events-none opacity-90' : ''}`}>
             
             {/* Same content as embedded */}
             {/* Section 1 */}

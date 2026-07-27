@@ -194,7 +194,7 @@ export const TreeNav: React.FC<TreeNavProps> = ({ currentView, setCurrentView, i
             </div>
 
             {/* Tree Content */}
-            <div className="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <div className="flex-1 overflow-hidden py-4 flex flex-col justify-center">
               {renderTree(TREE_DATA)}
             </div>
             

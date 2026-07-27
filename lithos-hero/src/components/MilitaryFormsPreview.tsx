@@ -244,10 +244,10 @@ export const MilitaryFormsPreview = ({ isVisible, onClose }: { isVisible: boolea
 
   return (
     <div className="military-forms-preview-container fixed inset-0 z-50 bg-[#1a1a1a] flex justify-center items-center p-0 print:static print:block print:bg-white print:h-auto print:inset-auto">
-      <div className="w-full h-full bg-[#1a1a1a] overflow-hidden flex flex-col lg:flex-row print:block print:overflow-visible print:bg-white print:h-auto">
+      <div className="flex flex-col lg:flex-row w-full h-[100dvh] overflow-hidden bg-gray-900 print:bg-white print:h-auto">
         
-        {/* Left Panel: Inputs (Dark Theme) */}
-        <div className="w-full lg:w-1/3 xl:w-2/5 h-full overflow-y-auto p-4 custom-scrollbar text-white border-r border-gray-700 print:hidden">
+        {/* Left Column (Input Form) - Hidden during print */}
+        <div className="w-full lg:w-1/3 xl:w-2/5 h-full overflow-hidden p-2 sm:p-4 text-white border-r border-gray-700 print:hidden flex flex-col justify-center">
         
         {/* Header & Controls */}
         <div className="sticky top-0 z-30 bg-white border-b border-gray-200 p-4 md:p-6 shadow-sm flex flex-col gap-4 text-gray-900 rounded-lg">
@@ -437,14 +437,14 @@ export const MilitaryFormsPreview = ({ isVisible, onClose }: { isVisible: boolea
         <div className="w-full h-full flex flex-col gap-2 p-2 bg-gray-300 print:hidden">
           
           {/* Top Section: Form 344-201 */}
-          <div className="flex-none w-full overflow-x-auto overflow-y-auto bg-[#e5e7eb] custom-scrollbar p-4 flex flex-col items-center border-b-4 border-gray-400 max-h-[50%]">
+          <div className="flex-none w-full overflow-hidden bg-[#e5e7eb] custom-scrollbar p-4 flex flex-col items-center border-b-4 border-gray-400 max-h-[50%]">
              <div className="bg-white shadow-xl relative" style={{ width: '1320px', height: '720px', paddingTop: '40px', paddingBottom: '40px', paddingLeft: '40px', paddingRight: '40px' }}>
                {calcForm201 && <Form344_201 {...calcForm201} />}
              </div>
           </div>
 
           {/* Bottom Section: Form 344-202 - Paginated */}
-          <div className="flex-1 w-full overflow-y-auto overflow-x-auto bg-[#e5e7eb] custom-scrollbar p-4 flex flex-col gap-6 items-center">
+          <div className="flex-1 w-full overflow-hidden bg-[#e5e7eb] custom-scrollbar p-4 flex flex-col gap-6 items-center">
             {calcForm202Pages.map((chunk, idx) => (
               <div key={`ui-page-${idx}`} className="flex-none bg-white shadow-xl relative" style={{ width: '1750px', height: '1160px', paddingTop: '100px', paddingBottom: '60px', paddingLeft: '40px', paddingRight: '40px' }}>
                  <Form344_202 
