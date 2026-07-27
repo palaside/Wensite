@@ -431,7 +431,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose, isEm
         <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-emerald-700/20 blur-[80px] rounded-full pointer-events-none" />
 
         {/* Header */}
-        <div className="relative flex-none px-8 py-3 border-b border-white/10 flex flex-col items-center text-center">
+        <div className="relative shrink-0 flex-none px-8 py-3 border-b border-white/10 flex flex-col items-center text-center">
           <button onClick={onClose} className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
           </button>

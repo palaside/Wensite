@@ -74,7 +74,7 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
       <div className="bg-slate-900 border border-slate-700 w-full max-w-5xl rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col h-[90vh]">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-slate-800 border-b border-slate-700">
+        <div className="flex items-center justify-between px-6 py-4 bg-slate-800 border-b border-slate-700 shrink-0">
           <div className="flex items-center gap-4">
             <h2 className="text-2xl font-bold text-white tracking-widest uppercase">Target Database</h2>
             <span className="bg-emerald-900/50 text-emerald-400 border border-emerald-800 px-3 py-1 rounded-full text-xs font-bold tracking-wider">

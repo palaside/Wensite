@@ -147,7 +147,7 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
           <div className="bg-[#050a0f]/80 backdrop-blur-3xl border-r border-white/10 shadow-2xl h-full flex flex-col overflow-hidden relative">
             
             {/* Header / Brand */}
-            <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between">
+            <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-emerald-500/20 rounded-xl border border-emerald-500/30">
                   <Activity className="w-6 h-6 text-emerald-400" />

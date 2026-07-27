@@ -89,7 +89,7 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
       <div className="bg-slate-900/90 border border-slate-700 w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[90vh]">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700/50 bg-slate-800/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700/50 bg-slate-800/50 shrink-0">
           <h2 className="text-2xl font-bold text-white tracking-wide">
             {method === 'grid' && 'Grid Method (วิธีพิกัดกริด)'}
             {method === 'polar' && 'Polar Plot Method (วิธีโพลาร์)'}

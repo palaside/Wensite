@@ -250,7 +250,7 @@ export const MilitaryFormsPreview = ({ isVisible, onClose }: { isVisible: boolea
         <div className="w-full lg:w-1/3 xl:w-2/5 h-full overflow-hidden p-2 sm:p-4 text-white border-r border-gray-700 print:hidden flex flex-col justify-center">
         
         {/* Header & Controls */}
-        <div className="sticky top-0 z-30 bg-white border-b border-gray-200 p-4 md:p-6 shadow-sm flex flex-col gap-4 text-gray-900 rounded-lg">
+        <div className="sticky top-0 z-30 bg-white border-b border-gray-200 p-4 md:p-6 shadow-sm flex flex-col gap-4 text-gray-900 rounded-lg shrink-0">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-emerald-700">ระบบคำนวณงานวงรอบ</h1>
             <button 

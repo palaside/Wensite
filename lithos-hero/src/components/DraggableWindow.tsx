@@ -62,16 +62,14 @@ export const DraggableWindow: React.FC<DraggableWindowProps> = ({ window: win, c
         <div className="flex items-center gap-2">
           {/* Minimize button */}
           <button 
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={() => minimizeWindow(win.id)}
+            onPointerDown={(e) => { e.stopPropagation(); minimizeWindow(win.id); }}
             className="w-8 h-8 md:w-5 md:h-5 flex items-center justify-center text-emerald-500 hover:text-emerald-300 hover:bg-emerald-900/50 rounded transition-colors"
           >
             <svg className="w-4 h-4 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4"/></svg>
           </button>
           {/* Close button */}
           <button 
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={() => closeWindow(win.id)}
+            onPointerDown={(e) => { e.stopPropagation(); closeWindow(win.id); }}
             className="w-8 h-8 md:w-5 md:h-5 flex items-center justify-center text-red-500 hover:text-red-300 hover:bg-red-900/50 rounded transition-colors"
           >
             <svg className="w-4 h-4 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/></svg>

@@ -23,7 +23,7 @@ export const WeaponsAmmunitionView: React.FC<WeaponsAmmunitionViewProps> = ({ is
   return (
     <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex flex-col font-mono text-emerald-500 overflow-hidden">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-emerald-900/50 bg-black/50 gap-4 sm:gap-0">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-emerald-900/50 bg-black/50 gap-4 sm:gap-0 shrink-0">
         <div className="flex items-center gap-4 w-full sm:w-auto">
           <button 
             onClick={onClose}

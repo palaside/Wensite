@@ -135,7 +135,7 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
             {/* Center: Module */}
             <div className="relative w-full max-w-5xl h-[85dvh] bg-[#0a110f] border border-orange-500/30 rounded-xl shadow-2xl shadow-orange-900/20 flex flex-col overflow-hidden shrink-0">
             {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-orange-500/30 bg-gradient-to-r from-orange-900/40 to-transparent shrink-0">
+            <div className="flex items-center justify-between px-8 py-6 border-b border-orange-500/20 bg-orange-950/20 shrink-0">
               <div>
                 <h2 className="text-orange-400 font-bold text-2xl tracking-wider flex items-center gap-3">
                   <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
