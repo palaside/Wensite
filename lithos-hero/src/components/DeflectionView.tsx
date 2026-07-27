@@ -283,7 +283,7 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
         {/* Right Side: Bottom Feature Cards (60% width, row of 4) */}
         <div className="absolute bottom-0 right-0 w-[60%] flex flex-col justify-end px-8 pt-8 pb-0 z-20 pointer-events-none">
           
-          <div className="flex justify-between items-end mb-6 pointer-events-auto px-2">
+          <div className="flex justify-between items-end mb-6 px-2">
             <h3 className="text-white/50 text-lg sm:text-2xl md:text-[40px] font-medium tracking-widest uppercase drop-shadow-md">Select Tool</h3>
             
             {/* Status Indicator */}
@@ -296,7 +296,7 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full pointer-events-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
             {calculators.map((calc) => {
               const isActive = activeCalc === calc.id;
               const Icon = calc.icon;

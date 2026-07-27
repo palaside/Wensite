@@ -118,6 +118,7 @@ export function DigitalM2Compass({ isVisible, onClose, onSave, customPositionCla
     <AnimatePresence>
       <div className={`
         ${customPositionClass ? customPositionClass + ' pointer-events-auto' : 'fixed bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-6 md:right-6 scale-[0.8] md:scale-90 xl:scale-100 pointer-events-none'}
+        ${customPositionClass ? customPositionClass : 'fixed bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-6 md:right-6 scale-[0.8] md:scale-90 xl:scale-100'}
         z-[300] origin-bottom md:origin-top-right
       `}>
         
@@ -125,7 +126,7 @@ export function DigitalM2Compass({ isVisible, onClose, onSave, customPositionCla
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative w-[380px] bg-[#111]/95 backdrop-blur-xl border border-orange-500/30 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden pointer-events-auto"
+          className="relative w-[380px] bg-[#111]/95 backdrop-blur-xl border border-orange-500/30 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden"
         >
           {/* Header */}
           <div className="flex justify-between items-center p-3 border-b border-orange-500/20 bg-black/60">
