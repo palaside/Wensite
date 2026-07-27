@@ -20,6 +20,8 @@ export interface FDCSettings {
 }
 
 interface FDCContextType {
+  userLocation: { lat: number; lng: number };
+  setUserLocation: (loc: { lat: number; lng: number }) => void;
   windows: WindowState[];
   openWindow: (id: string, title: string, icon?: ReactNode) => void;
   closeWindow: (id: string) => void;
@@ -33,6 +35,8 @@ interface FDCContextType {
 }
 
 const defaultContext: FDCContextType = {
+  userLocation: { lat: 15.6709, lng: 100.1225 },
+  setUserLocation: () => {},
   windows: [],
   openWindow: () => {},
   closeWindow: () => {},
@@ -56,6 +60,7 @@ const FDCContext = createContext<FDCContextType>(defaultContext);
 export const useFDC = () => useContext(FDCContext);
 
 export const FDCProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number }>({ lat: 15.6709, lng: 100.1225 });
   const [windows, setWindows] = useState<WindowState[]>([]);
   const [settings, setSettings] = useState<FDCSettings>(defaultContext.settings);
   const [maxZ, setMaxZ] = useState(100);
@@ -122,7 +127,9 @@ export const FDCProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       minimizeWindow,
       closeAllWindows,
       settings,
-      updateSettings
+      updateSettings,
+      userLocation,
+      setUserLocation
     }}>
       {children}
     </FDCContext.Provider>

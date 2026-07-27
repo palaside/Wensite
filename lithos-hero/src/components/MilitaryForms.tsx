@@ -20,7 +20,7 @@ export interface Form201Props {
 
 export const Form344_201: React.FC<Form201Props> = (props) => {
   return (
-    <div className="w-full bg-white text-black p-4 font-sans print:p-0" style={{ minHeight: '100%' }}>
+    <div className="w-full bg-white text-black p-4 font-sans print:p-0 overflow-x-auto" style={{ minHeight: '100%' }}>
       {/* Document Number */}
       <div className="text-right font-bold text-3xl mb-4 pr-12">
         ทบ.344-201
@@ -189,7 +189,7 @@ export interface Form202Props {
 
 export const Form344_202: React.FC<Form202Props> = (props) => {
   return (
-    <div className="w-full h-full flex flex-col bg-white text-black p-2 md:p-4 font-sans print:p-0" style={{ overflowX: 'auto' }}>
+    <div className="w-full h-full flex flex-col bg-white text-black p-2 md:p-4 font-sans print:p-0 overflow-x-auto" style={{}}>
       <div className="flex-none text-right font-bold text-3xl mb-4 pr-12 w-full">
         ทบ.344-202
       </div>
