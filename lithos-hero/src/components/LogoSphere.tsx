@@ -29,7 +29,7 @@ const LogoSphere: React.FC<LogoSphereProps> = ({ activeLogo }) => {
         layoutId={activeLogo}
         src={activeLogo}
         alt="Active Mode Logo"
-        className="h-full w-full object-contain drop-shadow-2xl hero-zoom p-10 absolute inset-0 m-auto"
+        className="object-contain drop-shadow-2xl hero-zoom p-4 md:p-10 absolute inset-0 m-auto w-full h-full max-w-[12rem] max-h-[12rem] sm:max-w-[16rem] sm:max-h-[16rem] md:max-w-[28rem] md:max-h-[28rem]"
         transition={{ type: "spring", stiffness: 150, damping: 20 }}
       />
     </div>

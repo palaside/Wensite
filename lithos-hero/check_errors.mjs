@@ -1,0 +1,1 @@
+import puppeteer from 'puppeteer'; (async () => { const browser = await puppeteer.launch({ headless: true, acceptInsecureCerts: true }); const page = await browser.newPage(); await page.goto('https://localhost:5173', { waitUntil: 'networkidle0', timeout: 15000 }); const content = await page.content(); console.log(content); await browser.close(); })();

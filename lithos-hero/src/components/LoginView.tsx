@@ -50,7 +50,7 @@ export const LoginView = ({ isVisible, onClose, onLogin }: LoginViewProps) => {
 
         {/* Dog Tag Card (Realistic Stainless Steel) */}
         <div 
-          className="relative rounded-[50px] p-10 shadow-[0_30px_60px_rgba(0,0,0,0.9),inset_0_0_15px_rgba(0,0,0,0.3),inset_2px_2px_10px_rgba(255,255,255,0.9)] border border-[#888] overflow-hidden z-10"
+          className="relative rounded-[30px] sm:rounded-[50px] p-6 sm:p-4 md:p-10 shadow-[0_30px_60px_rgba(0,0,0,0.9),inset_0_0_15px_rgba(0,0,0,0.3),inset_2px_2px_10px_rgba(255,255,255,0.9)] border border-[#888] overflow-hidden z-10 w-[95%] sm:w-full mx-auto"
           style={{
             // Brushed stainless steel gradient
             background: `
@@ -71,64 +71,64 @@ export const LoginView = ({ isVisible, onClose, onLogin }: LoginViewProps) => {
           ></div>
           
           {/* Dog Tag Hole */}
-          <div className="absolute top-6 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-black shadow-[inset_0_4px_8px_rgba(0,0,0,0.9),0_2px_0_rgba(255,255,255,0.8)] border border-[#777]"></div>
+          <div className="absolute top-4 sm:top-6 left-1/2 -translate-x-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-black shadow-[inset_0_4px_8px_rgba(0,0,0,0.9),0_2px_0_rgba(255,255,255,0.8)] border border-[#777]"></div>
 
-          <form onSubmit={handleSubmit} className="relative z-10 mt-12 flex flex-col gap-6">
+          <form onSubmit={handleSubmit} className="relative z-10 mt-8 sm:mt-12 flex flex-col gap-4 sm:gap-6">
             
             {/* Indented Metal Text (Engraved style) */}
-            <div className="text-center mb-4">
+            <div className="text-center mb-2 sm:mb-4">
               <h2 
-                className="text-3xl font-black text-[#333] tracking-[0.2em] uppercase" 
+                className="text-xl sm:text-3xl font-black text-[#333] tracking-[0.15em] sm:tracking-[0.2em] uppercase" 
                 style={{ textShadow: '1px 1px 1px rgba(255,255,255,0.9), -1px -1px 1px rgba(0,0,0,0.4)' }}
               >
                 IDENTIFICATION
               </h2>
               <p 
-                className="text-sm text-[#444] font-bold tracking-widest mt-2"
+                className="text-xs sm:text-sm text-[#444] font-bold tracking-widest mt-1 sm:mt-2"
                 style={{ textShadow: '1px 1px 1px rgba(255,255,255,0.9), -1px -1px 1px rgba(0,0,0,0.3)' }}
               >
                 RESTRICTED ACCESS
               </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <div>
-                <label className="block text-sm font-bold text-[#1a1a1a] mb-2 pl-2 tracking-widest" style={{ textShadow: '1px 1px 1px rgba(255,255,255,0.3)' }}>USERNAME</label>
+                <label className="block text-xs sm:text-sm font-bold text-[#1a1a1a] mb-1 sm:mb-2 pl-2 tracking-widest" style={{ textShadow: '1px 1px 1px rgba(255,255,255,0.3)' }}>USERNAME</label>
                 <input 
                   type="text" 
                   value={username}
                   onChange={(e) => handleInput(setUsername, e.target.value)}
-                  className="w-full bg-[#111] border-2 border-[#222] rounded-lg px-5 py-3 text-[#00ff00] font-mono text-lg focus:outline-none focus:border-[#444] transition-colors shadow-[inset_0_4px_8px_rgba(0,0,0,0.8)]"
+                  className="w-full bg-[#111] border-2 border-[#222] rounded-lg px-4 sm:px-5 py-2 sm:py-3 text-[#00ff00] font-mono text-base sm:text-lg focus:outline-none focus:border-[#444] transition-colors shadow-[inset_0_4px_8px_rgba(0,0,0,0.8)]"
                   placeholder="ENTER ID..."
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-[#1a1a1a] mb-2 pl-2 tracking-widest" style={{ textShadow: '1px 1px 1px rgba(255,255,255,0.3)' }}>PASSWORD</label>
+                <label className="block text-xs sm:text-sm font-bold text-[#1a1a1a] mb-1 sm:mb-2 pl-2 tracking-widest" style={{ textShadow: '1px 1px 1px rgba(255,255,255,0.3)' }}>PASSWORD</label>
                 <input 
                   type="password" 
                   value={password}
                   onChange={(e) => handleInput(setPassword, e.target.value)}
-                  className="w-full bg-[#111] border-2 border-[#222] rounded-lg px-5 py-3 text-[#00ff00] font-mono text-lg focus:outline-none focus:border-[#444] transition-colors shadow-[inset_0_4px_8px_rgba(0,0,0,0.8)]"
+                  className="w-full bg-[#111] border-2 border-[#222] rounded-lg px-4 sm:px-5 py-2 sm:py-3 text-[#00ff00] font-mono text-base sm:text-lg focus:outline-none focus:border-[#444] transition-colors shadow-[inset_0_4px_8px_rgba(0,0,0,0.8)]"
                   placeholder="••••••••"
                   required
                 />
               </div>
             </div>
 
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-2 sm:gap-4 mt-2 sm:mt-6">
               <button 
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-3 rounded-md bg-[#333] text-[#1a1a1a] font-bold text-lg border-2 border-[#222] hover:bg-[#444] transition-colors uppercase tracking-widest"
+                className="flex-1 px-2 sm:px-4 py-2 sm:py-3 rounded-md bg-[#333] text-[#1a1a1a] font-bold text-sm sm:text-lg border-2 border-[#222] hover:bg-[#444] transition-colors uppercase tracking-widest"
                 style={{ boxShadow: 'inset 2px 2px 5px rgba(255,255,255,0.1), 2px 2px 5px rgba(0,0,0,0.5)', textShadow: '1px 1px 1px rgba(255,255,255,0.2)' }}
               >
                 ABORT
               </button>
               <button 
                 type="submit"
-                className="flex-1 px-4 py-3 rounded-md bg-[#4a5d23] text-white font-bold text-lg border-2 border-[#2c3815] hover:bg-[#5c732b] transition-colors uppercase tracking-widest"
+                className="flex-1 px-2 sm:px-4 py-2 sm:py-3 rounded-md bg-[#4a5d23] text-white font-bold text-sm sm:text-lg border-2 border-[#2c3815] hover:bg-[#5c732b] transition-colors uppercase tracking-widest"
                 style={{ boxShadow: 'inset 2px 2px 5px rgba(255,255,255,0.2), 2px 2px 5px rgba(0,0,0,0.5)', textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}
               >
                 AUTHORIZE

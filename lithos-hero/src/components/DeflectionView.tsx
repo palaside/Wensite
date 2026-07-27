@@ -12,13 +12,13 @@ const BG_IMAGE_1 = '/bg-dark.png'; // Assuming the user overwrites this or we us
 // --- Sub-components for Calculators ---
 
 const InputRow = ({ label, value, onChange }: { label: string, value: string, onChange: (val: string) => void }) => (
-  <div className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-white/5">
-    <span className="text-slate-300 font-medium mb-2 sm:mb-0 text-[40px]">{label}</span>
+  <div className="flex flex-col sm:flex-col md:flex-row sm:items-center justify-between py-3 border-b border-white/5">
+    <span className="text-slate-300 font-medium mb-2 sm:mb-0 text-lg sm:text-2xl md:text-[40px]">{label}</span>
     <input
       type="number"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-[#04060a]/80 border border-white/10 rounded-lg px-4 py-2 outline-none focus:border-emerald-500/50 font-mono text-emerald-400 text-right w-full sm:w-64 shadow-inner text-[40px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors"
+      className="bg-[#04060a]/80 border border-white/10 rounded-lg px-4 py-2 outline-none focus:border-emerald-500/50 font-mono text-emerald-400 text-right w-full sm:w-64 shadow-inner text-lg sm:text-2xl md:text-[40px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors"
     />
   </div>
 );
@@ -152,7 +152,7 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                 <div className="p-2 bg-emerald-500/20 rounded-xl border border-emerald-500/30">
                   <Activity className="w-6 h-6 text-emerald-400" />
                 </div>
-                <h1 className="text-white text-[40px] font-bold tracking-widest">TACTICAL<span className="font-light">CALC</span></h1>
+                <h1 className="text-white text-lg sm:text-2xl md:text-[40px] font-bold tracking-widest">TACTICAL<span className="font-light">CALC</span></h1>
               </div>
               <button onClick={onClose} className="p-3 bg-white/5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors border border-white/5">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -166,8 +166,8 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                 <div className="animate-[fade-in_0.5s_ease-out]">
                   <div className="mb-10">
                     <Target className="w-48 h-12 text-rose-500 mb-4" />
-                    <h2 className="text-[50px] font-bold text-white mb-2 leading-tight">การคำนวณมุมดัก</h2>
-                    <p className="text-slate-400 text-[36px]">ยิงเล็งตรงเป้าหมายเคลื่อนที่ (Lead Angle)</p>
+                    <h2 className="text-xl sm:text-3xl md:text-[50px] font-bold text-white mb-2 leading-tight">การคำนวณมุมดัก</h2>
+                    <p className="text-slate-400 text-base sm:text-xl md:text-[36px]">ยิงเล็งตรงเป้าหมายเคลื่อนที่ (Lead Angle)</p>
                   </div>
                   
                   <div className="space-y-2 mb-10">
@@ -176,13 +176,13 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                     <InputRow label="เวลาแล่นของกระสุน (วินาที)" value={c1Tof} onChange={setC1Tof} />
                   </div>
 
-                  <button onClick={() => handleCalculate(doCalc1)} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-colors tracking-widest mb-8 text-[40px]">
+                  <button onClick={() => handleCalculate(doCalc1)} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-colors tracking-widest mb-8 text-lg sm:text-2xl md:text-[40px]">
                     ประมวลผล (CALCULATE)
                   </button>
 
                   {c1Result !== null && (
                     <div className="bg-black/40 border border-emerald-500/30 rounded-2xl p-6 text-center animate-[fade-in_0.5s_ease-out]">
-                      <div className="text-slate-400 text-[40px] tracking-widest mb-2 uppercase">ผลลัพธ์มุมดัก (Lead Angle)</div>
+                      <div className="text-slate-400 text-lg sm:text-2xl md:text-[40px] tracking-widest mb-2 uppercase">ผลลัพธ์มุมดัก (Lead Angle)</div>
                       <div className="text-[70px] font-mono font-bold text-rose-500 drop-shadow-[0_0_15px_rgba(244,63,94,0.5)]">
                         {c1Result} มิล
                       </div>
@@ -195,8 +195,8 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                 <div className="animate-[fade-in_0.5s_ease-out]">
                   <div className="mb-10">
                     <Mountain className="w-48 h-12 text-blue-500 mb-4" />
-                    <h2 className="text-[50px] font-bold text-white mb-2 leading-tight">ระยะกำบัง</h2>
-                    <p className="text-slate-400 text-[36px]">Piece-to-Crest Range</p>
+                    <h2 className="text-xl sm:text-3xl md:text-[50px] font-bold text-white mb-2 leading-tight">ระยะกำบัง</h2>
+                    <p className="text-slate-400 text-base sm:text-xl md:text-[36px]">Piece-to-Crest Range</p>
                   </div>
                   
                   <div className="space-y-2 mb-10">
@@ -204,13 +204,13 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                     <InputRow label="มุมยอด (Apex Angle) มิลเลียม" value={c2Apex} onChange={setC2Apex} />
                   </div>
 
-                  <button onClick={() => handleCalculate(doCalc2)} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-colors tracking-widest mb-8 text-[40px]">
+                  <button onClick={() => handleCalculate(doCalc2)} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-colors tracking-widest mb-8 text-lg sm:text-2xl md:text-[40px]">
                     ประมวลผล (CALCULATE)
                   </button>
 
                   {c2Result !== null && (
                     <div className="bg-black/40 border border-emerald-500/30 rounded-2xl p-6 text-center animate-[fade-in_0.5s_ease-out]">
-                      <div className="text-slate-400 text-[40px] tracking-widest mb-2 uppercase">ระยะกำบังตั้ง ป.</div>
+                      <div className="text-slate-400 text-lg sm:text-2xl md:text-[40px] tracking-widest mb-2 uppercase">ระยะกำบังตั้ง ป.</div>
                       <div className="text-[70px] font-mono font-bold text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.3)]">
                         {c2Result.rounded} ม.
                       </div>
@@ -224,8 +224,8 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                 <div className="animate-[fade-in_0.5s_ease-out]">
                   <div className="mb-10">
                     <Triangle className="w-48 h-12 text-amber-500 mb-4" />
-                    <h2 className="text-[50px] font-bold text-white mb-2 leading-tight">ฐานสามเหลี่ยมคงที่</h2>
-                    <p className="text-slate-400 text-[36px]">หาระยะวิธีฐานสามเหลี่ยมคงที่ (Subtense)</p>
+                    <h2 className="text-xl sm:text-3xl md:text-[50px] font-bold text-white mb-2 leading-tight">ฐานสามเหลี่ยมคงที่</h2>
+                    <p className="text-slate-400 text-base sm:text-xl md:text-[36px]">หาระยะวิธีฐานสามเหลี่ยมคงที่ (Subtense)</p>
                   </div>
                   
                   <div className="space-y-2 mb-10">
@@ -233,13 +233,13 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                     <InputRow label="มุมที่อ่านได้ (มิลเลียม)" value={c3Angle} onChange={setC3Angle} />
                   </div>
 
-                  <button onClick={() => handleCalculate(doCalc3)} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-colors tracking-widest mb-8 text-[40px]">
+                  <button onClick={() => handleCalculate(doCalc3)} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-colors tracking-widest mb-8 text-lg sm:text-2xl md:text-[40px]">
                     ประมวลผล (CALCULATE)
                   </button>
 
                   {c3Result !== null && (
                     <div className="bg-black/40 border border-emerald-500/30 rounded-2xl p-6 text-center animate-[fade-in_0.5s_ease-out]">
-                      <div className="text-slate-400 text-[40px] tracking-widest mb-2 uppercase">ระยะทางที่คำนวณได้</div>
+                      <div className="text-slate-400 text-lg sm:text-2xl md:text-[40px] tracking-widest mb-2 uppercase">ระยะทางที่คำนวณได้</div>
                       <div className="text-[70px] font-mono font-bold text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]">
                         {c3Result} ม.
                       </div>
@@ -252,8 +252,8 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                 <div className="animate-[fade-in_0.5s_ease-out]">
                   <div className="mb-10">
                     <Compass className="w-48 h-12 text-purple-500 mb-4" />
-                    <h2 className="text-[50px] font-bold text-white mb-2 leading-tight">มุมภาคที่ถูกต้อง</h2>
-                    <p className="text-slate-400 text-[36px]">และมุมเยื้องกล้อง (True Azimuth)</p>
+                    <h2 className="text-xl sm:text-3xl md:text-[50px] font-bold text-white mb-2 leading-tight">มุมภาคที่ถูกต้อง</h2>
+                    <p className="text-slate-400 text-base sm:text-xl md:text-[36px]">และมุมเยื้องกล้อง (True Azimuth)</p>
                   </div>
                   
                   <div className="space-y-2 mb-10">
@@ -261,13 +261,13 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                     <InputRow label="มุมเยื้อง / แม่เหล็ก (Declination)" value={c4Dec} onChange={setC4Dec} />
                   </div>
 
-                  <button onClick={() => handleCalculate(doCalc4)} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-colors tracking-widest mb-8 text-[40px]">
+                  <button onClick={() => handleCalculate(doCalc4)} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-colors tracking-widest mb-8 text-lg sm:text-2xl md:text-[40px]">
                     ประมวลผล (CALCULATE)
                   </button>
 
                   {c4Result !== null && (
                     <div className="bg-black/40 border border-emerald-500/30 rounded-2xl p-6 text-center animate-[fade-in_0.5s_ease-out]">
-                      <div className="text-slate-400 text-[40px] tracking-widest mb-2 uppercase">มุมภาคที่ถูกต้อง</div>
+                      <div className="text-slate-400 text-lg sm:text-2xl md:text-[40px] tracking-widest mb-2 uppercase">มุมภาคที่ถูกต้อง</div>
                       <div className="text-[70px] font-mono font-bold text-purple-400 drop-shadow-[0_0_15px_rgba(192,132,252,0.3)]">
                         {c4Result} มิล
                       </div>
@@ -284,19 +284,19 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
         <div className="absolute bottom-0 right-0 w-[60%] flex flex-col justify-end px-8 pt-8 pb-0 z-20 pointer-events-none">
           
           <div className="flex justify-between items-end mb-6 pointer-events-auto px-2">
-            <h3 className="text-white/50 text-[40px] font-medium tracking-widest uppercase drop-shadow-md">Select Tool</h3>
+            <h3 className="text-white/50 text-lg sm:text-2xl md:text-[40px] font-medium tracking-widest uppercase drop-shadow-md">Select Tool</h3>
             
             {/* Status Indicator */}
             <div className="flex flex-col items-end gap-2">
-              <div className="text-white/40 text-[40px] font-mono drop-shadow-md">SYSTEM READY</div>
-              <div className="flex items-center gap-2 text-emerald-500 text-[40px] font-mono bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+              <div className="text-white/40 text-lg sm:text-2xl md:text-[40px] font-mono drop-shadow-md">SYSTEM READY</div>
+              <div className="flex items-center gap-2 text-emerald-500 text-lg sm:text-2xl md:text-[40px] font-mono bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
                 <span className={`w-2 h-2 rounded-full ${isFiring ? 'bg-rose-500' : 'bg-emerald-500'} animate-pulse`}></span>
                 {isFiring ? 'FIRING SEQUENCE INITIATED' : `STANDBY (CALC ${calcCount})`}
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 w-full pointer-events-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full pointer-events-auto">
             {calculators.map((calc) => {
               const isActive = activeCalc === calc.id;
               const Icon = calc.icon;
@@ -309,8 +309,8 @@ export const DeflectionView: React.FC<DeflectionViewProps> = ({ isVisible, onClo
                   <div className={`p-4 rounded-xl mb-3 ${isActive ? 'bg-emerald-500/20' : 'bg-white/5'}`}>
                     <Icon className={`w-10 h-10 ${isActive ? 'text-emerald-400' : 'text-slate-400'}`} />
                   </div>
-                  <div className={`text-[40px] font-bold drop-shadow-md mb-2 ${isActive ? 'text-white' : 'text-slate-300'}`}>{calc.title}</div>
-                  <div className="text-[40px] text-slate-400 leading-snug">{calc.sub}</div>
+                  <div className={`text-lg sm:text-2xl md:text-[40px] font-bold drop-shadow-md mb-2 ${isActive ? 'text-white' : 'text-slate-300'}`}>{calc.title}</div>
+                  <div className="text-lg sm:text-2xl md:text-[40px] text-slate-400 leading-snug">{calc.sub}</div>
                 </button>
               );
             })}

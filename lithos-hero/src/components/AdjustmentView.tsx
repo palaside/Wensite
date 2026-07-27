@@ -205,7 +205,7 @@ export const AdjustmentView: React.FC<AdjustmentViewProps> = ({ isVisible, onClo
                 </span>
               </h3>
               
-              <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                 <button 
                   onClick={() => handleRangeShift('ADD', suggestedBracket || 400)}
                   className="bg-amber-700/80 hover:bg-amber-600 text-white font-bold py-4 rounded-lg flex flex-col items-center justify-center gap-1 transition-all"
@@ -222,7 +222,7 @@ export const AdjustmentView: React.FC<AdjustmentViewProps> = ({ isVisible, onClo
                 </button>
               </div>
 
-              <div className="grid grid-cols-4 gap-2 mt-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mt-auto">
                 {[400, 200, 100, 50].map(val => {
                   const isSuggested = suggestedBracket === val;
                   return (

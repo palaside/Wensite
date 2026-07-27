@@ -12,10 +12,10 @@
 
 .m17-board {
   position: relative;
-  width: 1000px;
-  height: 600px;
+  width: 1500px;
+  height: 800px;
   background: #f0f0f0;
-  border-radius: 300px 20px 20px 300px;
+  border-radius: 400px 20px 20px 400px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3), inset 0 2px 10px rgba(255,255,255,0.8);
   overflow: hidden;
   border: 1px solid #ccc;
@@ -23,10 +23,10 @@
 
 .m17-grid-layer {
   position: absolute;
-  top: 50px;
-  left: 50px;
-  width: 500px;
-  height: 500px;
+  top: 25px;
+  left: 30px;
+  width: 750px;
+  height: 750px;
   border-radius: 50%;
   background-color: white;
   border: 2px solid #333;
@@ -34,21 +34,21 @@
 }
 
 .m17-grid-pattern {
-  stroke: #ff4444;
+  stroke: rgba(255, 68, 68, 0.25);
   stroke-width: 0.5;
 }
 
 .m17-grid-pattern-major {
-  stroke: #cc0000;
+  stroke: rgba(204, 0, 0, 0.4);
   stroke-width: 1.5;
 }
 
 .m17-rotating-disc {
   position: absolute;
-  top: 50px;
-  left: 50px;
-  width: 500px;
-  height: 500px;
+  top: 25px;
+  left: 30px;
+  width: 750px;
+  height: 750px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(0,0,0,0.5);

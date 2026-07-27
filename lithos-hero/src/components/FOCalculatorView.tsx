@@ -115,7 +115,7 @@ export function FOCalculatorView({ type, onClose }: FOCalculatorViewProps) {
               <label className="block text-xs text-gray-400 uppercase tracking-wider mb-1">มุม (mils)</label>
               <input type="number" value={input2} onChange={e => setInput2(e.target.value)} className="w-full bg-black/40 border border-emerald-900/30 rounded p-2 text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="เช่น 400" />
             </div>
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="bg-emerald-950/40 p-3 rounded-lg text-center border border-emerald-800/50">
                 <div className="text-xs text-emerald-500/70 uppercase tracking-widest mb-1">ย้ายทางข้าง (Sine: {sinF})</div>
                 <div className="text-2xl font-bold text-emerald-400">{lateral.toFixed(0)} <span className="text-sm">ม.</span></div>
@@ -270,7 +270,7 @@ export function FOCalculatorView({ type, onClose }: FOCalculatorViewProps) {
             <p className="text-sm text-gray-300">กระสุนชนวนเวลา: นัดแรกกระทบแตกแก้ 40, คละแก้ 20</p>
             
             {hobState === 'start' ? (
-              <div className="grid grid-cols-2 gap-2 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-2 mt-4">
                 <button onClick={() => handleHobInit('graze')} className="bg-amber-900/30 hover:bg-amber-900/50 text-amber-400 border border-amber-800/50 rounded p-3 font-bold">
                   💥 กระทบแตก (Graze)
                 </button>
@@ -281,7 +281,7 @@ export function FOCalculatorView({ type, onClose }: FOCalculatorViewProps) {
             ) : (
               <div className="mt-4">
                 <label className="block text-xs text-gray-400 uppercase tracking-wider mb-2 text-center">ปรับแก้ในนัดต่อไป (ทีละ 5 เมตร)</label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-2">
                   <button onClick={() => handleHobAdjust(5)} className="bg-emerald-900/30 hover:bg-emerald-800/50 text-emerald-400 border border-emerald-800/50 rounded py-2">สูงขึ้น 5 (Up 5)</button>
                   <button onClick={() => handleHobAdjust(-5)} className="bg-emerald-900/30 hover:bg-emerald-800/50 text-emerald-400 border border-emerald-800/50 rounded py-2">ต่ำลง 5 (Down 5)</button>
                 </div>

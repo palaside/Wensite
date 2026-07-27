@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DigitalM2Compass } from './DigitalM2Compass';
+import { MapView } from './MapView';
 
 interface CraterAnalysisViewProps {
   isVisible: boolean;
@@ -121,8 +122,18 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-5xl max-h-[90vh] bg-[#0a110f] border border-orange-500/30 rounded-xl shadow-2xl shadow-orange-900/20 flex flex-col overflow-hidden"
+            className="relative flex items-start gap-4 max-w-full w-full justify-center px-4"
           >
+            {/* Left: MapView */}
+            <div className="mt-0 shrink-0 hidden lg:block">
+              <MapView 
+                isVisible={true}
+                customPositionClass="relative w-[380px] h-[320px] rounded-2xl flex flex-col overflow-hidden bg-[#111]/95 backdrop-blur-xl border border-emerald-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)]"
+              />
+            </div>
+
+            {/* Center: Module */}
+            <div className="relative w-full max-w-5xl h-[85dvh] bg-[#0a110f] border border-orange-500/30 rounded-xl shadow-2xl shadow-orange-900/20 flex flex-col overflow-hidden shrink-0">
             {/* Header */}
             <div className="flex justify-between items-center p-6 border-b border-orange-500/30 bg-gradient-to-r from-orange-900/40 to-transparent shrink-0">
               <div>
@@ -154,30 +165,30 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
                   วิเคราะห์มุมกระสุนตกจากหลุมระเบิด
                 </h3>
                 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                <div className="flex flex-col gap-6 items-center w-full">
                   {/* Image with overlays */}
-                  <div className="relative rounded-lg overflow-hidden border border-orange-500/30 group">
+                  <div className="relative rounded-lg overflow-hidden border border-orange-500/30 group w-full">
                     <img src="/Bomb Analysis.png" alt="Crater Analysis" className="w-full h-auto" />
                     
                     {/* Overlays for angles */}
-                    <div className="absolute top-[25%] right-[24%] bg-black/70 px-2 py-1 rounded text-orange-400 font-bold font-mono text-sm border border-orange-500/50 backdrop-blur-sm">
+                    <div className="absolute top-[10%] sm:top-[20%] right-[28%] bg-black/70 px-2 sm:px-4 py-1 sm:py-2 rounded-lg text-orange-400 font-bold font-mono text-xs sm:text-lg md:text-2xl border border-orange-500/50 backdrop-blur-sm shadow-lg pointer-events-none">
                       {angle1 ? `${angle1}°` : 'มุม 1'}
                     </div>
-                    <div className="absolute bottom-[35%] left-[55%] bg-black/70 px-2 py-1 rounded text-emerald-400 font-bold font-mono text-sm border border-emerald-500/50 backdrop-blur-sm">
+                    <div className="absolute bottom-[25%] sm:bottom-[35%] left-[30%] sm:left-[40%] bg-black/70 px-2 sm:px-4 py-1 sm:py-2 rounded-lg text-emerald-400 font-bold font-mono text-xs sm:text-lg md:text-2xl border border-emerald-500/50 backdrop-blur-sm shadow-lg pointer-events-none">
                       {angle2 ? `${angle2}°` : 'มุม 2'}
                     </div>
-                    <div className="absolute bottom-[37%] right-[32%] bg-black/70 px-2 py-1 rounded text-blue-400 font-bold font-mono text-sm border border-blue-500/50 backdrop-blur-sm">
+                    <div className="absolute bottom-[25%] sm:bottom-[35%] right-[15%] sm:right-[25%] bg-black/70 px-2 sm:px-4 py-1 sm:py-2 rounded-lg text-blue-400 font-bold font-mono text-xs sm:text-lg md:text-2xl border border-blue-500/50 backdrop-blur-sm shadow-lg pointer-events-none">
                       {angle3 ? `${angle3}°` : 'มุม 3'}
                     </div>
                   </div>
                   
                   {/* Inputs and Analysis */}
-                  <div className="space-y-4">
+                  <div className="space-y-4 w-full">
                     <div className="bg-orange-950/20 p-4 rounded-lg border border-orange-500/20 text-sm text-gray-300">
                       <div className="flex justify-between items-center mb-4">
                         <p className="text-orange-400 font-semibold">ป้อนค่ามุมที่วัดได้:</p>
                       </div>
-                      <div className="grid grid-cols-3 gap-3 mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                         <div>
                           <label className="block text-xs text-orange-400/80 mb-1">มุม 1 (ลูกดิ่ง)</label>
                           <input type="number" value={angle1} onChange={e => setAngle1(e.target.value)} className="w-full bg-black/60 border border-orange-500/50 rounded p-2 text-center text-orange-400 focus:outline-none focus:border-orange-400 font-mono" placeholder="องศา" />
@@ -296,7 +307,7 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
                     {evidenceType === 'mortar' && (
                       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-orange-950/10 p-4 rounded-lg border border-orange-900/30">
                          <label className="block text-xs text-gray-400 mb-2">จำนวนครีบหางที่นับได้</label>
-                         <div className="grid grid-cols-4 gap-2">
+                         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                             {['60', '81', '82', '120'].map(fins => (
                                <button 
                                  key={fins}
@@ -313,7 +324,7 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
                     {evidenceType === 'rocket' && (
                       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-orange-950/10 p-4 rounded-lg border border-orange-900/30">
                          <label className="block text-xs text-gray-400 mb-2">ลักษณะและจำนวนรูที่ปลายท่อดินขับ</label>
-                         <div className="grid grid-cols-2 gap-2">
+                         <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-2">
                             <button onClick={() => setRocketHoles('107')} className={`p-3 rounded border text-sm ${rocketHoles === '107' ? 'bg-orange-500 text-white border-orange-400' : 'bg-black border-gray-700 text-gray-400'}`}>6 รู (ลักษณะเอียง)</button>
                             <button onClick={() => setRocketHoles('122')} className={`p-3 rounded border text-sm ${rocketHoles === '122' ? 'bg-orange-500 text-white border-orange-400' : 'bg-black border-gray-700 text-gray-400'}`}>7 รู (ลักษณะตรง)</button>
                          </div>
@@ -383,6 +394,17 @@ export function CraterAnalysisView({ isVisible, onClose }: CraterAnalysisViewPro
               </div>
             </div>
             
+            {/* End of Center Module */}
+            </div>
+
+            {/* Right: Compass */}
+            <div className="mt-0 shrink-0 hidden lg:block origin-top-left">
+              <DigitalM2Compass 
+                isVisible={true}
+                customPositionClass="relative scale-[0.8] origin-top-left drop-shadow-2xl"
+              />
+            </div>
+
           </motion.div>
         </div>
       )}

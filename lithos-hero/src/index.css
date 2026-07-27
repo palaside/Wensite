@@ -1,7 +1,8 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500;1,600&display=swap');
+@import "tailwindcss";
 
-* { font-family: 'Inter', sans-serif; }
+
+* { font-family: 'Noto Sans Thai', 'Inter', sans-serif; }
 .font-playfair { font-family: 'Playfair Display', serif; }
 
 @keyframes heroReveal { 0%{opacity:0;transform:translateY(28px);filter:blur(12px)} 100%{opacity:1;transform:translateY(0);filter:blur(0)} }
@@ -57,14 +58,17 @@
 }
 
 .logo-sphere-container {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 1700px;
   height: 1700px;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  z-index: 20;
+  z-index: -1;
 }
 
 /* Simple outer spinning lasers */
@@ -97,16 +101,16 @@
 .glass-card-btn {
   background: rgba(20, 20, 25, 0.8);
   backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 32px 64px;
-  font-size: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  padding: clamp(0.75rem, 3vw, 1.25rem) clamp(1rem, 4vw, 2rem);
+  border-radius: 1rem;
   color: white;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-weight: 600;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
   font-weight: 500;
-  width: 500px;
+  width: 100%;
 }
 
 .glass-card-btn:hover {
@@ -122,4 +126,85 @@
 .mode-logo-inactive:hover {
   transform: scale(1.1);
   filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+}
+
+.military-no-border-col {
+  border: none !important;
+}
+
+
+.military-outline > td,
+.military-outline > th {
+  border-left-width: 2px !important;
+  border-right-width: 2px !important;
+}
+
+.military-outline-row > td,
+.military-outline-row > th {
+  border-top-width: 1px !important;
+  border-bottom-width: 1px !important;
+}
+
+.military-no-border-col {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+.military-no-border-col-left {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  border-right: 0 !important;
+}
+
+.military-no-border-col-right {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+}
+
+.military-diagonal {
+  position: relative;
+}
+
+.military-diagonal::after {
+  content: '';
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 50%;
+  height: 1.5px;
+  background: #000;
+  transform: translateY(-50%) rotate(-45deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+  
+  /* Hide Navigation */
+  nav {
+    display: none !important;
+  }
+
+  /* Isolate the Preview Container by hiding its siblings */
+  section > *:not(.military-forms-preview-container) {
+    display: none !important;
+  }
+
+  /* Force white background globally */
+  body, html, #root {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }

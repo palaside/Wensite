@@ -4,18 +4,18 @@ import { FiringTable } from '../data/FiringTable';
 import { useReportContext } from '../context/ReportContext';
 
 const Sec2Card = ({ topLabel, bottomLabel, inputs }: any) => (
-  <div className="flex items-center justify-between bg-[#0a0f1d] rounded-2xl p-3 sm:p-4 border border-white/5 shadow-lg w-full">
-    <div className="flex flex-col items-center justify-center min-w-[70px] mr-2">
-      <span className="text-white text-[40px] font-medium tracking-wide">{topLabel}</span>
-      <div className="w-full h-[1px] bg-white/20 my-2"></div>
-      <span className="text-white text-[40px] font-medium tracking-wide">{bottomLabel}</span>
+  <div className="flex items-center justify-between bg-[#0a0f1d] rounded-2xl p-2 sm:p-3 md:p-4 border border-white/5 shadow-lg w-full overflow-hidden">
+    <div className="flex flex-col items-center justify-center min-w-[50px] sm:min-w-[70px] mr-1 sm:mr-2 shrink-0">
+      <span className="text-white text-sm sm:text-lg md:text-2xl lg:text-[40px] font-medium tracking-wide">{topLabel}</span>
+      <div className="w-full h-[1px] bg-white/20 my-1 sm:my-2"></div>
+      <span className="text-white text-sm sm:text-lg md:text-2xl lg:text-[40px] font-medium tracking-wide text-center">{bottomLabel}</span>
     </div>
-    <div className="flex gap-2 sm:gap-3 flex-1 justify-end pr-1">
+    <div className="flex gap-1 sm:gap-2 md:gap-3 flex-1 justify-end pr-1 flex-wrap min-w-0">
       {inputs.map((inp: any, idx: number) => (
-        <div key={idx} className="flex flex-col items-center gap-2">
-          <span className="text-slate-200 text-[40px]">{inp.label}</span>
+        <div key={idx} className="flex flex-col items-center gap-1 min-w-0">
+          <span className="text-slate-200 font-light text-xs sm:text-sm md:text-xl lg:text-[40px] whitespace-nowrap">{inp.label}</span>
           {inp.isText ? (
-            <div className={`py-1 text-center text-emerald-400 text-[40px] font-mono font-bold ${inp.widthClass || 'w-64'}`}>
+            <div className={`py-1 text-center text-emerald-400 text-sm sm:text-lg md:text-2xl lg:text-[40px] font-mono font-bold ${inp.widthClass || 'w-16 sm:w-32 md:w-64'}`}>
               {inp.value !== undefined ? inp.value : inp.defaultValue}
             </div>
           ) : (
@@ -24,7 +24,7 @@ const Sec2Card = ({ topLabel, bottomLabel, inputs }: any) => (
               value={inp.value !== undefined ? inp.value : inp.defaultValue}
               onChange={inp.onChange}
               readOnly={inp.readOnly}
-              className={`bg-[#060913] border border-white/5 rounded-lg py-1 text-center text-emerald-400 text-[40px] font-mono focus:outline-none focus:border-emerald-500/30 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${inp.widthClass || 'w-64'} ${inp.readOnly ? 'opacity-70 pointer-events-none' : ''}`}
+              className={`bg-[#060913] border border-white/5 rounded-lg py-1 text-center text-emerald-400 text-sm sm:text-lg md:text-2xl lg:text-[40px] font-mono focus:outline-none focus:border-emerald-500/30 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-14 sm:w-24 md:${inp.widthClass || 'w-full max-w-[16rem]'} ${inp.readOnly ? 'opacity-70 pointer-events-none' : ''}`}
             />
           )}
         </div>
@@ -33,12 +33,14 @@ const Sec2Card = ({ topLabel, bottomLabel, inputs }: any) => (
   </div>
 );
 
+
 interface ReportViewProps {
   isVisible: boolean;
   onClose: () => void;
+  isEmbedded?: boolean;
 }
 
-export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose }) => {
+export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose, isEmbedded }) => {
   const {
     method1, setMethod1, azimuth, setAzimuth, mainGun, setMainGun, isOverlapCenter, setIsOverlapCenter,
     centerAzimuth, setCenterAzimuth, centerAngleK, setCenterAngleK, op2Azimuth, setOp2Azimuth, op2AngleK, setOp2AngleK,
@@ -47,7 +49,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose }) =>
   } = useReportContext();
 
   const numInputStyle = "bg-slate-900/50 border border-white/10 text-emerald-400 rounded-lg px-3 py-1 outline-none focus:border-emerald-500 font-mono w-48 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors";
-  const numInputSmallStyle = "bg-slate-900/50 border border-white/10 text-emerald-400 rounded px-2 py-1 outline-none focus:border-emerald-500 font-mono w-40 text-center text-[40px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+  const numInputSmallStyle = "bg-slate-900/50 border border-white/10 text-emerald-400 rounded px-2 py-1 outline-none focus:border-emerald-500 font-mono w-full sm:w-40 text-center text-base sm:text-lg xl:text-2xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
   const handleGunAzimuthChange = (gun: number, value: string) => setGunAzimuths(prev => ({ ...prev, [gun]: value }));
   const handleGunAngleKChange = (gun: number, value: string) => setGunAngleKs(prev => ({ ...prev, [gun]: value }));
@@ -129,37 +131,37 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose }) =>
 
   // Common styles
 
-  const numInputTinyStyle = "bg-slate-900/50 border border-white/10 text-emerald-400 rounded px-1 py-0.5 outline-none focus:border-emerald-500 font-mono text-[40px] w-48 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors";
+  const numInputTinyStyle = "bg-slate-900/50 border border-white/10 text-emerald-400 rounded px-1 py-0.5 outline-none focus:border-emerald-500 font-mono text-base sm:text-lg xl:text-2xl w-full sm:w-48 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors";
 
-  return (
-    <div className={`absolute inset-0 z-[110] flex items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isVisible ? 'opacity-100 pointer-events-auto backdrop-blur-md bg-slate-900/40' : 'opacity-0 pointer-events-none'}`}>
-      <div className={`relative w-[100vw] h-[100vh] max-w-none rounded-none overflow-hidden flex flex-col shadow-2xl transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] delay-100 ${isVisible ? 'translate-y-0 scale-100' : 'translate-y-12 scale-95'}`}>
-        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-3xl" />
-        <div className="absolute -top-32 -right-32 w-64 h-64 bg-emerald-500/20 blur-[80px] rounded-full pointer-events-none" />
-        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-emerald-700/20 blur-[80px] rounded-full pointer-events-none" />
+  // Dynamic Layout Classes based on isEmbedded
+  const sec2GridClass = isEmbedded ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-1 md:grid-cols-1 md:grid-cols-2 xl:grid-cols-1 md:grid-cols-3';
+  const sec21GridClass = isEmbedded ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+  const sec3GridClass = isEmbedded ? 'grid-cols-[120px_1fr_1fr] md:grid-cols-[160px_1fr_1fr]' : 'grid-cols-[140px_1fr_1fr] xl:grid-cols-[200px_1fr_1fr]';
+  const sec45GridClass = isEmbedded ? 'grid-cols-1' : 'grid-cols-1 xl:grid-cols-1 md:grid-cols-1 md:grid-cols-2';
 
+  // When embedded, we don't want the full screen backdrop or the close button
+  if (isEmbedded) {
+    return (
+      <div className={`relative w-full h-full flex flex-col ${isVisible ? 'opacity-100' : 'opacity-0 hidden'}`}>
         {/* Header */}
-        <div className="relative flex-none px-8 py-3 border-b border-white/10 flex flex-col items-center text-center">
-          <button onClick={onClose} className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          </button>
-          <h2 className="text-emerald-400 text-[50px] sm:text-[60px] font-bold tracking-tight mb-2 drop-shadow-md">แบบรายงาน รอง ผบ.ร้อย ป.</h2>
-          <p className="text-slate-300 text-[40px] font-medium">การคำนวณมุมยิงต่ำสุด (Calculation of the minimum shot angle)</p>
+        <div className="relative flex-none px-8 py-3 flex flex-col items-center text-center">
+          <h2 className="text-emerald-400 text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-1 drop-shadow-md">แบบรายงาน รอง ผบ.ร้อย ป.</h2>
+          <p className="text-slate-300 text-xs sm:text-sm md:text-base font-medium">การคำนวณมุมยิงต่ำสุด (Calculation of the minimum shot angle)</p>
         </div>
 
         {/* Content Body */}
-        <div className="relative flex-1 overflow-y-auto px-0 py-4 sm:py-5 custom-scrollbar">
-          <div className="space-y-4">
+        <div className="relative flex-1 overflow-y-auto px-4 py-4 sm:py-5 custom-scrollbar">
+          <div className={`space-y-4 ${isEmbedded ? 'pointer-events-none opacity-90' : ''}`}>
 
             {/* Section 1 */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3">
+              <div className="flex flex-col sm:flex-col md:flex-row items-start sm:items-center justify-between gap-3 mb-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-emerald-400 font-bold text-[40px]">๑.</span>
-                  <h4 className="text-[40px] font-bold text-white">กองร้อยตั้ง ป. ตรงทิศ วิธี</h4>
+                  <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๑.</span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-bold text-white">กองร้อยตั้ง ป. ตรงทิศ วิธี</h4>
                 </div>
                 <div className="flex items-center gap-3">
-                  <select value={method1} onChange={(e) => setMethod1(e.target.value)} className="bg-slate-900 border border-emerald-500/30 text-white rounded-lg px-3 py-1.5 outline-none focus:border-emerald-500 font-mono text-[40px]">
+                  <select value={method1} onChange={(e) => setMethod1(e.target.value)} className="bg-slate-900 border border-emerald-500/30 text-white rounded-lg px-2 py-1 outline-none focus:border-emerald-500 font-mono text-sm sm:text-base max-w-full">
                     <option value="1">กองร้อยด้วยวิธีมุมตรงทิศ</option>
                     <option value="2">กองร้อยด้วยวิธีเข็มทิศ</option>
                     <option value="3">เข็มทิศ M2</option>
@@ -169,38 +171,38 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose }) =>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-black/30 p-3 rounded-xl border border-white/5">
-                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 text-[40px]">จำลองทิศต่อ</span><span className="text-emerald-500 font-mono font-bold text-[40px]">{simMethod}</span></div>
-                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 text-[40px]">มุมทิศ</span><input type="number" value={azimuth} onChange={(e) => setAzimuth(e.target.value)} className={numInputStyle} placeholder="0000" /></div>
-                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 text-[40px]">ที่ตั้งยิงกว้าง</span><span className="text-emerald-500 font-mono font-bold text-[40px]">130</span></div>
-                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 text-[40px]">ลึก</span><span className="text-emerald-500 font-mono font-bold text-[40px]">13</span></div>
+              <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-black/30 p-3 rounded-xl border border-white/5">
+                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 font-light text-xs sm:text-sm">จำลองทิศต่อ</span><span className="text-emerald-500 font-mono font-bold text-sm sm:text-base">{simMethod}</span></div>
+                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 font-light text-xs sm:text-sm">มุมทิศ</span><input type="number" value={azimuth} onChange={(e) => setAzimuth(e.target.value)} className={numInputStyle} placeholder="0000" /></div>
+                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 font-light text-xs sm:text-sm">ที่ตั้งยิงกว้าง</span><span className="text-emerald-500 font-mono font-bold text-sm sm:text-base">130</span></div>
+                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 font-light text-xs sm:text-sm">ลึก</span><span className="text-emerald-500 font-mono font-bold text-sm sm:text-base">13</span></div>
               </div>
             </div>
 
             {/* Section 2 */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+              <div className="flex flex-col sm:flex-col md:flex-row items-start sm:items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-emerald-400 font-bold text-[40px]">๒.</span>
-                  <h4 className="text-[40px] font-bold text-white">หลักฐานจากจุดตั้งกล้องถึงหมู่ ป. และ ศก.ร้อย</h4>
+                  <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๒.</span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-bold text-white">หลักฐานจากจุดตั้งกล้องถึงหมู่ ป. และ ศก.ร้อย</h4>
                 </div>
 
                 <div className="flex items-center gap-3 bg-black/40 p-1.5 rounded-xl border border-white/10">
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-300 text-[40px] pl-2">ป.หมู่หลัก</span>
-                    <select value={mainGun} onChange={(e) => { setMainGun(Number(e.target.value)); setIsOverlapCenter(false); }} className="bg-slate-900 border border-emerald-500/30 text-emerald-400 rounded-lg px-3 py-1.5 outline-none focus:border-emerald-500 font-mono font-bold">
+                    <span className="text-slate-300 font-light text-xs sm:text-sm pl-2">ป.หมู่หลัก</span>
+                    <select value={mainGun} onChange={(e) => { setMainGun(Number(e.target.value)); setIsOverlapCenter(false); }} className="bg-slate-900 border border-emerald-500/30 text-emerald-400 rounded-lg px-2 py-1 outline-none focus:border-emerald-500 font-mono font-bold text-sm">
                       <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option>
                     </select>
                   </div>
                   <div className="w-px h-6 bg-white/10"></div>
                   <div className="flex items-center bg-slate-900/50 rounded-lg p-1 border border-white/5">
-                    <button onClick={() => setIsOverlapCenter(true)} className={`px-4 py-1.5 rounded-md text-[40px] font-medium transition-all ${isOverlapCenter ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>ทับ ศก.ร้อย</button>
-                    <button onClick={() => setIsOverlapCenter(false)} className={`px-4 py-1.5 rounded-md text-[40px] font-medium transition-all ${!isOverlapCenter ? 'bg-slate-700 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>คลาด ศก.ร้อย</button>
+                    <button onClick={() => setIsOverlapCenter(true)} className={`px-2 py-1 rounded-md text-xs sm:text-sm font-medium transition-all ${isOverlapCenter ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>ทับ ศก.ร้อย</button>
+                    <button onClick={() => setIsOverlapCenter(false)} className={`px-2 py-1 rounded-md text-xs sm:text-sm font-medium transition-all ${!isOverlapCenter ? 'bg-slate-700 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>คลาด ศก.ร้อย</button>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+              <div className={`grid ${sec2GridClass} gap-3`}>
                 {/* 1. ศก.ร้อย */}
                 <Sec2Card 
                   topLabel="จก.1" 
@@ -252,10 +254,10 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose }) =>
               {/* Section 2.1: มุมพื้นที่ยอดกำบัง */}
               <div className="mt-5 border-t border-white/10 pt-4">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-emerald-400 font-bold text-[40px]">๒.๑</span>
-                  <h4 className="text-[40px] font-bold text-white">มุมพื้นที่ยอดกำบัง</h4>
+                  <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๒.๑</span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-bold text-white">มุมพื้นที่ยอดกำบัง</h4>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className={`grid ${sec21GridClass} gap-3`}>
                   {allGuns.map(gun => (
                     <div key={`cover-${gun}`} className="flex items-stretch gap-3 bg-black/40 border border-white/10 p-2 rounded-lg hover:border-emerald-500/30 transition-colors">
                       <div className="flex items-center justify-center border-r border-white/10 pr-4">
@@ -263,11 +265,11 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose }) =>
                       </div>
                       <div className="flex flex-col gap-3 justify-center w-full py-1">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-slate-400 text-[11px] uppercase tracking-wider">มุมพื้นที่ยอดกำบัง</span>
+                          <span className="text-slate-400 font-light text-[11px] uppercase tracking-wider">มุมพื้นที่ยอดกำบัง</span>
                           <input type="number" className={numInputSmallStyle} placeholder="0" value={gunCoverAngles[gun] || ''} onChange={(e) => handleCoverAngleChange(gun, e.target.value)} />
                         </div>
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-slate-400 text-[11px] uppercase tracking-wider">ระยะ</span>
+                          <span className="text-slate-400 font-light text-[11px] uppercase tracking-wider">ระยะ</span>
                           <input type="number" className={numInputSmallStyle} value={gunCoverDistances[gun] !== undefined ? gunCoverDistances[gun] : '100'} step="100" onChange={(e) => handleCoverDistanceChange(gun, e.target.value)} onBlur={(e) => { const val = parseInt(e.target.value); if (!isNaN(val) && val > 0) { const rounded = (Math.round(val / 100) * 100).toString(); handleCoverDistanceChange(gun, rounded); e.target.value = rounded; } }} />
                         </div>
                       </div>
@@ -280,42 +282,42 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose }) =>
             {/* Section 3 */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-emerald-400 font-bold text-[40px]">๓.</span>
-                <h4 className="text-[40px] font-bold text-white">หลักฐานจาก ศก.ร้อย (ปล.) ถึง ป.</h4>
+                <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๓.</span>
+                <h4 className="text-base sm:text-lg md:text-xl font-bold text-white">หลักฐานจาก ศก.ร้อย (ปล.) ถึง ป.</h4>
               </div>
               <div className="space-y-1.5">
                 {allGuns.map((gun) => (
-                  <div key={`sec3-${gun}`} className={`grid grid-cols-[140px_1fr_1fr] items-center gap-3 bg-black/30 border p-2 rounded-lg text-[40px] transition-colors ${gun === mainGun ? 'border-emerald-500/30 bg-emerald-900/10' : 'border-white/5'}`}>
-                    <span className="text-slate-300 font-medium whitespace-nowrap">จาก ศก.ร้อย ถึง ป.หมู่ {gun}:</span>
+                  <div key={`sec3-${gun}`} className={`grid ${sec3GridClass} items-center gap-3 bg-black/30 border p-2 rounded-lg text-sm sm:text-lg md:text-[24px] sm:text-base sm:text-xl md:text-[30px] transition-colors ${gun === mainGun ? 'border-emerald-500/30 bg-emerald-900/10' : 'border-white/5'}`}>
+                    <span className="text-slate-300 font-light font-medium whitespace-nowrap">จาก ศก.ร้อย ถึง ป.หมู่ {gun}:</span>
                     
                     {/* มุมทิศ & ระยะ */}
-                    <div className="flex items-center justify-center gap-6 border-r border-white/5 pr-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-slate-400">มุมทิศ</span> 
-                        <span className={`font-mono text-[50px] w-64 text-center ${isOverlapCenter && gun === mainGun ? 'text-emerald-500 font-bold' : 'text-emerald-400'}`}>
+                    <div className="flex items-center justify-center gap-4 xl:gap-6 border-r border-white/5 pr-4">
+                      <div className="flex items-center gap-2 xl:gap-3">
+                        <span className="text-slate-400 font-light">มุมทิศ</span> 
+                        <span className={`font-mono text-sm sm:text-base md:text-xl w-16 sm:w-24 text-center ${isOverlapCenter && gun === mainGun ? 'text-emerald-500 font-bold' : 'text-emerald-400'}`}>
                           {section3Data[gun]?.azimuth || '0000'}
                         </span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-slate-400">ระยะ</span> 
-                        <span className="text-emerald-400 font-mono text-[50px] w-48 text-center">
+                      <div className="flex items-center gap-2 xl:gap-3">
+                        <span className="text-slate-400 font-light">ระยะ</span> 
+                        <span className="text-emerald-400 font-mono text-sm sm:text-base md:text-xl w-12 sm:w-16 text-center">
                           {section3Data[gun]?.distance || '0'}
                         </span>
                       </div>
                     </div>
 
                     {/* ระยะลดเหลื่อม */}
-                    <div className="flex items-center justify-center gap-4 pl-2">
-                      <span className="text-slate-400 font-medium whitespace-nowrap">ระยะลดเหลื่อม</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-slate-400 font-medium w-8 text-center">{section3Data[gun]?.frText}</span>
-                        <span className="text-emerald-400 font-mono text-[50px] w-48 text-center">
+                    <div className="flex items-center justify-center gap-2 xl:gap-4 pl-2">
+                      <span className="text-slate-400 font-light font-medium whitespace-nowrap hidden xl:block">ระยะลดเหลื่อม</span>
+                      <div className="flex items-center gap-1 xl:gap-2">
+                        <span className="text-slate-400 font-light font-medium w-8 text-center text-xs sm:text-sm">{section3Data[gun]?.frText}</span>
+                        <span className="text-emerald-400 font-mono text-sm sm:text-base md:text-xl w-12 sm:w-16 text-center">
                           {section3Data[gun]?.frDist || '0'}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-slate-400 font-medium w-6 text-center">{section3Data[gun]?.lrText}</span>
-                        <span className="text-emerald-400 font-mono text-[50px] w-48 text-center">
+                      <div className="flex items-center gap-1 xl:gap-2">
+                        <span className="text-slate-400 font-light font-medium w-8 text-center text-xs sm:text-sm">{section3Data[gun]?.lrText}</span>
+                        <span className="text-emerald-400 font-mono text-sm sm:text-base md:text-xl w-12 sm:w-16 text-center">
                           {section3Data[gun]?.lrDist || '0'}
                         </span>
                       </div>
@@ -326,48 +328,48 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose }) =>
             </div>
 
             {/* Section 4 & 5 Layout */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-0">
+            <div className={`grid ${sec45GridClass} gap-0`}>
               {/* Section 4 */}
               <div className="bg-white/5 border-y border-r border-white/10 p-0 overflow-x-auto w-full">
                 <div className="flex items-center gap-3 mb-3 px-4 pt-4">
-                  <span className="text-emerald-400 font-bold text-[40px]">๔.</span>
-                  <h4 className="text-[40px] font-bold text-white whitespace-nowrap">หลักฐานการคำนวณมุมยิงต่ำสุดชนวนไวและเวลา</h4>
+                  <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๔.</span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-bold text-white leading-tight">หลักฐานการคำนวณมุมยิงต่ำสุดชนวนไวและเวลา</h4>
                 </div>
-                <table className="w-full text-center text-[40px] border-collapse min-w-[500px]">
+                <table className="w-full text-center text-sm md:text-xl xl:text-[30px] border-collapse min-w-[800px]">
                   <thead>
-                    <tr className="text-slate-400 border-b border-white/10">
-                      <th className="font-normal py-2 w-48">พท.ยอดกำบัง</th>
-                      <th className="font-normal py-2 border-l border-white/10 w-48">ระยะ</th>
-                      <th className="font-normal py-2 border-l border-white/10 w-64">มุม</th>
-                      <th className="font-normal py-2 w-64">บจ.1</th>
-                      <th className="font-normal py-2 w-64">บจ.3</th>
-                      <th className="font-normal py-2 w-64">บจ.4</th>
-                      <th className="font-normal py-2 w-64">บจ.5</th>
-                      <th className="font-normal py-2 w-64">บจ.6</th>
-                      <th className="font-normal py-2 w-64">บจ.7</th>
+                    <tr className="text-slate-400 border-b border-white/10 font-sans">
+                      <th className="font-bold py-2 w-32">พท.ยอดกำบัง</th>
+                      <th className="font-bold py-2 border-l border-white/10 w-32">ระยะ</th>
+                      <th className="font-bold py-2 border-l border-white/10 w-32">มุม</th>
+                      <th className="font-bold py-2 w-32">บจ.1</th>
+                      <th className="font-bold py-2 w-32">บจ.3</th>
+                      <th className="font-bold py-2 w-32">บจ.4</th>
+                      <th className="font-bold py-2 w-32">บจ.5</th>
+                      <th className="font-bold py-2 w-32">บจ.6</th>
+                      <th className="font-bold py-2 w-32">บจ.7</th>
                     </tr>
                   </thead>
-                  <tbody className="text-slate-300 font-mono text-[40px]">
+                  <tbody className="text-slate-300 font-mono text-base sm:text-xl md:text-[30px] font-light">
                     {[1, 2, 3, 4, 5, 'รวม'].map((row, idx) => (
                       <tr key={idx} className={row === 'รวม' ? "border-t border-white/10" : ""}>
                         {idx === 0 ? (
                           <>
-                            <td rowSpan={5} className="py-1 border-white/10 text-[40px] font-bold text-emerald-400">{maxCoverData.angle}</td>
-                            <td rowSpan={5} className="py-1 border-l border-white/10 text-[40px] font-bold text-emerald-400">{maxCoverData.distance}</td>
+                            <td rowSpan={5} className="py-1 border-white/10 text-base sm:text-xl md:text-[30px] font-bold text-emerald-400">{maxCoverData.angle}</td>
+                            <td rowSpan={5} className="py-1 border-l border-white/10 text-base sm:text-xl md:text-[30px] font-bold text-emerald-400">{maxCoverData.distance}</td>
                             <td className="py-1 border-l border-white/10">{row}</td>
                           </>
                         ) : (row === 'รวม' ? (
-                          <td colSpan={3} className="text-right pr-5 py-2 text-emerald-500 font-sans border-r-0 border-white/10">รวม</td>
+                          <td colSpan={3} className="text-right pr-5 py-2 text-emerald-500 font-sans font-bold border-r-0 border-white/10">รวม</td>
                         ) : (
                           <td className="py-1 border-l border-white/10">{row}</td>
                         ))}
                         
-                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-[50px]' : ''}`}>{minQEData.pd[1]?.[idx] || 0}</td>
-                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-[50px]' : ''}`}>{minQEData.pd[3]?.[idx] || 0}</td>
-                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-[50px]' : ''}`}>{minQEData.pd[4]?.[idx] || 0}</td>
-                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-[50px]' : ''}`}>{minQEData.pd[5]?.[idx] || 0}</td>
-                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-[50px]' : ''}`}>{minQEData.pd[6]?.[idx] || 0}</td>
-                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-[50px]' : ''}`}>{minQEData.pd[7]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[1]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[3]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[4]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[5]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[6]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[7]?.[idx] || 0}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -377,38 +379,329 @@ export const ReportView: React.FC<ReportViewProps> = ({ isVisible, onClose }) =>
               {/* Section 5 */}
               <div className="bg-white/5 border-y border-l border-white/10 p-0 overflow-x-auto w-full">
                 <div className="flex items-center gap-3 mb-3 px-4 pt-4">
-                  <span className="text-emerald-400 font-bold text-[40px]">๕.</span>
-                  <h4 className="text-[40px] font-bold text-white whitespace-nowrap">หลักฐานการคำนวณมุมยิงต่ำสุดชนวนวิถี</h4>
+                  <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๕.</span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-bold text-white leading-tight">หลักฐานการคำนวณมุมยิงต่ำสุดชนวนวิถี</h4>
                 </div>
-                <table className="w-full text-center text-[40px] border-collapse min-w-[400px]">
+                <table className="w-full text-center text-sm md:text-xl xl:text-[30px] border-collapse min-w-[700px]">
                   <thead>
-                    <tr className="text-slate-400 border-b border-white/10">
-                      <th className="font-normal py-2 w-64"></th>
-                      <th className="font-normal py-2 w-64 text-[40px]">บจ.1</th>
-                      <th className="font-normal py-2 w-64 text-[40px]">บจ.3</th>
-                      <th className="font-normal py-2 w-64 text-[40px]">บจ.4</th>
-                      <th className="font-normal py-2 w-64 text-[40px]">บจ.5</th>
-                      <th className="font-normal py-2 w-64 text-[40px]">บจ.6</th>
-                      <th className="font-normal py-2 w-64 text-[40px]">บจ.7</th>
+                    <tr className="text-slate-400 border-b border-white/10 font-sans">
+                      <th className="font-bold py-2 w-32"></th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.1</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.3</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.4</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.5</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.6</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.7</th>
                     </tr>
                   </thead>
-                  <tbody className="text-slate-300 font-mono text-[40px]">
+                  <tbody className="text-slate-300 font-mono text-base sm:text-xl md:text-[30px] font-light">
                     <tr>
-                      <td className="text-right pr-5 py-2 text-emerald-500 font-sans">รวม</td>
-                      <td className="py-2 text-emerald-400 font-bold text-[50px]">{minQEData.vt[1] || 0}</td>
-                      <td className="py-2 text-emerald-400 font-bold text-[50px]">{minQEData.vt[3] || 0}</td>
-                      <td className="py-2 text-emerald-400 font-bold text-[50px]">{minQEData.vt[4] || 0}</td>
-                      <td className="py-2 text-emerald-400 font-bold text-[50px]">{minQEData.vt[5] || 0}</td>
-                      <td className="py-2 text-emerald-400 font-bold text-[50px]">{minQEData.vt[6] || 0}</td>
-                      <td className="py-2 text-emerald-400 font-bold text-[50px]">{minQEData.vt[7] || 0}</td>
+                      <td className="text-right pr-5 py-2 text-emerald-500 font-sans font-bold">รวม</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[1] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[3] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[4] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[5] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[6] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[7] || 0}</td>
                     </tr>
                     <tr>
-                      <td className="text-right pr-5 py-1 text-slate-400 font-sans">เวลาแล่น</td>
+                      <td className="text-right pr-5 py-1 text-slate-400 font-sans font-bold">เวลาแล่น</td>
                       <td className="py-1">1</td><td className="py-1">0</td><td className="py-1">0</td><td className="py-1">0</td><td className="py-1">0</td><td className="py-1">0</td>
                     </tr>
                     <tr>
-                      <td className="text-right pr-5 py-1 text-slate-400 font-sans text-[14px]">เวลาปลอดภัยน้อยสุด</td>
-                      <td className="py-1 text-emerald-400 font-bold text-[40px]">7</td><td className="py-1 text-emerald-400 font-bold text-[40px]">6</td><td className="py-1 text-emerald-400 font-bold text-[40px]">6</td><td className="py-1 text-emerald-400 font-bold text-[40px]">6</td><td className="py-1 text-emerald-400 font-bold text-[40px]">6</td><td className="py-1 text-emerald-400 font-bold text-[40px]">6</td>
+                      <td className="text-right pr-5 py-1 text-slate-400 font-sans font-bold text-[14px]">เวลาปลอดภัยน้อยสุด</td>
+                      <td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">7</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Original Full Screen View
+  return (
+    <div className={`absolute inset-0 z-[110] flex items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isVisible ? 'opacity-100 pointer-events-auto backdrop-blur-md bg-slate-900/40' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`relative w-[100vw] h-[100vh] max-w-none rounded-none overflow-hidden flex flex-col shadow-2xl transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] delay-100 ${isVisible ? 'translate-y-0 scale-100' : 'translate-y-12 scale-95'}`}>
+        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-3xl" />
+        <div className="absolute -top-32 -right-32 w-64 h-64 bg-emerald-500/20 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-emerald-700/20 blur-[80px] rounded-full pointer-events-none" />
+
+        {/* Header */}
+        <div className="relative flex-none px-8 py-3 border-b border-white/10 flex flex-col items-center text-center">
+          <button onClick={onClose} className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+          <h2 className="text-emerald-400 text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-1 drop-shadow-md">แบบรายงาน รอง ผบ.ร้อย ป.</h2>
+          <p className="text-slate-300 text-xs sm:text-sm md:text-base font-medium">การคำนวณมุมยิงต่ำสุด (Calculation of the minimum shot angle)</p>
+        </div>
+
+        {/* Content Body */}
+        <div className="relative flex-1 overflow-y-auto px-0 py-4 sm:py-5 custom-scrollbar">
+          <div className="space-y-4">
+            
+            {/* Same content as embedded */}
+            {/* Section 1 */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <div className="flex flex-col sm:flex-col md:flex-row items-start sm:items-center justify-between gap-3 mb-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๑.</span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-bold text-white">กองร้อยตั้ง ป. ตรงทิศ วิธี</h4>
+                </div>
+                <div className="flex items-center gap-3">
+                  <select value={method1} onChange={(e) => setMethod1(e.target.value)} className="bg-slate-900 border border-emerald-500/30 text-white rounded-lg px-2 py-1 outline-none focus:border-emerald-500 font-mono text-sm sm:text-base max-w-full">
+                    <option value="1">กองร้อยด้วยวิธีมุมตรงทิศ</option>
+                    <option value="2">กองร้อยด้วยวิธีเข็มทิศ</option>
+                    <option value="3">เข็มทิศ M2</option>
+                    <option value="4">ที่หมายเล็งไกล</option>
+                    <option value="5">หมายแนวลำกล้องปืน</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-black/30 p-3 rounded-xl border border-white/5">
+                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 font-light text-xs sm:text-sm">จำลองทิศต่อ</span><span className="text-emerald-500 font-mono font-bold text-sm sm:text-base">{simMethod}</span></div>
+                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 font-light text-xs sm:text-sm">มุมทิศ</span><input type="number" value={azimuth} onChange={(e) => setAzimuth(e.target.value)} className={numInputStyle} placeholder="0000" /></div>
+                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 font-light text-xs sm:text-sm">ที่ตั้งยิงกว้าง</span><span className="text-emerald-500 font-mono font-bold text-sm sm:text-base">130</span></div>
+                <div className="flex flex-col items-center justify-center text-center gap-1"><span className="text-slate-400 font-light text-xs sm:text-sm">ลึก</span><span className="text-emerald-500 font-mono font-bold text-sm sm:text-base">13</span></div>
+              </div>
+            </div>
+
+            {/* Section 2 */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <div className="flex flex-col sm:flex-col md:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๒.</span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-bold text-white">หลักฐานจากจุดตั้งกล้องถึงหมู่ ป. และ ศก.ร้อย</h4>
+                </div>
+
+                <div className="flex items-center gap-3 bg-black/40 p-1.5 rounded-xl border border-white/10">
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-300 font-light text-xs sm:text-sm pl-2">ป.หมู่หลัก</span>
+                    <select value={mainGun} onChange={(e) => { setMainGun(Number(e.target.value)); setIsOverlapCenter(false); }} className="bg-slate-900 border border-emerald-500/30 text-emerald-400 rounded-lg px-2 py-1 outline-none focus:border-emerald-500 font-mono font-bold text-sm">
+                      <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option>
+                    </select>
+                  </div>
+                  <div className="w-px h-6 bg-white/10"></div>
+                  <div className="flex items-center bg-slate-900/50 rounded-lg p-1 border border-white/5">
+                    <button onClick={() => setIsOverlapCenter(true)} className={`px-2 py-1 rounded-md text-xs sm:text-sm font-medium transition-all ${isOverlapCenter ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>ทับ ศก.ร้อย</button>
+                    <button onClick={() => setIsOverlapCenter(false)} className={`px-2 py-1 rounded-md text-xs sm:text-sm font-medium transition-all ${!isOverlapCenter ? 'bg-slate-700 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>คลาด ศก.ร้อย</button>
+                  </div>
+                </div>
+              </div>
+
+              <div className={`grid ${sec2GridClass} gap-3`}>
+                {/* 1. ศก.ร้อย */}
+                <Sec2Card 
+                  topLabel="จก.1" 
+                  bottomLabel="ศก.ร้อย"
+                  inputs={[
+                    { label: 'มุมทิศ', value: centerAzimuth, onChange: (e: any) => setCenterAzimuth(e.target.value), widthClass: 'w-48' },
+                    { label: 'มุม ก.', value: centerAngleK, onChange: (e: any) => setCenterAngleK(e.target.value), widthClass: 'w-64' },
+                    { label: 'ระยะ', value: centerDistance, isText: true, widthClass: 'w-40' }
+                  ]}
+                />
+
+                {/* 2. จก.2 */}
+                <Sec2Card 
+                  topLabel="จก.1" 
+                  bottomLabel="จก.2"
+                  inputs={[
+                    { label: 'มุมทิศ', value: op2Azimuth, onChange: (e: any) => setOp2Azimuth(e.target.value), widthClass: 'w-48' },
+                    { label: 'มุม ก.', value: op2AngleK, onChange: (e: any) => setOp2AngleK(e.target.value), widthClass: 'w-64' },
+                    { label: 'ระยะ', defaultValue: 68, isText: true, widthClass: 'w-40' }
+                  ]}
+                />
+
+                {/* 3. ป.หมู่หลัก */}
+                <Sec2Card 
+                  topLabel="จก.1" 
+                  bottomLabel="ป.หมู่หลัก"
+                  inputs={[
+                    { label: 'มุมทิศ', value: gunAzimuths[mainGun] || '', onChange: (e: any) => handleGunAzimuthChange(mainGun, e.target.value), readOnly: isOverlapCenter, widthClass: 'w-48' },
+                    { label: 'มุม ก.', value: gunAngleKs[mainGun] || '', onChange: (e: any) => handleGunAngleKChange(mainGun, e.target.value), widthClass: 'w-64' },
+                    { label: 'ระยะ', value: gunDistances[mainGun] || '', isText: true, widthClass: 'w-40' }
+                  ]}
+                />
+
+                {/* 4,5,6. ป.หมู่อื่นๆ ที่เหลือ */}
+                {allGuns.filter(gun => gun !== mainGun).map(gun => (
+                  <Sec2Card 
+                    key={`gun-${gun}`}
+                    topLabel="จก.1" 
+                    bottomLabel={`ป.หมู่ ${gun}`}
+                    inputs={[
+                      { label: 'มุมทิศ', value: gunAzimuths[gun] || '', onChange: (e: any) => handleGunAzimuthChange(gun, e.target.value), readOnly: isOverlapCenter, widthClass: 'w-48' },
+                      { label: 'มุม ก.', value: gunAngleKs[gun] || '', onChange: (e: any) => handleGunAngleKChange(gun, e.target.value), widthClass: 'w-64' },
+                      { label: 'ระยะ', value: gunDistances[gun] || '', isText: true, widthClass: 'w-40' }
+                    ]}
+                  />
+                ))}
+              </div>
+
+              {/* Section 2.1: มุมพื้นที่ยอดกำบัง */}
+              <div className="mt-5 border-t border-white/10 pt-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๒.๑</span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-bold text-white">มุมพื้นที่ยอดกำบัง</h4>
+                </div>
+                <div className={`grid ${sec21GridClass} gap-3`}>
+                  {allGuns.map(gun => (
+                    <div key={`cover-${gun}`} className="flex items-stretch gap-3 bg-black/40 border border-white/10 p-2 rounded-lg hover:border-emerald-500/30 transition-colors">
+                      <div className="flex items-center justify-center border-r border-white/10 pr-4">
+                        <span className="text-white font-medium whitespace-nowrap">หมู่ {gun}</span>
+                      </div>
+                      <div className="flex flex-col gap-3 justify-center w-full py-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-slate-400 font-light text-[11px] uppercase tracking-wider">มุมพื้นที่ยอดกำบัง</span>
+                          <input type="number" className={numInputSmallStyle} placeholder="0" value={gunCoverAngles[gun] || ''} onChange={(e) => handleCoverAngleChange(gun, e.target.value)} />
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-slate-400 font-light text-[11px] uppercase tracking-wider">ระยะ</span>
+                          <input type="number" className={numInputSmallStyle} value={gunCoverDistances[gun] !== undefined ? gunCoverDistances[gun] : '100'} step="100" onChange={(e) => handleCoverDistanceChange(gun, e.target.value)} onBlur={(e) => { const val = parseInt(e.target.value); if (!isNaN(val) && val > 0) { const rounded = (Math.round(val / 100) * 100).toString(); handleCoverDistanceChange(gun, rounded); e.target.value = rounded; } }} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3 */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๓.</span>
+                <h4 className="text-base sm:text-lg md:text-xl font-bold text-white">หลักฐานจาก ศก.ร้อย (ปล.) ถึง ป.</h4>
+              </div>
+              <div className="space-y-1.5">
+                {allGuns.map((gun) => (
+                  <div key={`sec3-${gun}`} className={`grid ${sec3GridClass} items-center gap-3 bg-black/30 border p-2 rounded-lg text-sm sm:text-lg md:text-[24px] sm:text-base sm:text-xl md:text-[30px] transition-colors ${gun === mainGun ? 'border-emerald-500/30 bg-emerald-900/10' : 'border-white/5'}`}>
+                    <span className="text-slate-300 font-light font-medium whitespace-nowrap">จาก ศก.ร้อย ถึง ป.หมู่ {gun}:</span>
+                    
+                    {/* มุมทิศ & ระยะ */}
+                    <div className="flex items-center justify-center gap-4 xl:gap-6 border-r border-white/5 pr-4">
+                      <div className="flex items-center gap-2 xl:gap-3">
+                        <span className="text-slate-400 font-light">มุมทิศ</span> 
+                        <span className={`font-mono text-sm sm:text-base md:text-xl w-16 sm:w-24 text-center ${isOverlapCenter && gun === mainGun ? 'text-emerald-500 font-bold' : 'text-emerald-400'}`}>
+                          {section3Data[gun]?.azimuth || '0000'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 xl:gap-3">
+                        <span className="text-slate-400 font-light">ระยะ</span> 
+                        <span className="text-emerald-400 font-mono text-sm sm:text-base md:text-xl w-12 sm:w-16 text-center">
+                          {section3Data[gun]?.distance || '0'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* ระยะลดเหลื่อม */}
+                    <div className="flex items-center justify-center gap-2 xl:gap-4 pl-2">
+                      <span className="text-slate-400 font-light font-medium whitespace-nowrap hidden xl:block">ระยะลดเหลื่อม</span>
+                      <div className="flex items-center gap-1 xl:gap-2">
+                        <span className="text-slate-400 font-light font-medium w-8 text-center text-xs sm:text-sm">{section3Data[gun]?.frText}</span>
+                        <span className="text-emerald-400 font-mono text-sm sm:text-base md:text-xl w-12 sm:w-16 text-center">
+                          {section3Data[gun]?.frDist || '0'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 xl:gap-2">
+                        <span className="text-slate-400 font-light font-medium w-8 text-center text-xs sm:text-sm">{section3Data[gun]?.lrText}</span>
+                        <span className="text-emerald-400 font-mono text-sm sm:text-base md:text-xl w-12 sm:w-16 text-center">
+                          {section3Data[gun]?.lrDist || '0'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Section 4 & 5 Layout */}
+            <div className={`grid ${sec45GridClass} gap-0`}>
+              {/* Section 4 */}
+              <div className="bg-white/5 border-y border-r border-white/10 p-0 overflow-x-auto w-full">
+                <div className="flex items-center gap-3 mb-3 px-4 pt-4">
+                  <span className="text-emerald-400 font-bold text-base sm:text-lg md:text-xl">๔.</span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-bold text-white leading-tight">หลักฐานการคำนวณมุมยิงต่ำสุดชนวนไวและเวลา</h4>
+                </div>
+                <table className="w-full text-center text-sm md:text-xl xl:text-[30px] border-collapse min-w-[800px]">
+                  <thead>
+                    <tr className="text-slate-400 border-b border-white/10 font-sans">
+                      <th className="font-bold py-2 w-32">พท.ยอดกำบัง</th>
+                      <th className="font-bold py-2 border-l border-white/10 w-32">ระยะ</th>
+                      <th className="font-bold py-2 border-l border-white/10 w-32">มุม</th>
+                      <th className="font-bold py-2 w-32">บจ.1</th>
+                      <th className="font-bold py-2 w-32">บจ.3</th>
+                      <th className="font-bold py-2 w-32">บจ.4</th>
+                      <th className="font-bold py-2 w-32">บจ.5</th>
+                      <th className="font-bold py-2 w-32">บจ.6</th>
+                      <th className="font-bold py-2 w-32">บจ.7</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-slate-300 font-mono text-base sm:text-xl md:text-[30px] font-light">
+                    {[1, 2, 3, 4, 5, 'รวม'].map((row, idx) => (
+                      <tr key={idx} className={row === 'รวม' ? "border-t border-white/10" : ""}>
+                        {idx === 0 ? (
+                          <>
+                            <td rowSpan={5} className="py-1 border-white/10 text-base sm:text-xl md:text-[30px] font-bold text-emerald-400">{maxCoverData.angle}</td>
+                            <td rowSpan={5} className="py-1 border-l border-white/10 text-base sm:text-xl md:text-[30px] font-bold text-emerald-400">{maxCoverData.distance}</td>
+                            <td className="py-1 border-l border-white/10">{row}</td>
+                          </>
+                        ) : (row === 'รวม' ? (
+                          <td colSpan={3} className="text-right pr-5 py-2 text-emerald-500 font-sans font-bold border-r-0 border-white/10">รวม</td>
+                        ) : (
+                          <td className="py-1 border-l border-white/10">{row}</td>
+                        ))}
+                        
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[1]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[3]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[4]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[5]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[6]?.[idx] || 0}</td>
+                        <td className={`py-1 ${row === 'รวม' ? 'text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]' : ''}`}>{minQEData.pd[7]?.[idx] || 0}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Section 5 */}
+              <div className="bg-white/5 border-y border-l border-white/10 p-0 overflow-x-auto w-full">
+                <div className="flex items-center gap-3 mb-3 px-4 pt-4">
+                  <span className="text-emerald-400 font-bold text-base sm:text-xl md:text-[30px] sm:text-lg sm:text-2xl md:text-[40px]">๕.</span>
+                  <h4 className="text-base sm:text-xl md:text-[30px] sm:text-lg sm:text-2xl md:text-[40px] font-bold text-white leading-tight">หลักฐานการคำนวณมุมยิงต่ำสุดชนวนวิถี</h4>
+                </div>
+                <table className="w-full text-center text-sm md:text-xl xl:text-[30px] border-collapse min-w-[700px]">
+                  <thead>
+                    <tr className="text-slate-400 border-b border-white/10 font-sans">
+                      <th className="font-bold py-2 w-32"></th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.1</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.3</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.4</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.5</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.6</th>
+                      <th className="font-bold py-2 w-32 text-base sm:text-xl md:text-[30px]">บจ.7</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-slate-300 font-mono text-base sm:text-xl md:text-[30px] font-light">
+                    <tr>
+                      <td className="text-right pr-5 py-2 text-emerald-500 font-sans font-bold">รวม</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[1] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[3] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[4] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[5] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[6] || 0}</td>
+                      <td className="py-2 text-emerald-400 font-bold text-base sm:text-xl md:text-[36px]">{minQEData.vt[7] || 0}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-right pr-5 py-1 text-slate-400 font-sans font-bold">เวลาแล่น</td>
+                      <td className="py-1">1</td><td className="py-1">0</td><td className="py-1">0</td><td className="py-1">0</td><td className="py-1">0</td><td className="py-1">0</td>
+                    </tr>
+                    <tr>
+                      <td className="text-right pr-5 py-1 text-slate-400 font-sans font-bold text-[14px]">เวลาปลอดภัยน้อยสุด</td>
+                      <td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">7</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td><td className="py-1 text-emerald-400 font-bold text-base sm:text-xl md:text-[30px]">6</td>
                     </tr>
                   </tbody>
                 </table>

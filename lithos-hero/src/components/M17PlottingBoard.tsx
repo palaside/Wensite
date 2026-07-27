@@ -1,14 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { useReportContext } from '../context/ReportContext';
+import { DigitalM2Compass } from './DigitalM2Compass';
 import './M17PlottingBoard.css';
 
 interface M17PlottingBoardProps {
   onClose?: () => void;
+  isEmbedded?: boolean;
 }
 
-export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
+export function M17PlottingBoard({ onClose, isEmbedded }: M17PlottingBoardProps) {
   const [rotation, setRotation] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const discRef = useRef<HTMLDivElement>(null);
   const { allGuns, section3Data, mainGun, centerAzimuth, centerDistance, azimuth: lofAzimuth } = useReportContext();
 
   // Generate Ticks and Numbers
@@ -81,7 +84,7 @@ export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
   const generateRulers = () => {
     const rulers = [];
     // Top Edge (mm)
-    for (let i = 0; i < 700; i += 5) {
+    for (let i = 0; i < 1400; i += 5) {
       const isMajor = i % 50 === 0;
       const isMedium = i % 10 === 0 && !isMajor;
       rulers.push(
@@ -93,13 +96,13 @@ export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
     }
     
     // Right Edge (inches)
-    for (let i = 0; i < 500; i += 10) {
+    for (let i = 0; i < 750; i += 10) {
       const isMajor = i % 100 === 0;
       const isMedium = i % 50 === 0 && !isMajor;
       rulers.push(
         <g key={`right-${i}`}>
-          <line x1={800} y1={i + 50} x2={800 - (isMajor ? 15 : isMedium ? 10 : 5)} y2={i + 50} stroke="#333" strokeWidth="1" />
-          {isMajor && i > 0 && <text x={770} y={i + 54} textAnchor="end" className="m17-ruler-text">{i / 100}</text>}
+          <line x1={1480} y1={i + 50} x2={1480 - (isMajor ? 15 : isMedium ? 10 : 5)} y2={i + 50} stroke="#333" strokeWidth="1" />
+          {isMajor && i > 0 && <text x={1450} y={i + 54} textAnchor="end" className="m17-ruler-text">{i / 100}</text>}
         </g>
       );
     }
@@ -144,8 +147,8 @@ export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
       const svgX = 250 + rawX;
       const svgY = 250 - rawY; // SVG Y is inverted (up is smaller)
       
-      let color = '#ef4444'; // Red
-      if (gun === mainGun) color = '#ef4444'; // Keep it red for guns
+      const colors = ['#ef4444', '#000000', '#3b82f6', '#f97316'];
+      let color = colors[(gun - 1) % colors.length];
       
       points.push(
         <g key={`plot-gun-${gun}`}>
@@ -183,37 +186,36 @@ export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div className={isEmbedded ? "relative w-full h-full flex flex-col items-center justify-center overflow-hidden" : "fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 bg-black/80 backdrop-blur-sm"}>
       
-      <div className="flex justify-between w-full max-w-4xl mb-4">
-        <h2 className="text-2xl font-bold text-white tracking-widest">M.17 PLOTTING BOARD</h2>
-        {onClose && (
-          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors bg-gray-800 px-4 py-2 rounded">
-            ปิด (Close)
-          </button>
-        )}
-      </div>
+      {!isEmbedded && (
+        <div className="flex justify-between w-full max-w-4xl mb-4">
+          <h2 className="text-2xl font-bold text-white tracking-widest">M.17 PLOTTING BOARD</h2>
+          {onClose && (
+            <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors bg-gray-800 px-4 py-2 rounded">
+              ปิด (Close)
+            </button>
+          )}
+        </div>
+      )}
 
-      <div className="m17-container">
+      <div className={`m17-container`}>
         
         {/* Base Board */}
         <div className="m17-board">
           
           {/* Base SVG for outlines and rulers */}
-          <svg width="1000" height="600" className="absolute top-0 left-0 pointer-events-none">
+          <svg width="1500" height="800" className="absolute top-0 left-0 pointer-events-none">
             {generateRulers()}
           </svg>
 
           {/* Grid Layer */}
           <div className="m17-grid-layer">
-            <svg width="500" height="500">
+            <svg viewBox="0 0 500 500" className="w-full h-full">
               {generateGrid()}
               {/* Line of Fire */}
               <line x1="250" y1="250" x2="250" y2="0" stroke="#cc0000" strokeWidth="4" />
               <polygon points="245,15 255,15 250,0" fill="#cc0000" />
-              
-              {/* Plot points on the base grid layer */}
-              {generatePlottedPoints()}
             </svg>
           </div>
 
@@ -226,50 +228,30 @@ export function M17PlottingBoard({ onClose }: M17PlottingBoardProps) {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
           >
-            <svg width="500" height="500">
+            <svg viewBox="0 0 500 500" className="w-full h-full">
               {/* Index Line */}
               <line x1="250" y1="0" x2="250" y2="500" stroke="#111" strokeWidth="1.5" />
 
               {generateTicks()}
+              
+              {/* Plot points on the rotating disc */}
+              {generatePlottedPoints()}
             </svg>
           </div>
           
-          {/* Summary Panel on the right */}
-          <div className="absolute right-0 top-0 w-[450px] h-[600px] p-6 pr-12 pt-16 flex flex-col gap-6 font-sans">
-            {allGuns.map(gun => {
-              const d = section3Data[gun];
-              if (!d) return null;
-              
-              // Only show details if distance > 0
-              if (parseInt(d.distance) === 0) {
-                return (
-                  <div key={`summary-${gun}`} className="flex flex-col items-center gap-1 text-[#333]">
-                    <div className="text-2xl font-bold tracking-widest">ป.หมู่ {gun}</div>
-                    <div className="text-lg tracking-wider">- ศูนย์กลางร้อย -</div>
-                  </div>
-                );
-              }
-
-              return (
-                <div key={`summary-${gun}`} className="flex flex-col items-center gap-1 text-[#333]">
-                  <div className="text-2xl font-bold tracking-widest">ป.หมู่ {gun}</div>
-                  <div className="text-lg tracking-wider flex items-center justify-center gap-4">
-                    <span>มุมทิศ <strong className="text-black">{d.azimuth}</strong></span>
-                    <span>ระยะ <strong className="text-black">{d.distance}</strong></span>
-                    <span>{d.frText} <strong className="text-black">{d.frDist}</strong></span>
-                    <span>{d.lrText} <strong className="text-black">{d.lrDist}</strong></span>
-                  </div>
-                </div>
-              );
-            })}
+          {/* Compass embedded in M17 board at top right */}
+          <div className="absolute right-0 top-0 z-[200] transform scale-[0.95] origin-top-right">
+             <DigitalM2Compass isVisible={true} customPositionClass="relative" />
           </div>
           
         </div>
 
-        <div className="mt-6 text-gray-400 text-sm max-w-2xl text-center">
-          <p>จำลองแผ่นกรุย M.17 แบบโต้ตอบได้ 100% สเกลความละเอียด 10 มิลเลียมต่อขีด</p>
-          <p className="mt-1">ใช้เมาส์หรือนิ้วลากแผ่นใสตรงกลางเพื่อหมุนหาค่ามุมภาค (แถวนอกสีดำ), มุมทิศของแผ่นเรขายิง (แถวกลางสีแดง) และการคำนวณแบบลอดลัด (แถวในสุดสีดำ)</p>
-        </div>
+        {!isEmbedded && (
+          <div className="mt-6 text-gray-400 text-sm max-w-2xl text-center">
+            <p>จำลองแผ่นกรุย M.17 แบบโต้ตอบได้ 100% สเกลความละเอียด 10 มิลเลียมต่อขีด</p>
+            <p className="mt-1">ใช้เมาส์หรือนิ้วลากแผ่นใสตรงกลางเพื่อหมุนหาค่ามุมภาค (แถวนอกสีดำ), มุมทิศของแผ่นเรขายิง (แถวกลางสีแดง) และการคำนวณแบบลอดลัด (แถวในสุดสีดำ)</p>
+          </div>
+        )}
       </div>
     </div>
   );

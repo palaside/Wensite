@@ -1,0 +1,78 @@
+{
+  "firing_table_F": [
+    {
+      "col_01_range_m": 4000,
+      "standard_trajectory": {
+        "col_02_elevation_mil": 178.4,
+        "col_03_time_fuze_sec": 12.8,
+        "col_04_time_fuze_diff_sec": 0.16,
+        "col_05_range_change_per_mil_m": 17.0,
+        "col_06_fork_mil": 2.0,
+        "col_07_time_of_flight_sec": 12.6
+      },
+      "deflection_corrections": {
+        "col_08_drift_correction_mil": 2.5,
+        "col_09_crosswind_corr_per_knot_mil": 0.30
+      },
+      "range_corrections": {
+        "muzzle_velocity_1_m_s": {
+          "col_10_decrease_m": 25.0,
+          "col_11_increase_m": -24.2
+        },
+        "range_wind_1_knot": {
+          "col_12_head_wind_m": 1.8,
+          "col_13_tail_wind_m": -1.5
+        },
+        "air_temperature_1_percent": {
+          "col_14_decrease_m": 0.4,
+          "col_15_increase_m": -0.1
+        },
+        "air_density_1_percent": {
+          "col_16_decrease_m": -4.3,
+          "col_17_increase_m": 4.4
+        },
+        "projectile_weight_1_square": {
+          "col_18_decrease_m": -38.0,
+          "col_19_increase_m": 40.0
+        }
+      }
+    },
+    {
+      "col_01_range_m": 4100,
+      "standard_trajectory": {
+        "col_02_elevation_mil": 184.2,
+        "col_03_time_fuze_sec": 13.2,
+        "col_04_time_fuze_diff_sec": 0.17,
+        "col_05_range_change_per_mil_m": 16.5,
+        "col_06_fork_mil": 2.1,
+        "col_07_time_of_flight_sec": 13.0
+      },
+      "deflection_corrections": {
+        "col_08_drift_correction_mil": 2.6,
+        "col_09_crosswind_corr_per_knot_mil": 0.31
+      },
+      "range_corrections": {
+        "muzzle_velocity_1_m_s": {
+          "col_10_decrease_m": 26.0,
+          "col_11_increase_m": -25.1
+        },
+        "range_wind_1_knot": {
+          "col_12_head_wind_m": 1.9,
+          "col_13_tail_wind_m": -1.6
+        },
+        "air_temperature_1_percent": {
+          "col_14_decrease_m": 0.5,
+          "col_15_increase_m": -0.2
+        },
+        "air_density_1_percent": {
+          "col_16_decrease_m": -4.5,
+          "col_17_increase_m": 4.6
+        },
+        "projectile_weight_1_square": {
+          "col_18_decrease_m": -39.0,
+          "col_19_increase_m": 41.0
+        }
+      }
+    }
+  ]
+}

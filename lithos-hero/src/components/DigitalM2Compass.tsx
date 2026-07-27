@@ -5,16 +5,29 @@ interface DigitalM2CompassProps {
   isVisible: boolean;
   onClose?: () => void;
   onSave?: (mode: 'azimuth' | 'clinometer', value: string) => void;
+  customPositionClass?: string;
 }
 
-export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2CompassProps) {
+export function DigitalM2Compass({ isVisible, onClose, onSave, customPositionClass }: DigitalM2CompassProps) {
   const [heading, setHeading] = useState(0); // 0-360 true north if possible
   const [beta, setBeta] = useState(0);       // Pitch (-180 to 180)
   const [gamma, setGamma] = useState(0);     // Roll (-90 to 90)
-  const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
-  
   const [isLocked, setIsLocked] = useState(false);
   const [azimuthUnit, setAzimuthUnit] = useState<'mils' | 'degrees'>('mils');
+  const [hasReceivedEvent, setHasReceivedEvent] = useState(false);
+  
+  const [isTestMode, setIsTestMode] = useState(false);
+  const isTestModeRef = React.useRef(isTestMode);
+  
+  // iOS Permission State
+  const [needsPermission, setNeedsPermission] = useState<boolean>(
+    typeof (DeviceOrientationEvent as any) !== 'undefined' && 
+    typeof (DeviceOrientationEvent as any).requestPermission === 'function'
+  );
+  
+  useEffect(() => {
+    isTestModeRef.current = isTestMode;
+  }, [isTestMode]);
   
   const isLockedRef = React.useRef(isLocked);
   useEffect(() => {
@@ -22,35 +35,13 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
   }, [isLocked]);
 
   // Auto-switch mode based on Pitch (Beta). 
-  // Beta close to 0 = flat (Azimuth mode).
-  // Beta > 45 = upright (Clinometer mode).
   const isClinometerMode = Math.abs(beta) >= 45;
 
-  const requestAccess = async () => {
-    if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-      try {
-        const permission = await (DeviceOrientationEvent as any).requestPermission();
-        if (permission === 'granted') {
-          setPermissionGranted(true);
-        } else {
-          setPermissionGranted(false);
-          alert('ต้องอนุญาตให้เข้าถึงเซนเซอร์เพื่อใช้งานเข็มทิศดิจิทัล (Device Orientation Permission Denied)');
-        }
-      } catch (error) {
-        console.error(error);
-        setPermissionGranted(false);
-      }
-    } else {
-      // Non-iOS 13+ devices or devices that don't require explicit permission
-      setPermissionGranted(true);
-    }
-  };
-
   useEffect(() => {
-    if (!isVisible || !permissionGranted) return;
+    if (!isVisible || needsPermission) return;
 
     const handleOrientation = (event: DeviceOrientationEvent) => {
-      if (isLockedRef.current) return;
+      if (isLockedRef.current || isTestModeRef.current) return;
       let h = 0;
       // Use webkitCompassHeading if available (iOS True North), otherwise fallback to alpha
       if ((event as any).webkitCompassHeading !== undefined) {
@@ -67,7 +58,23 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
     return () => {
       window.removeEventListener('deviceorientation', handleOrientation, true);
     };
-  }, [isVisible, permissionGranted]);
+  }, [isVisible, needsPermission]);
+  
+  const requestIOSPermission = async () => {
+    try {
+      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        const permissionState = await (DeviceOrientationEvent as any).requestPermission();
+        if (permissionState === 'granted') {
+          setNeedsPermission(false);
+        } else {
+          alert('ต้องอนุญาตเซนเซอร์ก่อนจึงจะใช้งานเข็มทิศได้');
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      alert('HTTPS required for sensors on this device.');
+    }
+  };
 
   // --- Smart Pointer Logic (Azimuth) ---
   const normHeading = ((heading % 360) + 360) % 360;
@@ -82,6 +89,10 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
   const displayDegrees = Math.round(displayHeading);
   const displayValue = azimuthUnit === 'mils' ? displayMils : displayDegrees;
   
+  const backAzimuth = azimuthUnit === 'mils'
+    ? (displayValue < 3200 ? displayValue + 3200 : displayValue - 3200)
+    : (displayValue < 180 ? displayValue + 180 : displayValue - 180);
+
   // Bull's-eye bubble logic (Azimuth mode)
   const maxBubbleMove = 45; // max pixel distance
   // Clamp values so bubble stays inside the circle
@@ -105,7 +116,10 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
 
   return (
     <AnimatePresence>
-      <div className="fixed bottom-6 right-6 z-[300] origin-bottom-right scale-[0.8] xl:scale-90 pointer-events-none">
+      <div className={`
+        ${customPositionClass ? customPositionClass + ' pointer-events-auto' : 'fixed bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-6 md:right-6 scale-[0.8] md:scale-90 xl:scale-100 pointer-events-none'}
+        z-[300] origin-bottom md:origin-top-right
+      `}>
         
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -128,23 +142,9 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
             )}
           </div>
 
-          {!permissionGranted ? (
-            <div className="p-8 text-center space-y-6">
-              <div className="w-20 h-20 bg-orange-900/20 rounded-full flex items-center justify-center mx-auto border border-orange-500/30">
-                <svg className="w-10 h-10 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" /></svg>
-              </div>
-              <div>
-                <h3 className="text-white font-bold text-xl mb-2">เปิดใช้งานเซนเซอร์</h3>
-                <p className="text-gray-400 text-sm">แอปพลิเคชันจำเป็นต้องเข้าถึง Gyroscope และ Magnetometer เพื่อจำลองการทำงานของเข็มทิศ M.2 อย่างแม่นยำ</p>
-              </div>
-              <button onClick={requestAccess} className="w-full py-3 bg-orange-600 hover:bg-orange-500 text-white rounded-lg font-bold uppercase tracking-wider transition-colors shadow-lg shadow-orange-900/50">
-                อนุญาต (Request Access)
-              </button>
-            </div>
-          ) : (
-            <div className="p-6 space-y-6 relative">
-              
-              {/* Mode Indicator & Unit Toggle */}
+          <div className="p-6 space-y-6 relative">
+            
+            {/* Mode Indicator & Unit Toggle */}
               <div className="flex flex-col items-center gap-3 mb-4">
                 <div className="flex justify-center gap-2">
                   <div className={`px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${!isClinometerMode ? 'bg-orange-500 text-white' : 'bg-gray-800 text-gray-500'}`}>Azimuth Mode</div>
@@ -170,7 +170,20 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
 
               {/* AZIMUTH MODE */}
               <AnimatePresence mode="wait">
-                {!isClinometerMode && (
+                
+                {needsPermission ? (
+                  <motion.div key="permission" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center h-80 bg-black/50 rounded-2xl border border-orange-500/30 p-6 text-center">
+                    <div className="text-4xl mb-4 animate-bounce">📱</div>
+                    <h3 className="text-orange-400 font-bold mb-2">เชื่อมต่อเซนเซอร์</h3>
+                    <p className="text-gray-400 text-xs mb-6">อุปกรณ์ของคุณ (iOS) บังคับให้กดยืนยันก่อนใช้งานเซนเซอร์เข็มทิศ</p>
+                    <button 
+                      onClick={requestIOSPermission}
+                      className="bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.4)] transition-all uppercase tracking-wider text-sm w-full"
+                    >
+                      กดเพื่อเปิดเข็มทิศ
+                    </button>
+                  </motion.div>
+                ) : !isClinometerMode && (
                   <motion.div key="azimuth" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="flex flex-col items-center">
                     
                     {/* Bull's-eye Bubble Level */}
@@ -198,7 +211,7 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
                       
                       {/* Rotating Smart Needle */}
                       <motion.div 
-                        className="absolute w-[4px] h-[70%] origin-center z-20"
+                        className="absolute w-[4px] h-[70%] origin-center z-20 flex flex-col"
                         animate={{ rotate: displayHeading }}
                         transition={{ type: "spring", stiffness: 100, damping: 20 }}
                       >
@@ -211,15 +224,21 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
                       </motion.div>
                       
                       {/* Center Display */}
-                      <div className="z-10 bg-black/80 backdrop-blur-md rounded-full w-28 h-28 flex flex-col items-center justify-center border border-gray-800 shadow-xl">
+                      <div className="z-10 bg-black/80 backdrop-blur-md rounded-full w-28 h-28 flex flex-col items-center justify-center border border-gray-800 shadow-xl relative">
                         <div className="text-3xl font-bold font-mono text-orange-400 leading-none">{displayValue}</div>
                         <div className="text-[10px] text-gray-500 tracking-widest mt-1 uppercase">{azimuthUnit}</div>
                         {!isNorthbound && <div className="text-[8px] text-red-500 font-bold mt-1">SOUTHBOUND (+180)</div>}
                       </div>
                     </div>
 
+                    {/* Back Azimuth Box */}
+                    <div className="w-[85%] mt-5 flex justify-between items-center bg-gray-900/80 border border-orange-500/20 px-4 py-2.5 rounded-xl shadow-lg">
+                      <div className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">มุมสกัดกลับ<br/><span className="text-[8px] text-gray-500">BACK AZIMUTH</span></div>
+                      <div className="text-orange-400 font-mono text-xl font-bold">{backAzimuth} <span className="text-sm">{azimuthUnit === 'mils' ? '₥' : '°'}</span></div>
+                    </div>
+
                     {/* Validation Message & Save Button */}
-                    <div className="w-full mt-6 flex flex-col gap-3">
+                    <div className="w-full mt-4 flex flex-col gap-3">
                       <div className="text-center min-h-[1.5rem]">
                         {!isAzimuthValid ? (
                           <span className="text-yellow-500/80 text-xs animate-pulse">⚠️ กรุณาวางเครื่องให้ได้ระดับ (ฟองอากาศอยู่ตรงกลาง)</span>
@@ -257,7 +276,7 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
                 )}
 
                 {/* CLINOMETER MODE */}
-                {isClinometerMode && (
+                {!needsPermission && isClinometerMode && (
                   <motion.div key="clinometer" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col items-center">
                     
                     {/* Barrel Bubble Level */}
@@ -335,8 +354,43 @@ export function DigitalM2Compass({ isVisible, onClose, onSave }: DigitalM2Compas
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-          )}
+              
+              {/* Desktop Test Mode Slider */}
+              <div className="w-full mt-2 pt-4 border-t border-gray-800/50 flex flex-col gap-3">
+                <button 
+                  onClick={() => setIsTestMode(!isTestMode)}
+                  className={`py-2 px-3 rounded-lg font-bold uppercase tracking-wider transition-all border text-[10px] w-full text-center
+                    ${isTestMode 
+                      ? 'bg-orange-900/40 text-orange-400 border-orange-500/50 shadow-inner' 
+                      : 'bg-black text-gray-500 border-gray-800 hover:bg-gray-900'}`}
+                >
+                  {isTestMode ? '💻 ปิดโหมดจำลอง (TURN OFF SIMULATOR)' : '💻 เปิดโหมดจำลองบนคอม (DESKTOP SIMULATOR)'}
+                </button>
+                
+                {isTestMode && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="flex flex-col gap-3 bg-black/40 p-3 rounded-lg border border-gray-800">
+                    <div className="flex gap-3 items-center">
+                      <span className="text-[9px] text-gray-400 font-bold uppercase w-12">Azimuth</span>
+                      <input 
+                        type="range" min="0" max="360" 
+                        value={heading} 
+                        onChange={(e) => setHeading(Number(e.target.value))}
+                        className="flex-1 accent-orange-500 h-1.5 bg-gray-700 rounded-lg appearance-none cursor-ew-resize"
+                      />
+                    </div>
+                    <div className="flex gap-3 items-center">
+                      <span className="text-[9px] text-gray-400 font-bold uppercase w-12">Pitch</span>
+                      <input 
+                        type="range" min="-90" max="90" 
+                        value={beta} 
+                        onChange={(e) => setBeta(Number(e.target.value))}
+                        className="flex-1 accent-blue-500 h-1.5 bg-gray-700 rounded-lg appearance-none cursor-ew-resize"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+          </div>
         </motion.div>
       </div>
     </AnimatePresence>
