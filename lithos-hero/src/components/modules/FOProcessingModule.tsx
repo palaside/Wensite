@@ -27,8 +27,8 @@ export const FOProcessingModule: React.FC = () => {
     const dE = distMeters * Math.sin(dirRads);
     const dN = distMeters * Math.cos(dirRads);
 
-    const tE = parsedObs.easting + dE;
-    const tN = parsedObs.northing + dN;
+    const tE = parsedObs.x + dE;
+    const tN = parsedObs.y + dN;
 
     setTargetE(Math.round(tE));
     setTargetN(Math.round(tN));

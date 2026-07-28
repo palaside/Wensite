@@ -11,13 +11,38 @@ export const FiringTableModule: React.FC = () => {
     const range = parseInt(rangeInput);
     if (isNaN(range)) return;
 
-    // We will just use interpolateValue to get elevation for now
-    const elevation = interpolateValue(range, 'elevation', FiringTable, charge);
-    const tof = interpolateValue(range, 'timeOfFlight', FiringTable, charge);
+    const chargeNum = parseInt(charge);
+    const table = FiringTable[chargeNum];
+    if (!table) return;
+
+    // find the closest ranges
+    const distances = Object.keys(table).map(Number).sort((a, b) => a - b);
+    let lower = distances[0];
+    let upper = distances[distances.length - 1];
+    
+    for (const d of distances) {
+      if (d <= range) lower = d;
+      if (d >= range) {
+        upper = d;
+        break;
+      }
+    }
+
+    if (lower === upper) {
+      setResult({
+        elevation: table[lower].f2.toFixed(1),
+        tof: table[lower].f6.toFixed(1)
+      });
+      return;
+    }
+
+    const ratio = (range - lower) / (upper - lower);
+    const elevation = table[lower].f2 + ratio * (table[upper].f2 - table[lower].f2);
+    const tof = table[lower].f6 + ratio * (table[upper].f6 - table[lower].f6);
 
     setResult({
-      elevation: elevation !== null ? elevation.toFixed(1) : 'OOR',
-      tof: tof !== null ? tof.toFixed(1) : 'OOR',
+      elevation: elevation.toFixed(1),
+      tof: tof.toFixed(1),
     });
   };
 
