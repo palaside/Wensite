@@ -83,6 +83,8 @@ export const TacticalHudView: React.FC<TacticalHudViewProps> = ({ isVisible, onC
   const [observer, setObserver] = useState<Coordinate | null>(null);
   const [target, setTarget] = useState<Coordinate | null>(null);
   const [impact, setImpact] = useState<Coordinate | null>(null);
+  const [fdcPos, setFdcPos] = useState<Coordinate | null>(null);
+  const [gunsPos, setGunsPos] = useState<Coordinate | null>(null);
   const [correction, setCorrection] = useState<CorrectionResult | null>(null);
   
   const [isDangerClose, setIsDangerClose] = useState(false);
@@ -175,6 +177,16 @@ export const TacticalHudView: React.FC<TacticalHudViewProps> = ({ isVisible, onC
     }
   }, [observer, target, impact]);
 
+  useEffect(() => {
+    if (observer) {
+      if (!fdcPos) setFdcPos({ lat: observer.lat - 0.01, lon: observer.lon - 0.01 });
+      if (!gunsPos) setGunsPos({ lat: observer.lat - 0.015, lon: observer.lon - 0.015 });
+    } else {
+      setFdcPos(null);
+      setGunsPos(null);
+    }
+  }, [observer]);
+
   // Flash-to-Bang Logic
   const handleFlash = () => setFlashStartTime(Date.now());
   const handleBang = () => {
@@ -191,9 +203,6 @@ export const TacticalHudView: React.FC<TacticalHudViewProps> = ({ isVisible, onC
     ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
     : (mapBase === 'satellite' ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}' : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}');
 
-  // Situational Awareness Mock Positions based on OP
-  const fdcPos = observer ? { lat: observer.lat - 0.01, lon: observer.lon - 0.01 } : null;
-  const gunsPos = observer ? { lat: observer.lat - 0.015, lon: observer.lon - 0.015 } : null;
 
   return (
     <motion.div 
@@ -228,12 +237,77 @@ export const TacticalHudView: React.FC<TacticalHudViewProps> = ({ isVisible, onC
             </>
           )}
 
-          {observer && <Marker position={[observer.lat, observer.lon]} icon={OP_ICON} />}
-          {target && <Marker position={[target.lat, target.lon]} icon={TGT_ICON} />}
-          {impact && <Marker position={[impact.lat, impact.lon]} icon={IMP_ICON} />}
+          {observer && (
+            <Marker 
+              position={[observer.lat, observer.lon]} 
+              icon={OP_ICON} 
+              draggable={true}
+              eventHandlers={{
+                dragend: (e) => {
+                  const marker = e.target;
+                  const position = marker.getLatLng();
+                  setObserver({ lat: position.lat, lon: position.lng, alt: observer.alt });
+                }
+              }}
+            />
+          )}
+          {target && (
+            <Marker 
+              position={[target.lat, target.lon]} 
+              icon={TGT_ICON} 
+              draggable={true}
+              eventHandlers={{
+                dragend: (e) => {
+                  const marker = e.target;
+                  const position = marker.getLatLng();
+                  setTarget({ lat: position.lat, lon: position.lng, alt: target.alt });
+                }
+              }}
+            />
+          )}
+          {impact && (
+            <Marker 
+              position={[impact.lat, impact.lon]} 
+              icon={IMP_ICON} 
+              draggable={true}
+              eventHandlers={{
+                dragend: (e) => {
+                  const marker = e.target;
+                  const position = marker.getLatLng();
+                  setImpact({ lat: position.lat, lon: position.lng, alt: impact.alt });
+                }
+              }}
+            />
+          )}
           
-          {fdcPos && <Marker position={[fdcPos.lat, fdcPos.lon]} icon={FDC_ICON} />}
-          {gunsPos && <Marker position={[gunsPos.lat, gunsPos.lon]} icon={GUNS_ICON} />}
+          {fdcPos && (
+            <Marker 
+              position={[fdcPos.lat, fdcPos.lon]} 
+              icon={FDC_ICON} 
+              draggable={true}
+              eventHandlers={{
+                dragend: (e) => {
+                  const marker = e.target;
+                  const position = marker.getLatLng();
+                  setFdcPos({ lat: position.lat, lon: position.lng });
+                }
+              }}
+            />
+          )}
+          {gunsPos && (
+            <Marker 
+              position={[gunsPos.lat, gunsPos.lon]} 
+              icon={GUNS_ICON} 
+              draggable={true}
+              eventHandlers={{
+                dragend: (e) => {
+                  const marker = e.target;
+                  const position = marker.getLatLng();
+                  setGunsPos({ lat: position.lat, lon: position.lng });
+                }
+              }}
+            />
+          )}
 
           {hills.map((h, i) => <Marker key={i} position={[h.lat, h.lon]} icon={createHillIcon(h.elevation)} />)}
         </MapContainer>
