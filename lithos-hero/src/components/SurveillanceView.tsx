@@ -140,7 +140,7 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
               {method === 'shift' && (
                 <>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-slate-300 text-sm">พิกัดกริดของจุดที่ทราบ (Known Point Grid)</label>
+                    <label className="block text-slate-300 text-sm">พิกัดกริดจุดอ้างอิง (Known Point Grid)</label>
                     {onRequestTargetList && (
                       <button 
                         onClick={onRequestTargetList}
@@ -154,26 +154,26 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
                     <input type="text" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="เช่น 12345678" value={knownGrid} onChange={e => setKnownGrid(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">ความสูงของจุดที่ทราบ (Known Point Altitude - เมตร)</label>
+                    <label className="block text-slate-300 text-sm mb-1">ความสูงจุดอ้างอิง (เมตร)</label>
                     <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="0" value={knownAlt} onChange={e => setKnownAlt(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">แนวตรวจการณ์-เป้าหมาย (OT Line - มิลเลียม)</label>
+                    <label className="block text-slate-300 text-sm mb-1">แนวตรวจการณ์ (OT Line - มิลเลียม)</label>
                     <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="0-6400" value={otLine} onChange={e => setOtLine(e.target.value)} />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="form-group">
-                      <label className="block text-slate-300 text-sm mb-1">ทางข้าง (Lateral Shift - ซ้าย/ขวา เมตร)</label>
-                      <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="-ซ้าย / +ขวา" value={lateralShift} onChange={e => setLateralShift(e.target.value)} />
+                      <label className="block text-slate-300 text-sm mb-1">ย้ายทางข้าง (ซ้าย/ขวา เมตร)</label>
+                      <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="ซ้าย (-) / ขวา (+)" value={lateralShift} onChange={e => setLateralShift(e.target.value)} />
                     </div>
                     <div className="form-group">
-                      <label className="block text-slate-300 text-sm mb-1">ทางระยะ (Range Shift - เพิ่ม/ลด เมตร)</label>
-                      <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="-ลด / +เพิ่ม" value={rangeShift} onChange={e => setRangeShift(e.target.value)} />
+                      <label className="block text-slate-300 text-sm mb-1">ย้ายทางระยะ (เพิ่ม/ลด เมตร)</label>
+                      <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="ลด (-) / เพิ่ม (+)" value={rangeShift} onChange={e => setRangeShift(e.target.value)} />
                     </div>
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">ทางสูง (Vertical Shift - ขึ้น/ลง เมตร)</label>
-                    <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="-ลง / +ขึ้น" value={verticalShift} onChange={e => setVerticalShift(e.target.value)} />
+                    <label className="block text-slate-300 text-sm mb-1">ย้ายทางสูง (ขึ้น/ลง เมตร)</label>
+                    <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="แก้ลง (-) / แก้ขึ้น (+)" value={verticalShift} onChange={e => setVerticalShift(e.target.value)} />
                   </div>
                 </>
               )}
