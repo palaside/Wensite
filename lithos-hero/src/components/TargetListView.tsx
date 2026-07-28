@@ -21,6 +21,7 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
 
   // Confirmation state for clearing
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const loadTargets = () => {
     setTargets(getTargets());
@@ -77,16 +78,13 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
         <div className="flex items-center justify-between px-6 py-4 bg-slate-800 border-b border-slate-700 shrink-0">
           <div className="flex items-center gap-4">
             <h2 className="text-2xl font-bold text-white tracking-widest uppercase">Target Database</h2>
-            <span className="bg-emerald-900/50 text-emerald-400 border border-emerald-800 px-3 py-1 rounded-full text-xs font-bold tracking-wider">
-              {targets.length} TARGETS
-            </span>
           </div>
           <div className="flex items-center gap-4">
             {showClearConfirm ? (
               <div className="flex items-center gap-2 bg-red-900/50 px-3 py-1 rounded-lg border border-red-500/50">
-                <span className="text-red-200 text-sm font-semibold">Are you sure?</span>
-                <button onClick={handleClearAll} className="bg-red-600 hover:bg-red-500 text-white text-xs px-3 py-1.5 rounded transition-colors font-bold uppercase tracking-wider">Yes, Clear All</button>
-                <button onClick={() => setShowClearConfirm(false)} className="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded transition-colors uppercase tracking-wider">Cancel</button>
+                <span className="text-red-200 text-sm font-semibold">ยืนยันการลบ?</span>
+                <button onClick={handleClearAll} className="bg-red-600 hover:bg-red-500 text-white text-xs px-3 py-1.5 rounded transition-colors font-bold uppercase tracking-wider">ล้างข้อมูลทั้งหมด</button>
+                <button onClick={() => setShowClearConfirm(false)} className="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded transition-colors uppercase tracking-wider">ยกเลิก</button>
               </div>
             ) : (
               <button 
@@ -95,7 +93,7 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
                 disabled={targets.length === 0}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                Clear Database
+                ล้างข้อมูล
               </button>
             )}
             <div className="w-px h-6 bg-slate-700"></div>
@@ -105,29 +103,42 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
           </div>
         </div>
 
-        {/* Input Form */}
-        <div className="p-6 border-b border-slate-800 bg-slate-800/30">
-          <form onSubmit={handleAddTarget} className="flex gap-4 items-end">
-            <div className="flex-1">
-              <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Target ID *</label>
-              <input type="text" required value={newId} onChange={e => setNewId(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none uppercase font-bold" placeholder="e.g. TG-01" />
+        {/* Mockup summary section */}
+        <div className="p-6 border-b border-slate-800 bg-slate-900/50 flex flex-col md:flex-row gap-8 items-start justify-between">
+          <div className="flex gap-12 items-start">
+            {/* จำนวน (Count) */}
+            <div className="flex flex-col items-center">
+              <span className="text-white text-md font-bold mb-2">จำนวน</span>
+              <div className="border border-white rounded px-8 py-2.5 bg-black/40 text-white font-mono text-xl font-bold min-w-[90px] text-center">
+                {targets.length}
+              </div>
             </div>
-            <div className="flex-1">
-              <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Grid *</label>
-              <input type="text" required value={newGrid} onChange={e => setNewGrid(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none font-mono tracking-widest" placeholder="8 digits" />
+
+            {/* ชื่อเป้าหมาย (Target Names) */}
+            <div className="flex flex-col">
+              <span className="text-white text-md font-bold mb-2 text-center md:text-left">ชื่อเป้าหมาย</span>
+              <div className="flex flex-wrap gap-3 max-w-xl">
+                {targets.map((t, idx) => (
+                  <div key={idx} className="border border-white rounded px-5 py-2 bg-black/20 text-white font-bold font-mono text-sm">
+                    {t.id}
+                  </div>
+                ))}
+                {targets.length === 0 && (
+                  <span className="text-slate-600 text-xs italic">ไม่มีข้อมูลเป้าหมาย</span>
+                )}
+              </div>
             </div>
-            <div className="w-32">
-              <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Alt (m)</label>
-              <input type="number" value={newAlt} onChange={e => setNewAlt(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none" placeholder="0" />
-            </div>
-            <div className="flex-[2]">
-              <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Description</label>
-              <input type="text" value={newDesc} onChange={e => setNewDesc(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none" placeholder="Target description..." />
-            </div>
-            <button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg transition-colors h-[42px] tracking-wider uppercase whitespace-nowrap">
-              Add Target
+          </div>
+
+          {/* ADD TARGET Button */}
+          <div className="self-end md:self-center">
+            <button 
+              onClick={() => setShowAddForm(true)}
+              className="border border-white hover:border-emerald-500 hover:text-emerald-400 text-white font-bold py-2.5 px-8 rounded transition-all tracking-wider uppercase bg-transparent text-sm"
+            >
+              ADD TARGET
             </button>
-          </form>
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -197,9 +208,9 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
                             if (onSelectTarget) onSelectTarget(target);
                             onClose();
                           }}
-                          className="bg-slate-700 hover:bg-emerald-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 tracking-wider uppercase"
+                          className="border border-white hover:border-emerald-500 text-white hover:text-emerald-400 font-semibold py-1.5 px-6 rounded transition-colors tracking-wider uppercase text-sm bg-transparent"
                         >
-                          Select
+                          SELECT
                         </button>
                       </td>
                     </tr>
@@ -208,7 +219,7 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
               </table>
               {filteredTargets.length === 0 && (
                 <div className="text-center py-8 text-slate-500">
-                  No targets match your search.
+                  ไม่มีข้อมูลเป้าหมายที่ค้นหา
                 </div>
               )}
             </div>
@@ -216,6 +227,41 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
         </div>
 
       </div>
+
+      {/* Add Target Modal Overlay */}
+      {showAddForm && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-slate-900 border border-slate-700 w-full max-w-md rounded-xl p-6 shadow-2xl flex flex-col gap-4">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+              <h3 className="text-lg font-bold text-white uppercase tracking-wider">เพิ่มข้อมูลเป้าหมาย (Add Target)</h3>
+              <button onClick={() => setShowAddForm(false)} className="text-slate-400 hover:text-white p-1">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+            </div>
+            <form onSubmit={(e) => { handleAddTarget(e); setShowAddForm(false); }} className="flex flex-col gap-4">
+              <div>
+                <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">ชื่อเป้าหมาย (Target ID) *</label>
+                <input type="text" required value={newId} onChange={e => setNewId(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none uppercase font-bold" placeholder="เช่น กข4001" />
+              </div>
+              <div>
+                <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">พิกัดกริด (Grid) *</label>
+                <input type="text" required value={newGrid} onChange={e => setNewGrid(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none font-mono tracking-widest" placeholder="8 หลัก (เช่น 12345678)" />
+              </div>
+              <div>
+                <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">ความสูง (Altitude - เมตร)</label>
+                <input type="number" value={newAlt} onChange={e => setNewAlt(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none" placeholder="0" />
+              </div>
+              <div>
+                <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">รายละเอียด (Description)</label>
+                <input type="text" value={newDesc} onChange={e => setNewDesc(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none" placeholder="รายละเอียดอื่นๆ..." />
+              </div>
+              <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition-colors tracking-wider uppercase text-sm mt-2">
+                บันทึกเป้าหมาย
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
