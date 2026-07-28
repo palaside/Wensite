@@ -171,9 +171,9 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
         </div>
 
         {/* Input Form (styled exactly like the attached image) */}
-        <div className="p-6 border-b border-[#1e293b] bg-[#0d1630]">
-          <form onSubmit={handleAddTargets} className="flex gap-4 items-end">
-            <div className="w-28 shrink-0">
+        <div className="p-4 sm:p-6 border-b border-[#1e293b] bg-[#0d1630]">
+          <form onSubmit={handleAddTargets} className="flex flex-col md:flex-row gap-4 items-stretch md:items-end">
+            <div className="w-full md:w-28 shrink-0">
               <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">จำนวน *</label>
               <input 
                 type="number" 
@@ -182,44 +182,44 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
                 max="30"
                 value={targetCount} 
                 onChange={e => setTargetCount(e.target.value)} 
-                className="w-full bg-[#060c18] border border-[#1e293b] rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none uppercase font-bold text-center" 
+                className="w-full bg-[#060c18] border border-[#1e293b] rounded-lg px-3 py-2.5 text-white focus:border-emerald-500 outline-none uppercase font-bold text-center text-sm" 
                 placeholder="เช่น 3" 
               />
             </div>
-            <div className="flex-1">
+            <div className="w-full md:flex-1">
               <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">GRID *</label>
               <input 
                 type="text" 
                 required 
                 value={newGrid} 
                 onChange={e => setNewGrid(e.target.value)} 
-                className="w-full bg-[#060c18] border border-[#1e293b] rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none font-mono tracking-wider" 
+                className="w-full bg-[#060c18] border border-[#1e293b] rounded-lg px-3 py-2.5 text-white focus:border-emerald-500 outline-none font-mono tracking-wider text-sm" 
                 placeholder="8 digits" 
               />
             </div>
-            <div className="w-32">
+            <div className="w-full md:w-32">
               <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">ALT (M)</label>
               <input 
                 type="number" 
                 value={newAlt} 
                 onChange={e => setNewAlt(e.target.value)} 
-                className="w-full bg-[#060c18] border border-[#1e293b] rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none" 
+                className="w-full bg-[#060c18] border border-[#1e293b] rounded-lg px-3 py-2.5 text-white focus:border-emerald-500 outline-none text-sm" 
                 placeholder="0" 
               />
             </div>
-            <div className="flex-[2]">
+            <div className="w-full md:flex-[2]">
               <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">DESCRIPTION</label>
               <input 
                 type="text" 
                 value={newDesc} 
                 onChange={e => setNewDesc(e.target.value)} 
-                className="w-full bg-[#060c18] border border-[#1e293b] rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none" 
+                className="w-full bg-[#060c18] border border-[#1e293b] rounded-lg px-3 py-2.5 text-white focus:border-emerald-500 outline-none text-sm" 
                 placeholder="Target description..." 
               />
             </div>
             <button 
               type="submit" 
-              className="bg-[#10b981] hover:bg-[#059669] text-white font-bold py-2.5 px-6 rounded-lg transition-colors h-[42px] tracking-wider uppercase whitespace-nowrap text-sm"
+              className="w-full md:w-auto bg-[#10b981] hover:bg-[#059669] text-white font-bold py-2.5 px-6 rounded-lg transition-colors h-[46px] tracking-wider uppercase whitespace-nowrap text-sm"
             >
               ADD TARGET
             </button>
