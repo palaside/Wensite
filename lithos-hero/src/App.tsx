@@ -241,7 +241,7 @@ function App() {
                 <img src={`/${activeModeId}.png`} alt={activeModeId} className="w-14 h-14 sm:w-20 sm:h-20 lg:hidden object-contain drop-shadow-lg shrink-0 ml-auto" onError={(e) => { e.currentTarget.style.display='none'; }} />
               </div>
               
-              <div className="flex flex-col gap-2 mt-1 w-full max-w-[500px] flex-1 overflow-hidden">
+              <div className="flex flex-col gap-2 mt-1 w-full max-w-[500px] flex-1 overflow-y-auto custom-scrollbar pr-2 pb-16">
                 {activeModeId === 'HS' && (
                   <>
                     <button onClick={() => setCurrentView('report')} className="glass-card-btn">
@@ -260,60 +260,66 @@ function App() {
                 )}
                 {activeModeId === 'FO' && (
                   <div className="grid grid-cols-2 gap-1.5 overflow-hidden">
-                    {/* กล่องที่ 1: Call for Fire (วิธีขอรับการยิง) */}
-                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">1. Target Location (วิธีกำหนดพิกัด)</div>
+                    {/* 1. TARGET LOCATION (วิธีหาพิกัดเป้า) */}
+                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">1. TARGET LOCATION (วิธีหาพิกัดเป้า)</div>
                     <button onClick={() => setSurveillanceMethod('grid')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">1. Grid</span>
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">1. GRID METHOD</span>
                       พิกัดกริด
                     </button>
                     <button onClick={() => setSurveillanceMethod('polar')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">2. Polar</span>
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">2. POLAR PLOT</span>
                       โพลาร์
                     </button>
                     <button onClick={() => setSurveillanceMethod('shift')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">3. Shift</span>
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">3. SHIFT FROM KNOWN POINT</span>
                       ย้ายจุดอ้างอิง
                     </button>
 
-                    {/* กล่องที่ 2: Calculation Tools (เครื่องมือคำนวณ) */}
-                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">2. Acquisition Tools</div>
+                    {/* 2. TARGET ACQUISITION TOOLS */}
+                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">2. TARGET ACQUISITION TOOLS</div>
                     <button onClick={() => setCurrentView('flash_to_bang')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">4. Flash-to-Bang</span>
-                      แสง-เสียง
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">4. FLASH TO BANG</span>
+                      แฟลช-ปัง
                     </button>
                     <button onClick={() => setCurrentView('mil_formula')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">5. Mil Formula</span>
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">5. MIL FORMULA</span>
                       สูตรมิล
                     </button>
                     <button onClick={() => setCurrentView('sine_rule')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">6. Sine Rule</span>
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">6. SINE RULE</span>
                       กฎของไซน์
                     </button>
 
-                    {/* กล่องที่ 3: Shift / Adjustments */}
-                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">3. Shift & Adjustment</div>
+                    {/* 3. SHIFT METHOD (การย้ายจุด) */}
+                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">3. SHIFT METHOD (การย้ายจุด)</div>
                     <button onClick={() => setCurrentView('ot_factor')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">7. OT Factor</span>
-                      แฟคเตอร์ ตม.
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">7. OF FACTOR</span>
+                      แฟคเตอร์ อบ.
                     </button>
                     <button onClick={() => setCurrentView('lateral_shift')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">Lateral Shift</span>
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">8. LATERAL SHIFT</span>
                       แก้ทางข้าง
                     </button>
+
+                    {/* 3. ADJUSTMENT (ปรับการยิง) - Using the duplicate 3 from mockup */}
+                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">3. ADJUSTMENT (ปรับการยิง)</div>
                     <button onClick={() => setCurrentView('range_bracketing')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">Range Bracketing</span>
-                      แก้ทางระยะ
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">7. RANGE</span>
+                      แก้ระยะ
                     </button>
                     <button onClick={() => setCurrentView('height_of_burst')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">Height of Burst</span>
-                      แก้สูงแตก
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">8. HEIGHT OF BURST</span>
+                      แก้ความสูง
                     </button>
+
+                    {/* 4. SPECIAL MISSIONS (ภารกิจพิเศษ) */}
+                    <div className="col-span-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase mt-0.5 mb-0 border-b border-emerald-900/50 pb-0.5">4. SPECIAL MISSIONS (ภารกิจพิเศษ)</div>
                     <button onClick={() => setCurrentView('moving_target')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">Moving Target</span>
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">9. MOVING TARGET</span>
                       เป้าหมายเคลื่อนที่
                     </button>
                     <button onClick={() => setCurrentView('smoke_screen')} className="glass-card-btn !py-1 !text-sm">
-                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">Smoke Screen</span>
+                      <span className="block text-[9px] text-emerald-500 tracking-wider uppercase">10. SMOKE SCREEN</span>
                       ฉากควัน
                     </button>
 
