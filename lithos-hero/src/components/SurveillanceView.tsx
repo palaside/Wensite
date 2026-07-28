@@ -110,29 +110,29 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
             
             {/* Input Column */}
             <div className="flex flex-col gap-4">
-              <h3 className="text-emerald-400 font-semibold uppercase tracking-wider text-sm border-b border-emerald-900 pb-2">Inputs</h3>
+              <h3 className="text-emerald-400 font-semibold uppercase tracking-wider text-sm border-b border-emerald-900 pb-2">ข้อมูลนำเข้า (Inputs)</h3>
               
               {method === 'polar' && (
                 <>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Observer Grid (8 or 10 digits)</label>
-                    <input type="text" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all" placeholder="e.g. 12345678" value={obsGrid} onChange={e => setObsGrid(e.target.value)} />
+                    <label className="block text-slate-300 text-sm mb-1">พิกัดกริดผู้ตรวจการณ์ (Observer Grid - 8 หรือ 10 หลัก)</label>
+                    <input type="text" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all" placeholder="เช่น 12345678" value={obsGrid} onChange={e => setObsGrid(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Observer Altitude (m)</label>
+                    <label className="block text-slate-300 text-sm mb-1">ความสูงผู้ตรวจการณ์ (Observer Altitude - เมตร)</label>
                     <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="0" value={obsAlt} onChange={e => setObsAlt(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Direction (Mils)</label>
+                    <label className="block text-slate-300 text-sm mb-1">มุมทิศ (Direction - มิลเลียม/Mils)</label>
                     <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="0-6400" value={direction} onChange={e => setDirection(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Distance (m)</label>
-                    <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="Meters" value={distance} onChange={e => setDistance(e.target.value)} />
+                    <label className="block text-slate-300 text-sm mb-1">ระยะ (Distance - เมตร)</label>
+                    <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="เมตร" value={distance} onChange={e => setDistance(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Vertical Interval (VI) (m)</label>
-                    <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="+/- Meters" value={vi} onChange={e => setVi(e.target.value)} />
+                    <label className="block text-slate-300 text-sm mb-1">ความต่างสูง (Vertical Interval - VI - เมตร)</label>
+                    <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="+/- เมตร" value={vi} onChange={e => setVi(e.target.value)} />
                   </div>
                 </>
               )}
@@ -140,7 +140,7 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
               {method === 'shift' && (
                 <>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-slate-300 text-sm">Known Point Grid</label>
+                    <label className="block text-slate-300 text-sm">พิกัดกริดของจุดที่ทราบ (Known Point Grid)</label>
                     {onRequestTargetList && (
                       <button 
                         onClick={onRequestTargetList}
@@ -151,29 +151,29 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
                     )}
                   </div>
                   <div className="form-group mb-4">
-                    <input type="text" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="e.g. 12345678" value={knownGrid} onChange={e => setKnownGrid(e.target.value)} />
+                    <input type="text" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="เช่น 12345678" value={knownGrid} onChange={e => setKnownGrid(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Known Point Altitude (m)</label>
+                    <label className="block text-slate-300 text-sm mb-1">ความสูงของจุดที่ทราบ (Known Point Altitude - เมตร)</label>
                     <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="0" value={knownAlt} onChange={e => setKnownAlt(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">OT Line (Direction Mils)</label>
+                    <label className="block text-slate-300 text-sm mb-1">แนวตรวจการณ์-เป้าหมาย (OT Line - มิลเลียม)</label>
                     <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="0-6400" value={otLine} onChange={e => setOtLine(e.target.value)} />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="form-group">
-                      <label className="block text-slate-300 text-sm mb-1">Lateral Shift (L/R m)</label>
-                      <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="-Left / +Right" value={lateralShift} onChange={e => setLateralShift(e.target.value)} />
+                      <label className="block text-slate-300 text-sm mb-1">ทางข้าง (Lateral Shift - ซ้าย/ขวา เมตร)</label>
+                      <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="-ซ้าย / +ขวา" value={lateralShift} onChange={e => setLateralShift(e.target.value)} />
                     </div>
                     <div className="form-group">
-                      <label className="block text-slate-300 text-sm mb-1">Range Shift (Add/Drop m)</label>
-                      <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="-Drop / +Add" value={rangeShift} onChange={e => setRangeShift(e.target.value)} />
+                      <label className="block text-slate-300 text-sm mb-1">ทางระยะ (Range Shift - เพิ่ม/ลด เมตร)</label>
+                      <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="-ลด / +เพิ่ม" value={rangeShift} onChange={e => setRangeShift(e.target.value)} />
                     </div>
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Vertical Shift (U/D m)</label>
-                    <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="-Down / +Up" value={verticalShift} onChange={e => setVerticalShift(e.target.value)} />
+                    <label className="block text-slate-300 text-sm mb-1">ทางสูง (Vertical Shift - ขึ้น/ลง เมตร)</label>
+                    <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="-ลง / +ขึ้น" value={verticalShift} onChange={e => setVerticalShift(e.target.value)} />
                   </div>
                 </>
               )}
@@ -181,11 +181,11 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
               {method === 'grid' && (
                 <>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Target Grid (8 or 10 digits)</label>
-                    <input type="text" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="e.g. 12345678" value={inputGrid} onChange={e => setInputGrid(e.target.value)} />
+                    <label className="block text-slate-300 text-sm mb-1">พิกัดกริดเป้าหมาย (Target Grid - 8 หรือ 10 หลัก)</label>
+                    <input type="text" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="เช่น 12345678" value={inputGrid} onChange={e => setInputGrid(e.target.value)} />
                   </div>
                   <div className="form-group">
-                    <label className="block text-slate-300 text-sm mb-1">Target Altitude (m)</label>
+                    <label className="block text-slate-300 text-sm mb-1">ความสูงเป้าหมาย (Target Altitude - เมตร)</label>
                     <input type="number" className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none" placeholder="0" value={inputAlt} onChange={e => setInputAlt(e.target.value)} />
                   </div>
                 </>
@@ -195,17 +195,17 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
 
             {/* Results Column */}
             <div className="flex flex-col gap-4">
-              <h3 className="text-cyan-400 font-semibold uppercase tracking-wider text-sm border-b border-cyan-900 pb-2">Target Result</h3>
+              <h3 className="text-cyan-400 font-semibold uppercase tracking-wider text-sm border-b border-cyan-900 pb-2">ผลลัพธ์เป้าหมาย (Target Result)</h3>
               
               <div className="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-inner flex flex-col items-center justify-center min-h-[300px]">
                 {targetGrid ? (
                   <div className="text-center animate-in zoom-in duration-300 w-full">
-                    <div className="text-slate-400 text-sm mb-2">Calculated Target Grid</div>
+                    <div className="text-slate-400 text-sm mb-2">พิกัดกริดเป้าหมายที่คำนวณได้ (Calculated Target Grid)</div>
                     <div className="text-3xl md:text-5xl font-mono text-emerald-400 font-bold tracking-widest drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]">
                       {formatGrid8(targetGrid)}
                     </div>
                     <div className="mt-4 text-slate-300 text-lg">
-                      Altitude: <span className="text-cyan-400 font-mono font-bold">{Math.round(targetGrid.alt)} m</span>
+                      ความสูง (Altitude): <span className="text-cyan-400 font-mono font-bold">{Math.round(targetGrid.alt)} เมตร</span>
                     </div>
 
                     <MapView 
@@ -223,14 +223,17 @@ export const SurveillanceView: React.FC<SurveillanceViewProps> = ({ method, onCl
                         }}
                         className="w-full max-w-xs bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all transform hover:scale-105 active:scale-95 uppercase tracking-widest"
                       >
-                        Request Fire
+                        ร้องขอยิง (Request Fire)
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-slate-600 flex flex-col items-center">
-                    <svg className="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-                    <p>Enter required data to compute target</p>
+                  <div className="w-full flex flex-col items-center">
+                    <div className="text-slate-500 text-xs mb-3 italic">ป้อนข้อมูลที่จำเป็นเพื่อคำนวณเป้าหมาย (ระบบพร้อมทำงาน)</div>
+                    <MapView 
+                      isVisible={true}
+                      customPositionClass="relative w-full h-[250px] rounded-xl border border-slate-850 overflow-hidden shadow-inner"
+                    />
                   </div>
                 )}
               </div>
