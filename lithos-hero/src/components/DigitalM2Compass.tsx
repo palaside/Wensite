@@ -37,11 +37,48 @@ export function DigitalM2Compass({ isVisible, onClose, onSave, customPositionCla
   // Auto-switch mode based on Pitch (Beta). 
   const isClinometerMode = Math.abs(beta) >= 45;
 
+  const compassRingRef = React.useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const calculateAngle = (clientX: number, clientY: number) => {
+    if (!compassRingRef.current) return;
+    const rect = compassRingRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const angleRad = Math.atan2(clientY - centerY, clientX - centerX);
+    let angleDeg = (angleRad * 180) / Math.PI + 90; // offset so 0 is up
+    if (angleDeg < 0) angleDeg += 360;
+    setHeading(angleDeg);
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (hasReceivedEvent || isLocked || isTestMode) return;
+    setIsDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+    calculateAngle(e.clientX, e.clientY);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    calculateAngle(e.clientX, e.clientY);
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    setIsDragging(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
   useEffect(() => {
     if (!isVisible || needsPermission) return;
 
     const handleOrientation = (event: DeviceOrientationEvent) => {
       if (isLockedRef.current || isTestModeRef.current) return;
+      
+      // We got orientation data, so mark that the sensor is working
+      if (event.alpha !== null || event.beta !== null || event.gamma !== null) {
+        setHasReceivedEvent(true);
+      }
+
       let h = 0;
       // Use webkitCompassHeading if available (iOS True North), otherwise fallback to alpha
       if ((event as any).webkitCompassHeading !== undefined) {
@@ -54,9 +91,19 @@ export function DigitalM2Compass({ isVisible, onClose, onSave, customPositionCla
       setGamma(event.gamma || 0);
     };
 
-    window.addEventListener('deviceorientation', handleOrientation, true);
+    const hasAbsolute = 'ondeviceorientationabsolute' in window;
+    if (hasAbsolute) {
+      window.addEventListener('deviceorientationabsolute', handleOrientation as any, true);
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation, true);
+    }
+
     return () => {
-      window.removeEventListener('deviceorientation', handleOrientation, true);
+      if (hasAbsolute) {
+        window.removeEventListener('deviceorientationabsolute', handleOrientation as any, true);
+      } else {
+        window.removeEventListener('deviceorientation', handleOrientation, true);
+      }
     };
   }, [isVisible, needsPermission]);
   
@@ -202,35 +249,47 @@ export function DigitalM2Compass({ isVisible, onClose, onSave, customPositionCla
                     </div>
 
                     {/* Compass Ring */}
-                    <div className="relative w-80 h-80 rounded-full flex items-center justify-center shadow-2xl overflow-hidden bg-[#111]">
+                    <div 
+                      ref={compassRingRef}
+                      onPointerDown={handlePointerDown}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      className={`relative w-80 h-80 rounded-full flex items-center justify-center shadow-2xl overflow-hidden bg-[#111] touch-none ${!hasReceivedEvent && !isLocked && !isTestMode ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                    >
                       {/* Background Image */}
-                      <img src="/M.2/m2_compass_model.png" alt="Compass Dial" className="absolute inset-0 w-full h-full object-cover" />
+                      <img src="/M.2/m2_compass_model.png" alt="Compass Dial" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
                       
                       {/* Patch to hide original needle (points up from center) */}
-                      <div className="absolute top-[10%] left-[50%] w-[12px] h-[40%] bg-[#161616] z-10 transform -translate-x-1/2 blur-[2px]"></div>
-                      <div className="absolute top-[14%] left-[50%] w-[30px] h-[30px] bg-[#161616] z-10 transform -translate-x-1/2 rounded-full blur-[3px]"></div>
+                      <div className="absolute top-[10%] left-[50%] w-[12px] h-[40%] bg-[#161616] z-10 transform -translate-x-1/2 blur-[2px] pointer-events-none"></div>
+                      <div className="absolute top-[14%] left-[50%] w-[30px] h-[30px] bg-[#161616] z-10 transform -translate-x-1/2 rounded-full blur-[3px] pointer-events-none"></div>
                       
                       {/* Rotating Smart Needle */}
                       <motion.div 
-                        className="absolute w-[4px] h-[70%] origin-center z-20 flex flex-col"
+                        className="absolute w-[4px] h-[70%] origin-center z-20 flex flex-col pointer-events-none"
                         animate={{ rotate: displayHeading }}
                         transition={{ type: "spring", stiffness: 100, damping: 20 }}
                       >
-                         <div className="absolute top-0 left-0 w-full h-1/2 rounded-t-full transition-colors duration-300" style={{ backgroundColor: needleColor }}></div>
+                         <div className="absolute top-0 left-0 w-full h-1/2 rounded-t-full transition-colors duration-300 pointer-events-none" style={{ backgroundColor: needleColor }}></div>
                          {needleColor === '#1A1A1A' && (
-                           <div className="absolute top-0 left-0 w-full h-1/2 rounded-t-full border border-gray-700"></div>
+                           <div className="absolute top-0 left-0 w-full h-1/2 rounded-t-full border border-gray-700 pointer-events-none"></div>
                          )}
-                         <div className="absolute bottom-0 left-0 w-full h-1/2 rounded-b-full bg-white/20"></div>
-                         <div className="absolute top-1/2 left-1/2 -ml-1.5 -mt-1.5 w-3 h-3 rounded-full bg-white shadow-md"></div>
+                         <div className="absolute bottom-0 left-0 w-full h-1/2 rounded-b-full bg-white/20 pointer-events-none"></div>
+                         <div className="absolute top-1/2 left-1/2 -ml-1.5 -mt-1.5 w-3 h-3 rounded-full bg-white shadow-md pointer-events-none"></div>
                       </motion.div>
                       
                       {/* Center Display */}
-                      <div className="z-10 bg-black/80 backdrop-blur-md rounded-full w-28 h-28 flex flex-col items-center justify-center border border-gray-800 shadow-xl relative">
+                      <div className="z-10 bg-black/80 backdrop-blur-md rounded-full w-28 h-28 flex flex-col items-center justify-center border border-gray-800 shadow-xl relative pointer-events-none">
                         <div className="text-3xl font-bold font-mono text-orange-400 leading-none">{displayValue}</div>
                         <div className="text-[10px] text-gray-500 tracking-widest mt-1 uppercase">{azimuthUnit}</div>
                         {!isNorthbound && <div className="text-[8px] text-red-500 font-bold mt-1">SOUTHBOUND (+180)</div>}
                       </div>
                     </div>
+
+                    {!hasReceivedEvent && !isTestMode && (
+                      <div className="text-[10px] text-gray-400 mt-2 text-center border border-gray-800 bg-black/40 py-1 px-3 rounded-full animate-pulse select-none">
+                        🖱️ คลิกค้างแล้วลากหมุนวงกลมเข็มทิศเพื่อปรับทิศทางได้
+                      </div>
+                    )}
 
                     {/* Back Azimuth Box */}
                     <div className="w-[85%] mt-5 flex justify-between items-center bg-gray-900/80 border border-orange-500/20 px-4 py-2.5 rounded-xl shadow-lg">
