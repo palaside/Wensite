@@ -74,7 +74,17 @@ const AutoLocate = ({ setOpAuto }: { setOpAuto: (lat: number, lon: number) => vo
 export const TacticalHudView: React.FC<TacticalHudViewProps> = ({ isVisible, onClose }) => {
   const [panelWidth, setPanelWidth] = useState(400); 
   const [isDragging, setIsDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const [activeTab, setActiveTab] = useState<'adjust' | 'convert' | 'saved' | 'settings'>('adjust');
   const [mapBase, setMapBase] = useState<'satellite' | 'terrain'>('satellite');
@@ -207,7 +217,7 @@ export const TacticalHudView: React.FC<TacticalHudViewProps> = ({ isVisible, onC
   return (
     <motion.div 
       initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}
-      className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md flex overflow-hidden font-mono"
+      className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md flex flex-col md:flex-row overflow-hidden font-mono"
       ref={containerRef}
     >
       <AnimatePresence>
@@ -220,7 +230,7 @@ export const TacticalHudView: React.FC<TacticalHudViewProps> = ({ isVisible, onC
         )}
       </AnimatePresence>
 
-      <div className="relative flex-grow h-full bg-[#0a0a0a]">
+      <div className="relative flex-grow h-1/2 md:h-full bg-[#0a0a0a]">
         <MapContainer center={[13.7563, 100.5018]} zoom={13} zoomControl={false} style={{ width: '100%', height: '100%', background: '#0a0a0a' }}>
           <AutoLocate setOpAuto={() => {}} />
           <TileLayer key={tileUrl} url={tileUrl} attribution="&copy; Esri, OpenStreetMap, CARTO" />
@@ -355,11 +365,14 @@ export const TacticalHudView: React.FC<TacticalHudViewProps> = ({ isVisible, onC
 
       </div>
 
-      <div className={`w-1.5 bg-black cursor-col-resize border-x z-[500] ${isDangerClose ? 'border-red-900/50 hover:bg-red-900/80' : 'border-cyan-900/50 hover:bg-cyan-900/80'}`} onMouseDown={() => setIsDragging(true)}>
+      <div className={`hidden md:flex w-1.5 bg-black cursor-col-resize border-x z-[500] ${isDangerClose ? 'border-red-900/50 hover:bg-red-900/80' : 'border-cyan-900/50 hover:bg-cyan-900/80'}`} onMouseDown={() => setIsDragging(true)}>
         <div className={`h-16 w-0.5 rounded-full ${isDangerClose ? 'bg-red-600/50' : 'bg-cyan-600/50'}`}></div>
       </div>
 
-      <div style={{ width: `${panelWidth}px` }} className={`h-full bg-[#050505] border-l flex flex-col relative z-[600] ${isDangerClose ? 'border-red-900/50' : 'border-cyan-900/50'}`}>
+      <div 
+        style={{ width: isMobile ? '100%' : `${panelWidth}px` }} 
+        className={`h-1/2 md:h-full bg-[#050505] border-t md:border-t-0 md:border-l flex flex-col relative z-[600] ${isDangerClose ? 'border-red-900/50' : 'border-cyan-900/50'}`}
+      >
         <button onClick={onClose} className="absolute top-3 right-3 z-50 text-gray-500 hover:text-white bg-gray-900/50 p-1.5 rounded-sm border border-gray-800"><X className="w-4 h-4" /></button>
 
         <div className={`flex bg-[#020202] p-1.5 gap-1 border-b mt-12 px-2 ${isDangerClose ? 'border-red-900/30' : 'border-cyan-900/30'}`}>
