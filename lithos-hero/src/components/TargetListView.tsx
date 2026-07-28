@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getTargets, addTarget, clearAllTargets, removeTarget } from '../utils/targetDatabase';
+import { getTargets, addTarget, clearAllTargets, removeTarget, saveTargets } from '../utils/targetDatabase';
 import type { TargetData } from '../utils/targetDatabase';
 import { formatGrid8, parseGrid } from '../utils/artilleryMath';
 
@@ -13,15 +13,11 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
   const [targets, setTargets] = useState<TargetData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   
-  // Form State
-  const [newId, setNewId] = useState('');
-  const [newGrid, setNewGrid] = useState('');
-  const [newAlt, setNewAlt] = useState('');
-  const [newDesc, setNewDesc] = useState('');
+  // Input count state (defaults to '3' as in the mockup)
+  const [targetCountInput, setTargetCountInput] = useState('3');
 
-  // UI state
+  // Confirmation state for clearing
   const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [showAddForm, setShowAddForm] = useState(false);
 
   const loadTargets = () => {
     setTargets(getTargets());
@@ -31,32 +27,84 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
     if (isVisible) {
       loadTargets();
       setShowClearConfirm(false);
-      setShowAddForm(false);
     }
   }, [isVisible]);
 
   if (!isVisible) return null;
 
-  const handleAddTarget = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newId || !newGrid) return;
-
-    addTarget({
-      id: newId.trim().toUpperCase(),
-      grid: newGrid.replace(/\s+/g, ''),
-      altitude: parseFloat(newAlt) || 0,
-      description: newDesc.trim()
+  // Generates next RTA ID suffix e.g. กข4001, กข4002...
+  const generateNextTargetId = (existingTargets: TargetData[]) => {
+    let maxNum = 4000;
+    existingTargets.forEach(t => {
+      const match = t.id.match(/กข(\d+)/);
+      if (match) {
+        const num = parseInt(match[1]);
+        if (num > maxNum) maxNum = num;
+      }
     });
-    
-    // Clear form
-    setNewId('');
-    setNewGrid('');
-    setNewAlt('');
-    setNewDesc('');
-    setShowAddForm(false);
-    
-    // Reload
+    return `กข${maxNum + 1}`;
+  };
+
+  const handleAddTargetCount = () => {
+    const count = parseInt(targetCountInput) || 1;
+    let currentTargets = [...targets];
+    for (let i = 0; i < count; i++) {
+      const nextId = generateNextTargetId(currentTargets);
+      const newTarget: TargetData = {
+        id: nextId,
+        grid: '00000000',
+        altitude: 1,
+        description: '-'
+      };
+      addTarget(newTarget);
+      currentTargets.push(newTarget);
+    }
     loadTargets();
+  };
+
+  // Real-time update functions
+  const handleUpdateTargetId = (oldId: string, newId: string) => {
+    const updated = targets.map(t => {
+      if (t.id === oldId) {
+        return { ...t, id: newId };
+      }
+      return t;
+    });
+    saveTargets(updated);
+    setTargets(updated);
+  };
+
+  const handleUpdateTargetGrid = (id: string, newGrid: string) => {
+    const updated = targets.map(t => {
+      if (t.id === id) {
+        return { ...t, grid: newGrid.replace(/\s+/g, '') };
+      }
+      return t;
+    });
+    saveTargets(updated);
+    setTargets(updated);
+  };
+
+  const handleUpdateTargetAlt = (id: string, newAlt: number) => {
+    const updated = targets.map(t => {
+      if (t.id === id) {
+        return { ...t, altitude: newAlt };
+      }
+      return t;
+    });
+    saveTargets(updated);
+    setTargets(updated);
+  };
+
+  const handleUpdateTargetDesc = (id: string, newDesc: string) => {
+    const updated = targets.map(t => {
+      if (t.id === id) {
+        return { ...t, description: newDesc };
+      }
+      return t;
+    });
+    saveTargets(updated);
+    setTargets(updated);
   };
 
   const handleClearAll = () => {
@@ -106,22 +154,32 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
         {/* Mockup summary section */}
         <div className="p-8 border-b border-slate-900 bg-slate-950 flex gap-12 items-start justify-between shrink-0">
           <div className="flex gap-16 items-start">
-            {/* จำนวน (Count) */}
+            {/* จำนวน (Count Input) */}
             <div className="flex flex-col items-center">
               <span className="text-white text-lg font-bold mb-3">จำนวน</span>
-              <div className="border border-white rounded px-10 py-3 bg-transparent text-white font-mono text-xl font-bold min-w-[100px] text-center">
-                {targets.length}
-              </div>
+              <input 
+                type="number"
+                min="1"
+                max="30"
+                value={targetCountInput}
+                onChange={e => setTargetCountInput(e.target.value)}
+                className="border border-white rounded px-6 py-2.5 bg-transparent text-white font-mono text-xl font-bold w-[100px] text-center outline-none focus:border-emerald-500"
+              />
             </div>
 
-            {/* ชื่อเป้าหมาย (Target Names) */}
+            {/* ชื่อเป้าหมาย (Editable Target Names list) */}
             <div className="flex flex-col items-center">
               <span className="text-white text-lg font-bold mb-3">ชื่อเป้าหมาย</span>
-              <div className="flex flex-col gap-2 min-w-[150px] max-h-[160px] overflow-y-auto pr-2 scrollbar-thin">
+              <div className="flex flex-col gap-2 min-w-[180px] max-h-[160px] overflow-y-auto pr-2 scrollbar-thin">
                 {targets.map((t, idx) => (
-                  <div key={idx} className="border border-white rounded px-6 py-2 bg-transparent text-white font-bold font-mono text-center text-sm">
-                    {t.id}
-                  </div>
+                  <input
+                    key={idx}
+                    type="text"
+                    value={t.id}
+                    onChange={e => handleUpdateTargetId(t.id, e.target.value)}
+                    className="border border-white rounded px-4 py-2 bg-transparent text-white font-bold font-mono text-center text-sm w-[150px] outline-none focus:border-emerald-500 transition-colors"
+                    title="คลิกกลางกล่องเพื่อเปลี่ยนชื่อเป้าหมาย"
+                  />
                 ))}
                 {targets.length === 0 && (
                   <div className="text-slate-600 text-xs italic text-center py-2">ไม่มีข้อมูลเป้าหมาย</div>
@@ -133,42 +191,13 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
           {/* ADD TARGET Button */}
           <div className="self-start pt-8">
             <button 
-              onClick={() => setShowAddForm(!showAddForm)}
+              onClick={handleAddTargetCount}
               className="border border-white hover:bg-white/10 text-white font-bold py-3 px-8 rounded transition-all tracking-wider uppercase text-sm bg-transparent"
             >
               ADD TARGET
             </button>
           </div>
         </div>
-
-        {/* Inline Add Target Form */}
-        {showAddForm && (
-          <div className="p-6 bg-slate-900 border-b border-slate-800 animate-in slide-in-from-top duration-200 shrink-0">
-            <form onSubmit={handleAddTarget} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-              <div>
-                <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Target ID *</label>
-                <input type="text" required value={newId} onChange={e => setNewId(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-white focus:border-emerald-500 outline-none uppercase font-bold" placeholder="เช่น กข4001" />
-              </div>
-              <div>
-                <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Grid *</label>
-                <input type="text" required value={newGrid} onChange={e => setNewGrid(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-white focus:border-emerald-500 outline-none font-mono tracking-widest" placeholder="8 หลัก" />
-              </div>
-              <div>
-                <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Alt (m)</label>
-                <input type="number" value={newAlt} onChange={e => setNewAlt(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-white focus:border-emerald-500 outline-none" placeholder="0" />
-              </div>
-              <div className="flex gap-2">
-                <div className="flex-1">
-                  <label className="block text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">Description</label>
-                  <input type="text" value={newDesc} onChange={e => setNewDesc(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-2 text-white focus:border-emerald-500 outline-none" placeholder="รายละเอียด..." />
-                </div>
-                <button type="submit" className="border border-emerald-500 bg-emerald-950/20 text-emerald-400 hover:bg-emerald-600 hover:text-white font-bold py-2 px-4 rounded transition-colors h-[42px] uppercase text-xs bg-transparent">
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
 
         {/* Search Bar */}
         <div className="px-6 py-4 border-b border-slate-900 bg-slate-950 shrink-0">
@@ -190,7 +219,7 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
             <div className="flex flex-col items-center justify-center h-full text-slate-600 space-y-3">
               <svg className="w-12 h-12 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
               <p className="text-lg font-medium">Target Database is Empty</p>
-              <p className="text-xs">กดปุ่ม ADD TARGET เพื่อเพิ่มเป้าหมาย</p>
+              <p className="text-xs">กรอกจำนวนแล้วกดปุ่ม ADD TARGET เพื่อสร้างเป้าหมาย</p>
             </div>
           ) : (
             <div className="overflow-x-auto rounded border border-slate-800">
@@ -208,18 +237,36 @@ export const TargetListView: React.FC<TargetListViewProps> = ({ isVisible, onClo
                   {filteredTargets.map((target, idx) => (
                     <tr key={idx} className="hover:bg-slate-900/30 transition-colors group">
                       <td className="px-6 py-4">
-                        <span className="text-white font-bold tracking-wider font-mono text-md">{target.id}</span>
+                        <input
+                          type="text"
+                          value={target.id}
+                          onChange={e => handleUpdateTargetId(target.id, e.target.value)}
+                          className="bg-transparent text-white font-bold font-mono text-md border border-transparent focus:border-slate-700 outline-none rounded px-2 py-0.5 w-[110px]"
+                        />
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-mono text-white tracking-widest text-md">
-                          {formatGrid8(parseGrid(target.grid, target.altitude))}
-                        </span>
+                        <input
+                          type="text"
+                          value={target.grid}
+                          onChange={e => handleUpdateTargetGrid(target.id, e.target.value)}
+                          className="bg-transparent font-mono text-white tracking-widest text-md border border-transparent focus:border-slate-700 outline-none rounded px-2 py-0.5 w-[140px]"
+                        />
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-white font-mono text-md">{target.altitude}</span>
+                        <input
+                          type="number"
+                          value={target.altitude}
+                          onChange={e => handleUpdateTargetAlt(target.id, parseFloat(e.target.value) || 0)}
+                          className="bg-transparent font-mono text-white text-md border border-transparent focus:border-slate-700 outline-none rounded px-2 py-0.5 w-[80px]"
+                        />
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-400 text-sm">{target.description || '-'}</span>
+                        <input
+                          type="text"
+                          value={target.description}
+                          onChange={e => handleUpdateTargetDesc(target.id, e.target.value)}
+                          className="bg-transparent text-slate-400 text-sm border border-transparent focus:border-slate-700 outline-none rounded px-2 py-0.5 w-full"
+                        />
                       </td>
                       <td className="px-6 py-4 text-right flex justify-end items-center gap-3">
                         <button 
